@@ -27,7 +27,8 @@
 		<!-- 编译项优化 -->
 		<UseSharedCompilation>false</UseSharedCompilation>
 		<UseHostCompilerIfAvailable>false</UseHostCompilerIfAvailable>
-		<Deterministic>false</Deterministic>
+		<Deterministic>true</Deterministic>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
 
 		<!-- 输出文件夹 -->
 		<OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
