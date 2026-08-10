@@ -1,3 +1,307 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
+  <!-- BioTabPersonalityPatch.cs -->
+  <RimTalk.BioTab.RimTalkPersona>Персона</RimTalk.BioTab.RimTalkPersona>
+  <!-- TickManager_DoSingleTick.cs -->
+  <RimTalk.TickManager.ApiKeyMissing>RimTalk: відсутній API-ключ або кінцева точка.</RimTalk.TickManager.ApiKeyMissing>
+  <!-- TalkService.cs -->
+  <RimTalk.TalkService.QuotaReached>Перевищено квоту API. Спробуйте зменшити розмір промпту або збільшити затримку відновлення.</RimTalk.TalkService.QuotaReached>
+  <RimTalk.TalkService.APIError>Сталася помилка API</RimTalk.TalkService.APIError>
+  <RimTalk.TalkService.TryingNextAPI>Спроба використати наступний API ({0})</RimTalk.TalkService.TryingNextAPI>
+  <RimTalk.TalkService.GenerationFailed>Не вдалося виконати генерацію RimTalk</RimTalk.TalkService.GenerationFailed>
+  <!-- Persona -->
+  <RimTalk.Persona.CheerfulHelper>Життєрадісний помічник — теплий, оптимістичний і підбадьорливий. Завжди намагається підняти настрій.</RimTalk.Persona.CheerfulHelper>
+  <RimTalk.Persona.CynicalRealist>Цинічний реаліст — сухий, саркастичний і скептичний. Одразу переходить до суворої правди.</RimTalk.Persona.CynicalRealist>
+  <RimTalk.Persona.ShyThinker>Сором’язливий мислитель — мовчазний і нерішучий. Говорить мало, але змістовно.</RimTalk.Persona.ShyThinker>
+  <RimTalk.Persona.Hothead>Запальник — запальний, гучний та імпульсивний. Легко вибухає, використовуючи палку лексику.</RimTalk.Persona.Hothead>
+  <RimTalk.Persona.Philosopher>Філософ — задумливий та абстрактний. Говорить загадками або порушує масштабні питання.</RimTalk.Persona.Philosopher>
+  <RimTalk.Persona.DarkHumorist>Чорний гуморист — жартує на похмурі теми. Знаходить комізм у стражданнях.</RimTalk.Persona.DarkHumorist>
+  <RimTalk.Persona.Caregiver>Турботливий — ніжний і захисливий. Говорить у заспокійливій, лагідній та дбайливій манері.</RimTalk.Persona.Caregiver>
+  <RimTalk.Persona.Opportunist>Опортуніст — хитрий і переконливий. Говорить як пройдисвіт, торгується та перекручує слова.</RimTalk.Persona.Opportunist>
+  <RimTalk.Persona.OptimisticDreamer>Оптимістичний мрійник — винахідливий і сповнений надії. У захваті від майбутнього.</RimTalk.Persona.OptimisticDreamer>
+  <RimTalk.Persona.Pessimist>Песиміст — похмурий і змирений. Очікує невдачі та наголошує на ризиках.</RimTalk.Persona.Pessimist>
+  <RimTalk.Persona.StoicSoldier>Стоїчний солдат — спокійний, дисциплінований і небагатослівний. Майже без емоцій, говорить по суті.</RimTalk.Persona.StoicSoldier>
+  <RimTalk.Persona.FreeSpirit>Вільний духом — грайливий і безтурботний. Опирається правилам і не зважає на тривоги.</RimTalk.Persona.FreeSpirit>
+  <RimTalk.Persona.Workaholic>Трудоголік — цілеспрямований і неспокійний. Одержимий обов’язком та ефективністю.</RimTalk.Persona.Workaholic>
+  <RimTalk.Persona.Slacker>Байдикуватий — ледачий і невимушений. Скаржиться на зусилля, віддає перевагу комфорту.</RimTalk.Persona.Slacker>
+  <RimTalk.Persona.NobleIdealist>Шляхетний ідеаліст — формальний і принциповий. Говорить про честь і справедливість.</RimTalk.Persona.NobleIdealist>
+  <RimTalk.Persona.StreetwiseSurvivor>Вуличний виживальник — грубий, прагматичний і цинічний. Не довіряє іншим, цінує загартованість.</RimTalk.Persona.StreetwiseSurvivor>
+  <RimTalk.Persona.Scholar>Учений — допитливий та інтелектуальний. Любить пояснювати й виправляти інших.</RimTalk.Persona.Scholar>
+  <RimTalk.Persona.Jokester>Жартівник — легковажний і кумедний. Постійно жартує та вигадує каламбури.</RimTalk.Persona.Jokester>
+  <RimTalk.Persona.MelancholicPoet>Меланхолійний поет — тихий і мінливий настроєм. Поетично висловлює свої почуття.</RimTalk.Persona.MelancholicPoet>
+  <RimTalk.Persona.Paranoid>Параноїк – Нервовий і недовірливий. Очікує зради, завжди підозріливий.</RimTalk.Persona.Paranoid>
+  <RimTalk.Persona.Commander>Командир – Упевнений і владний. Мотивує інших, очікує покори.</RimTalk.Persona.Commander>
+  <RimTalk.Persona.Coward>Боягуз – Несміливий і наляканий. Вголос тривожиться, уникає конфронтації.</RimTalk.Persona.Coward>
+  <RimTalk.Persona.ArrogantNoble>Пихатий аристократ – Гордовитий і поблажливий. Висловлюється офіційно, зверхньо.</RimTalk.Persona.ArrogantNoble>
+  <RimTalk.Persona.LoyalCompanion>Вірний супутник – Стійкий і готовий підтримати. Говорить про довіру та єдність.</RimTalk.Persona.LoyalCompanion>
+  <RimTalk.Persona.CuriousExplorer>Допитливий дослідник – Зачарований і сповнений ентузіазму. Захоплено ставить запитання.</RimTalk.Persona.CuriousExplorer>
+  <RimTalk.Persona.ColdRationalist>Холодний раціоналіст – Відсторонений і логічний. Зосереджений лише на фактах та ефективності.</RimTalk.Persona.ColdRationalist>
+  <RimTalk.Persona.FlirtatiousCharmer>Грайливий спокусник – Грайливий, дражливий і сміливий. Любить дотепні словесні перепалки.</RimTalk.Persona.FlirtatiousCharmer>
+  <RimTalk.Persona.BitterOutcast>Озлоблений вигнанець – Ображений і дошкульний. Ворожий, швидко згадує старі образи.</RimTalk.Persona.BitterOutcast>
+  <RimTalk.Persona.Zealot>Фанатик – Фанатичний і запальний. Висловлюється категорично, засуджує невіруючих.</RimTalk.Persona.Zealot>
+  <RimTalk.Persona.Trickster>Жартівник – Пустотливий і глузливий. Дражнить інших і заради розваги провокує безлад.</RimTalk.Persona.Trickster>
+  <RimTalk.Persona.DeadpanRealist>Беземоційний реаліст – Рівний, беземоційний тон. Голі факти без перебільшень.</RimTalk.Persona.DeadpanRealist>
+  <RimTalk.Persona.ChildAtHeart>Дитина в душі – Збуджений і наївний. Говорить із подивом, іноді по-дитячому.</RimTalk.Persona.ChildAtHeart>
+  <RimTalk.Persona.SkepticalScientist>Скептичний науковець – Вимагає доказів, відкидає забобони, пояснює логічно.</RimTalk.Persona.SkepticalScientist>
+  <RimTalk.Persona.Martyr>Мученик – Саможертовний і драматичний. Говорить про тягар і терпіння болю.</RimTalk.Persona.Martyr>
+  <RimTalk.Persona.Manipulator>Маніпулятор — чарівний, але нещирий. Використовує лестощі й обман.</RimTalk.Persona.Manipulator>
+  <RimTalk.Persona.Rebel>Бунтар — зухвалий і насмішкуватий. Кидає виклик владі, ставить правила під сумнів.</RimTalk.Persona.Rebel>
+  <RimTalk.Persona.Oddball>Дивацюга — химерний і дивний. Використовує чудернацькі метафори й непередбачувану логіку.</RimTalk.Persona.Oddball>
+  <RimTalk.Persona.GreedyMerchant>Жадібний торговець — одержимий торгівлею. Говорить про прибутки, торги й збитки.</RimTalk.Persona.GreedyMerchant>
+  <RimTalk.Persona.Romantic>Романтик — мрійливий і ніжний. Говорить про кохання пишномовною мовою.</RimTalk.Persona.Romantic>
+  <RimTalk.Persona.BattleManiac>Бойовий маніяк — живе конфліктами. Із захватом говорить про битви й славу.</RimTalk.Persona.BattleManiac>
+  <RimTalk.Persona.GrumpyElder>Буркотливий старійшина — постійно скаржиться. Ностальгує й критикує інших.</RimTalk.Persona.GrumpyElder>
+  <RimTalk.Persona.AmbitiousClimber>Амбітний кар’єрист — змагається й прагне статусу. Одержимий рангом.</RimTalk.Persona.AmbitiousClimber>
+  <RimTalk.Persona.Mediator>Посередник — спокійний і неупереджений. Намагається примирити сперечальників.</RimTalk.Persona.Mediator>
+  <RimTalk.Persona.Gambler>Гравець — любить ризик і сміливо ризикує. Говорить метафорами про шанси.</RimTalk.Persona.Gambler>
+  <RimTalk.Persona.ArtisticSoul>Творча душа — говорить про красу, натхнення й творчість.</RimTalk.Persona.ArtisticSoul>
+  <RimTalk.Persona.Drifter>Волоцюга — відсторонений і байдужий. Говорить невимушено, уникає прив’язаності.</RimTalk.Persona.Drifter>
+  <RimTalk.Persona.Perfectionist>Перфекціоніст — вимогливий і критичний. Наполягає, щоб усе робили правильно.</RimTalk.Persona.Perfectionist>
+  <RimTalk.Persona.Vengeful>Мстивий — злопам’ятний і запальний. Одержимий помстою.</RimTalk.Persona.Vengeful>
+  <!-- RimTalk_Toggle.cs -->
+  <RimTalk.Toggle.Tooltip>Перемкнути вікно накладання\nShift+клацання — налаштування мода\nCtrl+клацання — вікно налагодження</RimTalk.Toggle.Tooltip>
+  <!-- Settings.cs -->
+  <RimTalk.Settings.BasicSettings>Основні налаштування</RimTalk.Settings.BasicSettings>
+  <RimTalk.Settings.AIInstruction>Інструкція для ШІ</RimTalk.Settings.AIInstruction>
+  <RimTalk.Settings.EventFilter>Фільтр подій</RimTalk.Settings.EventFilter>
+  <RimTalk.Settings.ApiKey>Ключ Cloud API</RimTalk.Settings.ApiKey>
+  <RimTalk.Settings.GetFreeApiKey>Отримати безплатний ключ API</RimTalk.Settings.GetFreeApiKey>
+  <RimTalk.Settings.AICooldown>Затримка AI (секунди): {0}</RimTalk.Settings.AICooldown>
+  <RimTalk.Settings.OverrideInteractions>Замінювати всі взаємодії діалогами AI</RimTalk.Settings.OverrideInteractions>
+  <RimTalk.Settings.OverrideInteractionsTooltip>Увімкніть, щоб дозволити ШІ замінювати та генерувати заново діалоги для всіх взаємодій (зокрема у ванільній RimWorld та інших модифікаціях). Примітка: для діалогів ШІ встановлено затримку відновлення, зазначену вище. Щоб генерувати діалоги частіше, зменште затримку відновлення.</RimTalk.Settings.OverrideInteractionsTooltip>
+  <RimTalk.Settings.AllowSimultaneousConversations>Дозволити одночасні розмови</RimTalk.Settings.AllowSimultaneousConversations>
+  <RimTalk.Settings.AllowSimultaneousConversationsTooltip>Якщо увімкнено, одночасно можуть розмовляти кілька груп персонажів. Вимкніть, якщо хочете бачити лише одну розмову за раз або якщо їх відбувається надто багато.</RimTalk.Settings.AllowSimultaneousConversationsTooltip>
+  <RimTalk.Settings.DisplayTalkWhenDrafted>Показувати розмови мобілізованих</RimTalk.Settings.DisplayTalkWhenDrafted>
+  <RimTalk.Settings.DisplayTalkWhenDraftedTooltip>Показувати бульбашки RimTalk, навіть коли персонажі мобілізовані. Під час генерування розмов це тимчасово змінює налаштування мода бульбашок.</RimTalk.Settings.DisplayTalkWhenDraftedTooltip>
+  <RimTalk.Settings.AllowCustomConversation>Дозволити розмови, створені гравцем</RimTalk.Settings.AllowCustomConversation>
+  <RimTalk.Settings.AllowCustomConversationTooltip>Дозволяє починати власні діалоги між персонажами або безпосередньо розмовляти з персонажем, написавши власні репліки. Клацніть правою кнопкою миші по персонажу, щоб почати розмову.</RimTalk.Settings.AllowCustomConversationTooltip>
+  <RimTalk.Settings.AllowSlavesToTalk>Дозволити рабам розмовляти</RimTalk.Settings.AllowSlavesToTalk>
+  <RimTalk.Settings.AllowSlavesToTalkTooltip>Увімкніть, щоб дозволити рабам вести згенеровані ШІ розмови.</RimTalk.Settings.AllowSlavesToTalkTooltip>
+  <RimTalk.Settings.AllowPrisonersToTalk>Дозволити полоненим розмовляти</RimTalk.Settings.AllowPrisonersToTalk>
+  <RimTalk.Settings.AllowPrisonersToTalkTooltip>Увімкніть, щоб дозволити в'язням вести згенеровані ШІ розмови.</RimTalk.Settings.AllowPrisonersToTalkTooltip>
+  <RimTalk.Settings.AllowOtherFactionsToTalk>Дозволити іншим фракціям розмовляти</RimTalk.Settings.AllowOtherFactionsToTalk>
+  <RimTalk.Settings.AllowOtherFactionsToTalkTooltip>Увімкніть, щоб дозволити членам інших фракцій вести згенеровані ШІ розмови.</RimTalk.Settings.AllowOtherFactionsToTalkTooltip>
+  <RimTalk.Settings.AllowEnemiesToTalk>Дозволити ворогам розмовляти</RimTalk.Settings.AllowEnemiesToTalk>
+  <RimTalk.Settings.AllowEnemiesToTalkTooltip>Увімкніть, щоб дозволити ворогам вести згенеровані ШІ розмови.</RimTalk.Settings.AllowEnemiesToTalkTooltip>
+  <RimTalk.Settings.PauseAtSpeed>Призупиняти ШІ на високій швидкості</RimTalk.Settings.PauseAtSpeed>
+  <RimTalk.Settings.DisableAiAtSpeedTooltip>Щоб зменшити кількість викликів API, ШІ буде призупинено, коли швидкість гри встановлено на цей рівень або вище.</RimTalk.Settings.DisableAiAtSpeedTooltip>
+  <RimTalk.Settings.Disabled>Вимкнено</RimTalk.Settings.Disabled>
+  <RimTalk.Settings.ButtonDisplay>Відображення кнопки RimTalk</RimTalk.Settings.ButtonDisplay>
+  <RimTalk.Settings.ButtonDisplayTooltip>Керує способом доступу до налагоджувального інтерфейсу. «Вкладка» додає головну вкладку, «Перемикач» показує значок на нижній панелі, а «Немає» приховує його.</RimTalk.Settings.ButtonDisplayTooltip>
+  <RimTalk.Settings.AIInstructionPrompt>Промпт інструкції для ШІ (модель: {0})</RimTalk.Settings.AIInstructionPrompt>
+  <RimTalk.Settings.ExternalEditorTip>Порада: для редагування в кілька рядків використовуйте копіювання та вставлення у зовнішньому редакторі або введіть \+n для перенесення рядка.</RimTalk.Settings.ExternalEditorTip>
+  <RimTalk.Settings.AutoIncludedTip>Порада: деталі персонажів (риси, стосунки, раса, вік тощо) додаються автоматично. Пишіть загальні інструкції, що працюють для всіх персонажів і колоній.</RimTalk.Settings.AutoIncludedTip>
+  <RimTalk.Settings.RateLimitWarning>Попередження: довші промпти споживатимуть більше токенів і швидше досягатимуть лімітів запитів. Кешування промптів не використовується.</RimTalk.Settings.RateLimitWarning>
+  <RimTalk.Settings.BubbleFadeTip>Порада: змініть час згасання бульбашок у налаштуваннях моду Interaction Bubbles, щоб діалоги довше залишалися видимими під час перемотування вперед.</RimTalk.Settings.BubbleFadeTip>
+  <RimTalk.Settings.TokenInfo>Поточні: ~{0} токенів | Рекомендований ліміт: {1} токенів</RimTalk.Settings.TokenInfo>
+  <RimTalk.Settings.ResetToDefault>Відновити типові значення</RimTalk.Settings.ResetToDefault>
+  <RimTalk.Settings.EventFilterTip>Порада: ШІ оброблятиме лише позначені типи подій. Зніміть позначки з типів, на які ШІ не має відповідати.</RimTalk.Settings.EventFilterTip>
+  <RimTalk.Settings.NoArchivableTypes>Архівованих типів не знайдено. Спробуйте почати гру, а потім виконати повторне сканування.</RimTalk.Settings.NoArchivableTypes>
+  <!-- Dialog_PersonaEditor.cs -->
+  <RimTalk.PersonaEditor.Title>Стиль розмови {0}</RimTalk.PersonaEditor.Title>
+  <RimTalk.PersonaEditor.Instruct>Опишіть, як цей колоніст розмовляє та поводиться. Для найкращих результатів пишіть стисло (до 300 символів).</RimTalk.PersonaEditor.Instruct>
+  <RimTalk.PersonaEditor.Characters>Персонажі: {0}</RimTalk.PersonaEditor.Characters>
+  <RimTalk.PersonaEditor.Save>Зберегти</RimTalk.PersonaEditor.Save>
+  <RimTalk.PersonaEditor.Updated>Стиль розмови для {0} оновлено</RimTalk.PersonaEditor.Updated>
+  <RimTalk.PersonaEditor.TalkFrequencyDesc>Керує тим, як часто цей колоніст починає розмови. Навіть за найнижчого значення він відповідатиме, коли до нього звертаються. Це впливає лише на частоту початку розмов.</RimTalk.PersonaEditor.TalkFrequencyDesc>
+  <RimTalk.PersonaEditor.Chattiness>Говірливість</RimTalk.PersonaEditor.Chattiness>
+  <RimTalk.PersonaEditor.Quiet>Мовчазний</RimTalk.PersonaEditor.Quiet>
+  <RimTalk.PersonaEditor.Chatty>Балакучий</RimTalk.PersonaEditor.Chatty>
+  <RimTalk.PersonaEditor.Generating>Створення…</RimTalk.PersonaEditor.Generating>
+  <RimTalk.PersonaEditor.SmartGen>Розумна генерація</RimTalk.PersonaEditor.SmartGen>
+  <RimTalk.PersonaEditor.RollGen>Генерація кидком</RimTalk.PersonaEditor.RollGen>
+  <RimTalk.PersonaEditor.Clear>Очистити</RimTalk.PersonaEditor.Clear>
+  <!-- Settings_Api.cs -->
+  <RimTalk.Settings.GoogleApiKeyLabel>Ключ API Google AI:</RimTalk.Settings.GoogleApiKeyLabel>
+  <RimTalk.Settings.GoogleApiKeyDesc>Використовує безкоштовну модель Gemma3 27B. Для інших моделей або провайдерів використовуйте розширені налаштування.</RimTalk.Settings.GoogleApiKeyDesc>
+  <RimTalk.Settings.GetFreeApiKeyButton>Отримати безкоштовний ключ API</RimTalk.Settings.GetFreeApiKeyButton>
+  <RimTalk.Settings.SwitchToAdvancedSettings>Перейти до розширених налаштувань</RimTalk.Settings.SwitchToAdvancedSettings>
+  <RimTalk.Settings.SwitchToSimpleSettings>Перейти до простих налаштувань</RimTalk.Settings.SwitchToSimpleSettings>
+  <RimTalk.Settings.CloudProviders>Хмарні провайдери</RimTalk.Settings.CloudProviders>
+  <RimTalk.Settings.CloudProvidersDesc>Використовуйте онлайн-сервіси ШІ, як-от Google AI, OpenAI тощо. Потрібні підключення до інтернету та ключі API.</RimTalk.Settings.CloudProvidersDesc>
+  <RimTalk.Settings.LocalProvider>Локальний провайдер</RimTalk.Settings.LocalProvider>
+  <RimTalk.Settings.LocalProviderDesc>Використовуйте локальний сервер ШІ, запущений на вашому комп’ютері (Ollama, LM Studio тощо). Має підтримувати OpenAPI.</RimTalk.Settings.LocalProviderDesc>
+  <RimTalk.Settings.CloudApiConfigurations>Конфігурації хмарних API</RimTalk.Settings.CloudApiConfigurations>
+  <RimTalk.Settings.CloudApiConfigurationsDesc>Якщо ввімкнено кілька API, система спробує використати їх по черзі. Якщо один API не спрацює, вона автоматично спробує наступний увімкнений API у списку.</RimTalk.Settings.CloudApiConfigurationsDesc>
+  <RimTalk.Settings.ProviderHeader>Провайдер</RimTalk.Settings.ProviderHeader>
+  <RimTalk.Settings.ApiKeyHeader>Ключ API</RimTalk.Settings.ApiKeyHeader>
+  <RimTalk.Settings.ModelHeader>Модель</RimTalk.Settings.ModelHeader>
+  <RimTalk.Settings.CustomModelHeader>Власна модель</RimTalk.Settings.CustomModelHeader>
+  <RimTalk.Settings.EnabledHeader>Увімкнено</RimTalk.Settings.EnabledHeader>
+  <RimTalk.Settings.EnableDisableApiConfigTooltip>Увімкнути або вимкнути цю конфігурацію API</RimTalk.Settings.EnableDisableApiConfigTooltip>
+  <RimTalk.Settings.LocalProviderConfiguration>Налаштування локального провайдера</RimTalk.Settings.LocalProviderConfiguration>
+  <RimTalk.Settings.BaseUrlLabel>Базова URL-адреса:</RimTalk.Settings.BaseUrlLabel>
+  <RimTalk.Settings.ModelLabel>Модель:</RimTalk.Settings.ModelLabel>
+  <RimTalk.Settings.EnterApiKey>(введіть дійсний ключ API, щоб отримати моделі)</RimTalk.Settings.EnterApiKey>
+  <RimTalk_Settings_Api_BaseUrlInfo>Якщо вказати лише базову адресу (наприклад, http://localhost:1234), /v1/chat/completions буде додано автоматично. Якщо ввести повний шлях, його буде використано без змін.</RimTalk_Settings_Api_BaseUrlInfo>
+  <!-- DebugWindow.cs -->
+  <RimTalk.DebugWindow.Generating>[Генерування...]</RimTalk.DebugWindow.Generating>
+  <RimTalk.DebugWindow.StatusDisabled>Вимкнено</RimTalk.DebugWindow.StatusDisabled>
+  <RimTalk.DebugWindow.StatusProcessing>Обробка</RimTalk.DebugWindow.StatusProcessing>
+  <RimTalk.DebugWindow.StatusIdle>Бездіяльність</RimTalk.DebugWindow.StatusIdle>
+  <RimTalk.DebugWindow.GroupByPawn>Групувати за персонажем</RimTalk.DebugWindow.GroupByPawn>
+  <RimTalk.DebugWindow.ModSettings>Налаштування моду</RimTalk.DebugWindow.ModSettings>
+  <RimTalk.DebugWindow.EnableRimTalk>Увімкнути RimTalk</RimTalk.DebugWindow.EnableRimTalk>
+  <RimTalk.DebugWindow.AIStatus>Стан ШІ:</RimTalk.DebugWindow.AIStatus>
+  <RimTalk.DebugWindow.TotalCalls>Усього викликів:</RimTalk.DebugWindow.TotalCalls>
+  <RimTalk.DebugWindow.TotalTokens>Усього токенів:</RimTalk.DebugWindow.TotalTokens>
+  <RimTalk.DebugWindow.AvgCallsPerMin>Середня кількість викликів/хв:</RimTalk.DebugWindow.AvgCallsPerMin>
+  <RimTalk.DebugWindow.AvgTokensPerMin>Середня кількість токенів/хв:</RimTalk.DebugWindow.AvgTokensPerMin>
+  <RimTalk.DebugWindow.AvgTokensPerCall>Середня кількість токенів/виклик:</RimTalk.DebugWindow.AvgTokensPerCall>
+  <RimTalk.DebugWindow.TokensPerSecond>Токенів/с</RimTalk.DebugWindow.TokensPerSecond>
+  <RimTalk.DebugWindow.SixtySecondsAgo>60 с тому</RimTalk.DebugWindow.SixtySecondsAgo>
+  <RimTalk.DebugWindow.Now>Зараз</RimTalk.DebugWindow.Now>
+  <RimTalk.DebugWindow.StatusReady>Готовий</RimTalk.DebugWindow.StatusReady>
+  <RimTalk.DebugWindow.StatusBusy>Зайнятий</RimTalk.DebugWindow.StatusBusy>
+  <RimTalk.DebugWindow.HeaderPawn>Персонаж</RimTalk.DebugWindow.HeaderPawn>
+  <RimTalk.DebugWindow.HeaderResponse>Відповідь</RimTalk.DebugWindow.HeaderResponse>
+  <RimTalk.DebugWindow.HeaderStatus>Стан</RimTalk.DebugWindow.HeaderStatus>
+  <RimTalk.DebugWindow.HeaderLastTalk>Остання розмова</RimTalk.DebugWindow.HeaderLastTalk>
+  <RimTalk.DebugWindow.HeaderRequests>Запити</RimTalk.DebugWindow.HeaderRequests>
+  <RimTalk.DebugWindow.HeaderChattiness>Балакучість</RimTalk.DebugWindow.HeaderChattiness>
+  <RimTalk.DebugWindow.HeaderTimestamp>Мітка часу</RimTalk.DebugWindow.HeaderTimestamp>
+  <RimTalk.DebugWindow.HeaderTimeMs>Час (мс)</RimTalk.DebugWindow.HeaderTimeMs>
+  <RimTalk.DebugWindow.HeaderTokens>Токени</RimTalk.DebugWindow.HeaderTokens>
+  <RimTalk.DebugWindow.HeaderState>Стан</RimTalk.DebugWindow.HeaderState>
+  <RimTalk.DebugWindow.Pending>Очікує</RimTalk.DebugWindow.Pending>
+  <RimTalk.DebugWindow.Ignored>Ігноровано</RimTalk.DebugWindow.Ignored>
+  <RimTalk.DebugWindow.Spoken>Озвучено</RimTalk.DebugWindow.Spoken>
+  <RimTalk.DebugWindow.TooltipPromptResponse>Промпт:\n{0}\n\nВідповідь:\n{1}</RimTalk.DebugWindow.TooltipPromptResponse>
+  <!-- Overlay.cs -->
+  <RimTalk.Overlay.Debug>Налагодження</RimTalk.Overlay.Debug>
+  <RimTalk.Overlay.Option>Параметр накладання</RimTalk.Overlay.Option>
+  <RimTalk.Overlay.Opacity>Непрозорість</RimTalk.Overlay.Opacity>
+  <RimTalk.Overlay.FontSize>Розмір шрифту</RimTalk.Overlay.FontSize>
+  <!-- FloatMenuMakerMapGetOptionsPatch.cs -->
+  <RimTalk.FloatMenu.ChatWith>Чат із {0}</RimTalk.FloatMenu.ChatWith>
+  <RimTalk.FloatMenu.WhatToSayToSelf>Що ви хочете сказати {0}?</RimTalk.FloatMenu.WhatToSayToSelf>
+  <RimTalk.FloatMenu.WhatToSayToOther>Що ви хочете, щоб {0} сказав {1}?</RimTalk.FloatMenu.WhatToSayToOther>
+  <RimTalk.FloatMenu.Send>Надіслати</RimTalk.FloatMenu.Send>
+  <RimTalk.FloatMenu.Cancel>Скасувати</RimTalk.FloatMenu.Cancel>
+  <!-- CustomDialogueService.cs -->
+  <RimTalk.CustomDialogue.Player>Гравець</RimTalk.CustomDialogue.Player>
+  <!-- Memory System -->
+  <RimTalk_GeminiAPIKey>Ключ Gemini API</RimTalk_GeminiAPIKey>
+  <RimTalk_GeminiAPIKeyDesc>Отримайте безплатний ключ API у Google AI Studio</RimTalk_GeminiAPIKeyDesc>
+  <RimTalk_GetFreeAPIKey>Отримати безплатний ключ API</RimTalk_GetFreeAPIKey>
+  <RimTalk_TalkInterval>Інтервал розмови</RimTalk_TalkInterval>
+  <RimTalk_SuppressUnprocessed>Приховувати необроблені повідомлення</RimTalk_SuppressUnprocessed>
+  <RimTalk_MemorySettings>Налаштування пам’яті</RimTalk_MemorySettings>
+  <RimTalk_MaxShortTermMemories>Максимум короткочасних спогадів</RimTalk_MaxShortTermMemories>
+  <RimTalk_MaxLongTermMemories>Максимум довготривалих спогадів</RimTalk_MaxLongTermMemories>
+  <RimTalk_MemoryDecayRate>Швидкість згасання пам’яті</RimTalk_MemoryDecayRate>
+  <RimTalk_EnableMemoryUI>Увімкнути вкладку пам’яті</RimTalk_EnableMemoryUI>
+  <RimTalk_TabMemory>Пам’ять</RimTalk_TabMemory>
+  <RimTalk_MemoryTitle>Спогади {0}</RimTalk_MemoryTitle>
+  <RimTalk_All>Усі</RimTalk_All>
+  <RimTalk_MemoryStats>Короткочасні: {0}/{1} | Довготривалі: {2}/{3}</RimTalk_MemoryStats>
+  <RimTalk_JustNow>Щойно</RimTalk_JustNow>
+  <RimTalk_MinutesAgo>{0} хв тому</RimTalk_MinutesAgo>
+  <RimTalk_HoursAgo>{0} год тому</RimTalk_HoursAgo>
+  <RimTalk_DaysAgo>{0} дн. тому</RimTalk_DaysAgo>
+  <!-- Settings UI Translations - Added for v2.4.1 -->
+  <!-- Knowledge Library -->
+  <RimTalk_Settings_KnowledgeLibraryTitle>Керування бібліотекою знань</RimTalk_Settings_KnowledgeLibraryTitle>
+  <RimTalk_Settings_KnowledgeLibraryDesc>Бібліотека знань може використовуватися для додавання до ШІ світогляду, фонових знань та іншої загальної інформації</RimTalk_Settings_KnowledgeLibraryDesc>
+  <RimTalk_Settings_OpenKnowledgeLibrary>Відкрити керування бібліотекою знань</RimTalk_Settings_OpenKnowledgeLibrary>
+  <!-- Dynamic Injection System -->
+  <RimTalk_Settings_DynamicInjectionTitle>Система динамічного додавання</RimTalk_Settings_DynamicInjectionTitle>
+  <RimTalk_Settings_EnableDynamicInjection>Увімкнути динамічне додавання спогадів (рекомендовано)</RimTalk_Settings_EnableDynamicInjection>
+  <RimTalk_Settings_DynamicInjectionDesc>Динамічно вибирати найрелевантніші спогади та знання на основі часу, важливості й збігу ключових слів</RimTalk_Settings_DynamicInjectionDesc>
+  <RimTalk_Settings_StaticInjectionNote>Використовуватиметься статичне додавання (за порядком шарів)</RimTalk_Settings_StaticInjectionNote>
+  <RimTalk_Settings_MaxInjectedMemories>Максимум доданих спогадів</RimTalk_Settings_MaxInjectedMemories>
+  <RimTalk_Settings_MaxInjectedKnowledge>Максимум доданих знань</RimTalk_Settings_MaxInjectedKnowledge>
+  <RimTalk_Settings_ScoreThresholdTitle>Порогове значення оцінки (вміст із нижчою оцінкою не додаватиметься):</RimTalk_Settings_ScoreThresholdTitle>
+  <RimTalk_Settings_MemoryScoreThreshold>Порогове значення оцінки спогадів</RimTalk_Settings_MemoryScoreThreshold>
+  <RimTalk_Settings_KnowledgeScoreThreshold>Порогове значення оцінки знань</RimTalk_Settings_KnowledgeScoreThreshold>
+  <!-- Weight Configuration -->
+  <RimTalk_Settings_MemoryWeights>📝 Ваги спогадів</RimTalk_Settings_MemoryWeights>
+  <RimTalk_Settings_KnowledgeWeights>📘 Ваги знань</RimTalk_Settings_KnowledgeWeights>
+  <RimTalk_Settings_TimeDecay>Згасання з часом</RimTalk_Settings_TimeDecay>
+  <RimTalk_Settings_Importance>Важливість</RimTalk_Settings_Importance>
+  <RimTalk_Settings_KeywordMatch>Збіг ключових слів</RimTalk_Settings_KeywordMatch>
+  <RimTalk_Settings_TagMatch>Збіг тегів</RimTalk_Settings_TagMatch>
+  <RimTalk_Settings_KeywordMatchAuto>Збіг ключових слів: автоматично</RimTalk_Settings_KeywordMatchAuto>
+  <!-- Four-Layer Memory Capacity -->
+  <RimTalk_Settings_MemoryCapacityTitle>Місткість чотиришарової пам’яті</RimTalk_Settings_MemoryCapacityTitle>
+  <RimTalk_Settings_ABMCapacity>ABM (надкороткочасна): 6 записів (фіксовано, не налаштовується)</RimTalk_Settings_ABMCapacity>
+  <RimTalk_Settings_SCMCapacity>SCM (короткочасна): {0} записів</RimTalk_Settings_SCMCapacity>
+  <RimTalk_Settings_ELSCapacity>ELS (середньострокова): {0} записів</RimTalk_Settings_ELSCapacity>
+  <RimTalk_Settings_CLPACapacity>CLPA (довгострокова): необмежено</RimTalk_Settings_CLPACapacity>
+  <RimTalk_Settings_Entries>записів</RimTalk_Settings_Entries>
+  <!-- Memory Decay Rates -->
+  <RimTalk_Settings_DecayRatesTitle>Швидкість згасання пам’яті</RimTalk_Settings_DecayRatesTitle>
+  <RimTalk_Settings_SCMDecay>SCM (за годину)</RimTalk_Settings_SCMDecay>
+  <RimTalk_Settings_ELSDecay>ELS (за годину)</RimTalk_Settings_ELSDecay>
+  <RimTalk_Settings_CLPADecay>CLPA (за годину)</RimTalk_Settings_CLPADecay>
+  <!-- AI Auto-Summarization -->
+  <RimTalk_Settings_SummarizationTitle>Автоматичне узагальнення ШІ</RimTalk_Settings_SummarizationTitle>
+  <RimTalk_Settings_EnableELSSummarization>Увімкнути підсумовування ELS (SCM → ELS)</RimTalk_Settings_EnableELSSummarization>
+  <RimTalk_Settings_TriggerTime>Час запуску: щодня о {0}:00 (ігровий час)</RimTalk_Settings_TriggerTime>
+  <RimTalk_Settings_MaxSummaryLength>Максимальна довжина підсумку: {0} символів</RimTalk_Settings_MaxSummaryLength>
+  <RimTalk_Settings_Characters>символів</RimTalk_Settings_Characters>
+  <RimTalk_Settings_EnableCLPAArchive>Увімкнути автоматичне архівування CLPA</RimTalk_Settings_EnableCLPAArchive>
+  <RimTalk_Settings_ArchiveInterval>Інтервал архівування: кожні {0} днів</RimTalk_Settings_ArchiveInterval>
+  <!-- AI API Configuration -->
+  <RimTalk_Settings_AIConfigTitle>Налаштування API ШІ</RimTalk_Settings_AIConfigTitle>
+  <RimTalk_Settings_PreferRimTalkAI>Надавати перевагу налаштуванням ШІ RimTalk</RimTalk_Settings_PreferRimTalkAI>
+  <RimTalk_Settings_WillUseRimTalkConfig>Буде зроблено спробу прочитати налаштування API моду RimTalk</RimTalk_Settings_WillUseRimTalkConfig>
+  <RimTalk_Settings_FallbackToIndependent>Якщо RimTalk не встановлено або не налаштовано, буде використано наведені нижче незалежні налаштування</RimTalk_Settings_FallbackToIndependent>
+  <RimTalk_Settings_UseIndependentConfig>Буде використано наведені нижче незалежні від RimTalk налаштування</RimTalk_Settings_UseIndependentConfig>
+  <RimTalk_Settings_IndependentAIConfig>=== Незалежні налаштування ШІ ===</RimTalk_Settings_IndependentAIConfig>
+  <RimTalk_Settings_Provider>Провайдер:</RimTalk_Settings_Provider>
+  <RimTalk_Settings_APIKey>Ключ API:</RimTalk_Settings_APIKey>
+  <RimTalk_Settings_APIURL>URL API:</RimTalk_Settings_APIURL>
+  <RimTalk_Settings_ModelName>Назва моделі:</RimTalk_Settings_ModelName>
+  <!-- Memory Types -->
+  <RimTalk_Settings_MemoryTypesTitle>Типи пам’яті</RimTalk_Settings_MemoryTypesTitle>
+  <RimTalk_Settings_ActionMemory>Пам’ять дій (робота, бій)</RimTalk_Settings_ActionMemory>
+  <RimTalk_Settings_ConversationMemory>Пам’ять розмов (діалоги RimTalk)</RimTalk_Settings_ConversationMemory>
+  <RimTalk_Settings_PawnStatusKnowledge>Автоматично генерувати відомості про статус новачка/ветерана</RimTalk_Settings_PawnStatusKnowledge>
+  <RimTalk_Settings_PawnStatusDesc>Автоматично генерувати відомості про статус на основі часу приєднання колоніста</RimTalk_Settings_PawnStatusDesc>
+  <RimTalk_Settings_PawnStatusExample>Приклад: Аліса — нова учасниця, яка приєдналася 3 дні тому й не знає історії колонії</RimTalk_Settings_PawnStatusExample>
+  <RimTalk_Settings_PawnStatusWarning>Якщо вимкнути, нові учасники можуть помилково розповідати про події, свідками яких вони не були</RimTalk_Settings_PawnStatusWarning>
+  <!-- Debug Tools -->
+  <RimTalk_Settings_DebugToolsTitle>Інструменти налагодження:</RimTalk_Settings_DebugToolsTitle>
+  <RimTalk_Settings_OpenInjectionPreviewer>Відкрити переглядач вмісту ін’єкцій</RimTalk_Settings_OpenInjectionPreviewer>
+  <RimTalk_Settings_PreviewerDesc>Попередній перегляд у реальному часі спогадів і знань, які буде передано ШІ (потрібно увійти в гру)</RimTalk_Settings_PreviewerDesc>
+  <!-- Error Messages -->
+  <RimTalk_Settings_MustEnterGame>Потрібно увійти в гру, щоб керувати бібліотекою знань</RimTalk_Settings_MustEnterGame>
+  <RimTalk_Settings_CannotFindManager>Не вдалося знайти менеджер пам’яті</RimTalk_Settings_CannotFindManager>
+  <!-- Main Memory UI - Manual Summarization/Archive Buttons -->
+  <RimTalk_UI_ImmediateSummarize>Підсумувати зараз (SCM→ELS)</RimTalk_UI_ImmediateSummarize>
+  <RimTalk_UI_ImmediateSummarizeNoMemory>Підсумувати зараз (без SCM)</RimTalk_UI_ImmediateSummarizeNoMemory>
+  <RimTalk_UI_SummarizeAll>Підсумувати всіх колоністів</RimTalk_UI_SummarizeAll>
+  <RimTalk_UI_ImmediateArchive>Архівувати зараз (ELS→CLPA)</RimTalk_UI_ImmediateArchive>
+  <RimTalk_UI_ImmediateArchiveNoMemory>Архівувати зараз (без ELS)</RimTalk_UI_ImmediateArchiveNoMemory>
+  <RimTalk_UI_ArchiveAll>Архівувати всіх колоністів</RimTalk_UI_ArchiveAll>
+  <RimTalk_UI_MemorySummarized>Короткострокові спогади {0} підсумовано в середньострокові спогади</RimTalk_UI_MemorySummarized>
+  <RimTalk_UI_MemoriesSummarizedCount>{0} колоністів додано до черги на підсумовування</RimTalk_UI_MemoriesSummarizedCount>
+  <RimTalk_UI_NoColonistsNeedSummarize>Жодному колоністу не потрібне підсумовування</RimTalk_UI_NoColonistsNeedSummarize>
+  <RimTalk_UI_MemoryArchived>Середньострокові спогади {0} архівовано в довгострокові спогади</RimTalk_UI_MemoryArchived>
+  <RimTalk_UI_MemoriesArchivedCount>Спогади архівовано для {0} колоністів</RimTalk_UI_MemoriesArchivedCount>
+  <!-- Knowledge Library Management UI -->
+  <RimTalk_Knowledge_New>Нові</RimTalk_Knowledge_New>
+  <RimTalk_Knowledge_Import>Імпортувати</RimTalk_Knowledge_Import>
+  <RimTalk_Knowledge_Export>Експортувати</RimTalk_Knowledge_Export>
+  <RimTalk_Knowledge_Delete>Видалити</RimTalk_Knowledge_Delete>
+  <RimTalk_Knowledge_ClearAll>Очистити все</RimTalk_Knowledge_ClearAll>
+  <RimTalk_Knowledge_TotalAndEnabled>Усього: {0} | Увімкнено: {1}</RimTalk_Knowledge_TotalAndEnabled>
+  <!-- Auto Generate Section -->
+  <RimTalk_Knowledge_AutoGenerate>Автоматично генерувати знання</RimTalk_Knowledge_AutoGenerate>
+  <RimTalk_Knowledge_PawnStatus>Знання про стан колоніста</RimTalk_Knowledge_PawnStatus>
+  <RimTalk_Knowledge_PawnStatusDesc>Автоматично щодня оновлювати стан колоністів (час приєднання, стосунки тощо)</RimTalk_Knowledge_PawnStatusDesc>
+  <RimTalk_Knowledge_EventRecord>Знання про записи подій</RimTalk_Knowledge_EventRecord>
+  <RimTalk_Knowledge_EventRecordDesc>Щодня вилучати з журналу гри основні події (смерть, шлюб, приєднання, будівництво тощо)</RimTalk_Knowledge_EventRecordDesc>
+  <RimTalk_Knowledge_GenerateNow>Згенерувати зараз (вручну)</RimTalk_Knowledge_GenerateNow>
+  <RimTalk_Knowledge_GenerateNowDesc>Негайно згенерувати всі ввімкнені типи відомостей</RimTalk_Knowledge_GenerateNowDesc>
+  <RimTalk_Knowledge_EnableAtLeastOne>Увімкніть принаймні один тип генерування відомостей</RimTalk_Knowledge_EnableAtLeastOne>
+  <RimTalk_Knowledge_MustEnterGame>Спершу потрібно ввійти в гру</RimTalk_Knowledge_MustEnterGame>
+  <RimTalk_Knowledge_GeneratedCount>Згенеровано {0} записів відомостей про стан колоністів</RimTalk_Knowledge_GeneratedCount>
+  <RimTalk_Knowledge_AllExist>Усі відомості про стан колоністів уже існують, генерувати їх не потрібно</RimTalk_Knowledge_AllExist>
+  <RimTalk_Knowledge_EventGeneratedCount>Згенеровано {0} записів відомостей про події</RimTalk_Knowledge_EventGeneratedCount>
+  <RimTalk_Knowledge_NoNewEvents>Нових основних подій не знайдено або всі події вже записано</RimTalk_Knowledge_NoNewEvents>
+  <RimTalk_Knowledge_EventGenerateFailed>Не вдалося згенерувати запис події: {0}</RimTalk_Knowledge_EventGenerateFailed>
+  <RimTalk_Knowledge_Confirm>Підтвердити</RimTalk_Knowledge_Confirm>
+  <RimTalk_Knowledge_Tag>Мітка:</RimTalk_Knowledge_Tag>
 </LanguageData>

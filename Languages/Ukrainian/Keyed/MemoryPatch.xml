@@ -1,0 +1,481 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <!-- ==================== Common UI ==================== -->
+  <RimTalk_Memory_Title>Спогади {0}</RimTalk_Memory_Title>
+  <RimTalk_SelectColonist>Вибрати колоніста</RimTalk_SelectColonist>
+  <RimTalk_ChooseColonist>Виберіть...</RimTalk_ChooseColonist>
+  <RimTalk_NoColonists>Немає доступних колоністів</RimTalk_NoColonists>
+  <RimTalk_NoMemoryComponent>У вибраного персонажа немає компонента пам’яті</RimTalk_NoMemoryComponent>
+  <RimTalk_ShowAllHumanlikes>Показати всіх людиноподібних</RimTalk_ShowAllHumanlikes>
+  <!-- ITab Memory -->
+  <RimTalk_Memory_NoMemories>Немає спогадів для відображення</RimTalk_Memory_NoMemories>
+  <!-- ==================== Mind Stream UI Tabs ==================== -->
+  <RimTalk_MindStream_SelectColonist>Виберіть колоніста, щоб переглянути спогади</RimTalk_MindStream_SelectColonist>
+  <RimTalk_MindStream_NoMemoryComp>Вибраний персонаж не має компонента пам’яті</RimTalk_MindStream_NoMemoryComp>
+  <RimTalk_MindStream_Preview>Попередній перегляд</RimTalk_MindStream_Preview>
+  <RimTalk_MindStream_Knowledge>Знання</RimTalk_MindStream_Knowledge>
+  <RimTalk_MindStream_OperationGuide>Посібник з експлуатації</RimTalk_MindStream_OperationGuide>
+  <RimTalk_MindStream_NoColonists>Немає колоністів</RimTalk_MindStream_NoColonists>
+  <!-- Control Panel -->
+  <RimTalk_MindStream_MemoryFilters>Фільтри пам’яті</RimTalk_MindStream_MemoryFilters>
+  <RimTalk_MindStream_Layers>Шари</RimTalk_MindStream_Layers>
+  <RimTalk_MindStream_ABM>ABM (активні)</RimTalk_MindStream_ABM>
+  <RimTalk_MindStream_SCM>SCM (короткочасні)</RimTalk_MindStream_SCM>
+  <RimTalk_MindStream_ELS>ELS (події)</RimTalk_MindStream_ELS>
+  <RimTalk_MindStream_CLPA>CLPA (архів)</RimTalk_MindStream_CLPA>
+  <RimTalk_MindStream_Type>Тип</RimTalk_MindStream_Type>
+  <RimTalk_MindStream_All>Усі</RimTalk_MindStream_All>
+  <RimTalk_MindStream_Conversation>Розмова</RimTalk_MindStream_Conversation>
+  <RimTalk_MindStream_Action>Дія</RimTalk_MindStream_Action>
+  <RimTalk_MindStream_Statistics>Статистика</RimTalk_MindStream_Statistics>
+  <RimTalk_MindStream_Selected>Вибрано: {0}</RimTalk_MindStream_Selected>
+  <RimTalk_MindStream_TotalMemories>Усього спогадів: {0}</RimTalk_MindStream_TotalMemories>
+  <RimTalk_MindStream_BatchActions>Пакетні дії</RimTalk_MindStream_BatchActions>
+  <RimTalk_MindStream_SummarizeN>Підсумувати ({0})</RimTalk_MindStream_SummarizeN>
+  <RimTalk_MindStream_SummarizeSelected>Підсумувати вибране</RimTalk_MindStream_SummarizeSelected>
+  <RimTalk_MindStream_ArchiveN>Архівувати ({0})</RimTalk_MindStream_ArchiveN>
+  <RimTalk_MindStream_ArchiveSelected>Архівувати вибране</RimTalk_MindStream_ArchiveSelected>
+  <RimTalk_MindStream_DeleteN>Видалити ({0})</RimTalk_MindStream_DeleteN>
+  <RimTalk_MindStream_DeleteSelected>Видалити вибране</RimTalk_MindStream_DeleteSelected>
+  <RimTalk_MindStream_GlobalActions>Глобальні дії</RimTalk_MindStream_GlobalActions>
+  <RimTalk_MindStream_SummarizeAll>Підсумувати все</RimTalk_MindStream_SummarizeAll>
+  <RimTalk_MindStream_ArchiveAll>Архівувати все</RimTalk_MindStream_ArchiveAll>
+  <!-- Memory Export/Import -->
+  <RimTalk_Memory_Export>Експортувати</RimTalk_Memory_Export>
+  <RimTalk_Memory_Import>Імпортувати</RimTalk_Memory_Import>
+  <RimTalk_Memory_ExportNoPawn>Спочатку виберіть колоніста</RimTalk_Memory_ExportNoPawn>
+  <RimTalk_Memory_ExportSuccess>Експортовано спогадів: {0} до {1}</RimTalk_Memory_ExportSuccess>
+  <RimTalk_Memory_ExportSuccessTitle>Експорт успішний</RimTalk_Memory_ExportSuccessTitle>
+  <RimTalk_Memory_OpenExportFolder>Відкрити папку експорту?</RimTalk_Memory_OpenExportFolder>
+  <RimTalk_Memory_OpenFolder>📁 Відкрити папку</RimTalk_Memory_OpenFolder>
+  <RimTalk_Memory_ExportFailed>Помилка експорту: {0}</RimTalk_Memory_ExportFailed>
+  <RimTalk_Memory_ImportNoPawn>Спочатку виберіть колоніста</RimTalk_Memory_ImportNoPawn>
+  <RimTalk_Memory_ImportNoFolder>Папка експорту не існує</RimTalk_Memory_ImportNoFolder>
+  <RimTalk_Memory_ImportNoFiles>Файлів експорту не знайдено</RimTalk_Memory_ImportNoFiles>
+  <RimTalk_Memory_ImportEmpty>У файлі немає даних пам’яті</RimTalk_Memory_ImportEmpty>
+  <RimTalk_Memory_ImportConfirm>Імпортувати {1} спогадів із {0} до {2}?\nСпогади, що перевищують місткість, буде пропущено.</RimTalk_Memory_ImportConfirm>
+  <RimTalk_Memory_ImportSuccess>Успішно імпортовано {0}/{1} спогадів</RimTalk_Memory_ImportSuccess>
+  <RimTalk_Memory_ImportFailed>Помилка імпорту: {0}</RimTalk_Memory_ImportFailed>
+  <!-- Timeline -->
+  <RimTalk_MindStream_ShowingN>Показано спогадів: {0}</RimTalk_MindStream_ShowingN>
+  <RimTalk_MindStream_Pin>Закріпити</RimTalk_MindStream_Pin>
+  <RimTalk_MindStream_Unpin>Відкріпити</RimTalk_MindStream_Unpin>
+  <RimTalk_MindStream_Edit>Редагувати</RimTalk_MindStream_Edit>
+  <RimTalk_MindStream_With>із</RimTalk_MindStream_With>
+  <RimTalk_MindStream_ImportanceLabel>Важливість: {0}</RimTalk_MindStream_ImportanceLabel>
+  <RimTalk_MindStream_ActivityLabel>Активність: {0}</RimTalk_MindStream_ActivityLabel>
+  <!-- Messages -->
+  <RimTalk_MindStream_NoSCMSelected>Пам’ять SCM не вибрано</RimTalk_MindStream_NoSCMSelected>
+  <RimTalk_MindStream_SummarizeConfirm>Узагальнити {0} спогадів SCM в ELS?</RimTalk_MindStream_SummarizeConfirm>
+  <RimTalk_MindStream_SummarizedN>Узагальнено спогади: {0}</RimTalk_MindStream_SummarizedN>
+  <RimTalk_MindStream_NoELSSelected>Пам’ять ELS не вибрано</RimTalk_MindStream_NoELSSelected>
+  <RimTalk_MindStream_ArchiveConfirm>Архівувати {0} спогадів ELS у CLPA?</RimTalk_MindStream_ArchiveConfirm>
+  <RimTalk_MindStream_ArchivedN>Заархівовано спогадів: {0}</RimTalk_MindStream_ArchivedN>
+  <RimTalk_MindStream_DeleteConfirm>Видалити {0} вибраних спогадів?</RimTalk_MindStream_DeleteConfirm>
+  <RimTalk_MindStream_DeletedN>Видалено спогадів: {0}</RimTalk_MindStream_DeletedN>
+  <RimTalk_MindStream_QueuedSummarization>Узагальнення додано в чергу для {0} колоністів</RimTalk_MindStream_QueuedSummarization>
+  <RimTalk_MindStream_NoNeedSummarization>Немає колоністів, які потребують узагальнення</RimTalk_MindStream_NoNeedSummarization>
+  <RimTalk_MindStream_ArchivedForN>Спогади заархівовано для {0} колоністів</RimTalk_MindStream_ArchivedForN>
+  <RimTalk_MindStream_MustEnterGame>Спочатку потрібно увійти в гру</RimTalk_MindStream_MustEnterGame>
+  <RimTalk_MindStream_CannotFindManager>Не вдалося знайти менеджер пам’яті</RimTalk_MindStream_CannotFindManager>
+  <!-- ==================== Knowledge Library UI ==================== -->
+  <RimTalk_Knowledge_Categories>Категорії</RimTalk_Knowledge_Categories>
+  <RimTalk_Knowledge_CategoryAll>Усі</RimTalk_Knowledge_CategoryAll>
+  <RimTalk_Knowledge_CategoryInstructions>Інструкції</RimTalk_Knowledge_CategoryInstructions>
+  <RimTalk_Knowledge_CategoryLore>Лор</RimTalk_Knowledge_CategoryLore>
+  <RimTalk_Knowledge_CategoryPawnStatus>Стан персонажа</RimTalk_Knowledge_CategoryPawnStatus>
+  <RimTalk_Knowledge_CategoryHistory>Історія</RimTalk_Knowledge_CategoryHistory>
+  <RimTalk_Knowledge_CategoryOther>Інше</RimTalk_Knowledge_CategoryOther>
+  <RimTalk_Knowledge_CategoryUnknown>Невідомо</RimTalk_Knowledge_CategoryUnknown>
+  <RimTalk_Knowledge_AutoGenerate>Генерувати автоматично</RimTalk_Knowledge_AutoGenerate>
+  <RimTalk_Knowledge_PawnStatus>Стан персонажа</RimTalk_Knowledge_PawnStatus>
+  <RimTalk_Knowledge_GenerateNow>Згенерувати зараз</RimTalk_Knowledge_GenerateNow>
+  <RimTalk_Knowledge_EventRecord>Запис події</RimTalk_Knowledge_EventRecord>
+  <RimTalk_Knowledge_Total>Усього: {0}</RimTalk_Knowledge_Total>
+  <RimTalk_Knowledge_Enabled>Увімкнено: {0}</RimTalk_Knowledge_Enabled>
+  <RimTalk_Knowledge_Selected>Вибрано: {0}</RimTalk_Knowledge_Selected>
+  <!-- Toolbar -->
+  <RimTalk_Knowledge_New>Нове</RimTalk_Knowledge_New>
+  <RimTalk_Knowledge_Import>Імпортувати</RimTalk_Knowledge_Import>
+  <RimTalk_Knowledge_Export>Експортувати</RimTalk_Knowledge_Export>
+  <RimTalk_Knowledge_ExportAll>Експортувати все</RimTalk_Knowledge_ExportAll>
+  <RimTalk_Knowledge_ExportCount>Експортувати ({0})</RimTalk_Knowledge_ExportCount>
+  <RimTalk_Knowledge_Delete>Видалити</RimTalk_Knowledge_Delete>
+  <RimTalk_Knowledge_DeleteCount>Видалити ({0})</RimTalk_Knowledge_DeleteCount>
+  <RimTalk_Knowledge_ClearAll>Очистити все</RimTalk_Knowledge_ClearAll>
+  <!-- List -->
+  <RimTalk_Knowledge_Showing>Показано {0} / {1}</RimTalk_Knowledge_Showing>
+  <!-- Right Panel -->
+  <RimTalk_Knowledge_SelectOrCreate>Виберіть або створіть запис знань</RimTalk_Knowledge_SelectOrCreate>
+  <RimTalk_Knowledge_ItemsSelected>Вибрано елементів: {0}</RimTalk_Knowledge_ItemsSelected>
+  <RimTalk_Knowledge_EnabledCount>Увімкнено: {0}</RimTalk_Knowledge_EnabledCount>
+  <RimTalk_Knowledge_DisabledCount>Вимкнено: {0}</RimTalk_Knowledge_DisabledCount>
+  <RimTalk_Knowledge_AvgImportance>Сер. важливість: {0}</RimTalk_Knowledge_AvgImportance>
+  <RimTalk_Knowledge_EnableAll>Увімкнути все</RimTalk_Knowledge_EnableAll>
+  <RimTalk_Knowledge_DisableAll>Вимкнути все</RimTalk_Knowledge_DisableAll>
+  <RimTalk_Knowledge_ExportItems>Експортувати ({0})</RimTalk_Knowledge_ExportItems>
+  <RimTalk_Knowledge_DeleteItems>Видалити ({0})</RimTalk_Knowledge_DeleteItems>
+  <RimTalk_Knowledge_Details>Подробиці</RimTalk_Knowledge_Details>
+  <RimTalk_Knowledge_Edit>Редагувати</RimTalk_Knowledge_Edit>
+  <RimTalk_Knowledge_Tag>Мітка</RimTalk_Knowledge_Tag>
+  <RimTalk_Knowledge_Importance>Важливість</RimTalk_Knowledge_Importance>
+  <RimTalk_Knowledge_Status>Стан</RimTalk_Knowledge_Status>
+  <RimTalk_Knowledge_StatusEnabled>Увімкнено</RimTalk_Knowledge_StatusEnabled>
+  <RimTalk_Knowledge_StatusDisabled>Вимкнено</RimTalk_Knowledge_StatusDisabled>
+  <RimTalk_Knowledge_Visibility>Видимість</RimTalk_Knowledge_Visibility>
+  <RimTalk_Knowledge_VisibilityGlobal>Глобальне (усі персонажі)</RimTalk_Knowledge_VisibilityGlobal>
+  <RimTalk_Knowledge_VisibilityExclusive>Ексклюзивно для {0}</RimTalk_Knowledge_VisibilityExclusive>
+  <RimTalk_Knowledge_VisibilityDeleted>Персонаж №{0} (видалено)</RimTalk_Knowledge_VisibilityDeleted>
+  <RimTalk_Knowledge_Content>Вміст</RimTalk_Knowledge_Content>
+  <!-- Edit Panel -->
+  <RimTalk_Knowledge_NewEntry>Новий запис</RimTalk_Knowledge_NewEntry>
+  <RimTalk_Knowledge_EditEntry>Редагувати запис</RimTalk_Knowledge_EditEntry>
+  <RimTalk_Knowledge_Save>Зберегти</RimTalk_Knowledge_Save>
+  <RimTalk_Knowledge_Cancel>Скасувати</RimTalk_Knowledge_Cancel>
+  <RimTalk_Knowledge_Global>Глобальне</RimTalk_Knowledge_Global>
+  <RimTalk_Knowledge_GlobalAll>Глобальне (усі персонажі)</RimTalk_Knowledge_GlobalAll>
+  <RimTalk_Knowledge_ExclusiveTo>Ексклюзивно для {0}</RimTalk_Knowledge_ExclusiveTo>
+  <!-- Messages -->
+  <RimTalk_Knowledge_TagContentEmpty>Тег і вміст не можуть бути порожніми</RimTalk_Knowledge_TagContentEmpty>
+  <RimTalk_Knowledge_EntrySaved>Запис знань збережено</RimTalk_Knowledge_EntrySaved>
+  <RimTalk_Knowledge_DeleteConfirm>Видалити записи знань {0}?</RimTalk_Knowledge_DeleteConfirm>
+  <RimTalk_Knowledge_Deleted>Видалено записів: {0}</RimTalk_Knowledge_Deleted>
+  <RimTalk_Knowledge_ExportedToClipboard>Експортовано записів: {0} у буфер обміну</RimTalk_Knowledge_ExportedToClipboard>
+  <RimTalk_Knowledge_ImportTitle>Імпортувати знання</RimTalk_Knowledge_ImportTitle>
+  <RimTalk_Knowledge_ImportDescription>Вставте записи знань у форматі: [Тег|Важливість]Вміст</RimTalk_Knowledge_ImportDescription>
+  <RimTalk_Knowledge_Imported>Імпортовано {0} записів</RimTalk_Knowledge_Imported>
+  <RimTalk_Knowledge_ClearConfirm>Очистити всі записи знань?</RimTalk_Knowledge_ClearConfirm>
+  <RimTalk_Knowledge_AllCleared>Усі записи очищено</RimTalk_Knowledge_AllCleared>
+  <RimTalk_Knowledge_NoColonists>Колоністів не знайдено</RimTalk_Knowledge_NoColonists>
+  <RimTalk_Knowledge_GeneratedPawnStatus>Створено статус для {0} колоністів</RimTalk_Knowledge_GeneratedPawnStatus>
+  <RimTalk_Knowledge_EventScanTriggered>Сканування подій запущено</RimTalk_Knowledge_EventScanTriggered>
+  <RimTalk_Knowledge_GenerationFailed>Не вдалося згенерувати: {0}</RimTalk_Knowledge_GenerationFailed>
+  <!-- Legacy Translations (for compatibility) -->
+  <RimTalk_MemoryTitle>Спогади {0}</RimTalk_MemoryTitle>
+  <RimTalk_Filter_All>Усі</RimTalk_Filter_All>
+  <RimTalk_Filter_Conversation>Розмова</RimTalk_Filter_Conversation>
+  <RimTalk_Filter_Action>Дія</RimTalk_Filter_Action>
+  <RimTalk_UI_Preview>Попередній перегляд</RimTalk_UI_Preview>
+  <RimTalk_UI_Knowledge>Знання</RimTalk_UI_Knowledge>
+  <RimTalk_UI_ImmediateSummarize>Підсумувати зараз</RimTalk_UI_ImmediateSummarize>
+  <RimTalk_UI_ImmediateSummarizeNoMemory>Підсумувати (без SCM)</RimTalk_UI_ImmediateSummarizeNoMemory>
+  <RimTalk_UI_MemorySummarized>Підсумовано спогади для {0}</RimTalk_UI_MemorySummarized>
+  <RimTalk_UI_SummarizeAll>Підсумувати все</RimTalk_UI_SummarizeAll>
+  <RimTalk_UI_MemoriesSummarizedCount>У черзі на підсумовування: {0} колоністів</RimTalk_UI_MemoriesSummarizedCount>
+  <RimTalk_UI_NoColonistsNeedSummarize>Немає колоністів, чиї спогади потрібно підсумувати</RimTalk_UI_NoColonistsNeedSummarize>
+  <RimTalk_UI_ImmediateArchive>Архівувати зараз</RimTalk_UI_ImmediateArchive>
+  <RimTalk_UI_ImmediateArchiveNoMemory>Архівувати (без ELS)</RimTalk_UI_ImmediateArchiveNoMemory>
+  <RimTalk_UI_MemoryArchived>Спогади для {0} заархівовано</RimTalk_UI_MemoryArchived>
+  <RimTalk_UI_ArchiveAll>Архівувати все</RimTalk_UI_ArchiveAll>
+  <RimTalk_UI_MemoriesArchivedCount>Заархівовано спогади для {0} колоністів</RimTalk_UI_MemoriesArchivedCount>
+  <RimTalk_Tooltip_Preview>Переглянути попередній перегляд ін’єкції</RimTalk_Tooltip_Preview>
+  <RimTalk_Tooltip_Knowledge>Керувати бібліотекою знань</RimTalk_Tooltip_Knowledge>
+  <RimTalk_Tooltip_ABM>Пам’ять активного буфера (останні 3)</RimTalk_Tooltip_ABM>
+  <RimTalk_Tooltip_SCM>Пам’ять ситуаційного контексту (останні 20)</RimTalk_Tooltip_SCM>
+  <RimTalk_Tooltip_ELS>Сховище журналу подій (50 подій)</RimTalk_Tooltip_ELS>
+  <RimTalk_Tooltip_CLPA>Стиснений архів довгострокової особистості (необмежений)</RimTalk_Tooltip_CLPA>
+  <RimTalk_UI_Edit>Редагувати</RimTalk_UI_Edit>
+  <RimTalk_UI_Pin>Закріпити</RimTalk_UI_Pin>
+  <RimTalk_UI_Pinned>Закріплено</RimTalk_UI_Pinned>
+  <RimTalk_UI_Delete>Видалити</RimTalk_UI_Delete>
+  <RimTalk_UI_ConfirmDeleteMemory>Видалити цей спогад?</RimTalk_UI_ConfirmDeleteMemory>
+  <RimTalk_MemoryDeleted>Спогад видалено</RimTalk_MemoryDeleted>
+  <RimTalk_Tooltip_Edit>Редагувати вміст спогаду</RimTalk_Tooltip_Edit>
+  <RimTalk_Tooltip_Pin>Закріпити, щоб запобігти автоматичному очищенню</RimTalk_Tooltip_Pin>
+  <RimTalk_Tooltip_Unpin>Відкріпити, щоб дозволити автоматичне очищення</RimTalk_Tooltip_Unpin>
+  <RimTalk_Tooltip_Delete>Видалити цей спогад</RimTalk_Tooltip_Delete>
+  <RimTalk_Tooltip_Importance>Оцінка важливості (впливає на пріоритет вставки)</RimTalk_Tooltip_Importance>
+  <RimTalk_Tooltip_Activity>Оцінка активності (використовується для автоматичного очищення)</RimTalk_Tooltip_Activity>
+  <RimTalk_Tooltip_Notes>Додаткові нотатки</RimTalk_Tooltip_Notes>
+  <RimTalk_Tooltip_Tags>Теги: {0}</RimTalk_Tooltip_Tags>
+  <RimTalk_Cancel>Скасувати</RimTalk_Cancel>
+  <RimTalk_Save>Зберегти</RimTalk_Save>
+  <RimTalk_With>з</RimTalk_With>
+  <RimTalk_MemoryType_Conversation>Розмова</RimTalk_MemoryType_Conversation>
+  <RimTalk_MemoryType_Action>Дія</RimTalk_MemoryType_Action>
+  <RimTalk_Settings_MustEnterGame>Спочатку потрібно увійти в гру</RimTalk_Settings_MustEnterGame>
+  <RimTalk_Settings_CannotFindManager>Не вдалося знайти менеджер пам’яті</RimTalk_Settings_CannotFindManager>
+  <RimTalk_Menu_MemoryCompUnavailable>Компонент пам’яті недоступний</RimTalk_Menu_MemoryCompUnavailable>
+  <RimTalk_Menu_CreateMemoryFailed>Не вдалося створити пам’ять</RimTalk_Menu_CreateMemoryFailed>
+  <RimTalk_Menu_OpenEditFailed>Не вдалося відкрити діалог редагування</RimTalk_Menu_OpenEditFailed>
+  <RimTalk_Menu_AddActionMemory>Додати пам’ять дії до {0}</RimTalk_Menu_AddActionMemory>
+  <RimTalk_Menu_AddConversationMemory>Додати пам’ять розмови до {0}</RimTalk_Menu_AddConversationMemory>
+  <RimTalk_Layer_ELS>ELS</RimTalk_Layer_ELS>
+  <RimTalk_Layer_CLPA>CLPA</RimTalk_Layer_CLPA>
+  <!-- ==================== Matching Source Categories ==================== -->
+  <RimTalk_MatchSource_CategoryDialogue>Діалог</RimTalk_MatchSource_CategoryDialogue>
+  <RimTalk_MatchSource_CategoryPawn>Властивості персонажа</RimTalk_MatchSource_CategoryPawn>
+  <RimTalk_MatchSource_CategoryEnvironment>Середовище</RimTalk_MatchSource_CategoryEnvironment>
+  <RimTalk_MatchSource_CategoryColony>Колонія</RimTalk_MatchSource_CategoryColony>
+  <RimTalk_MatchSource_CategoryTime>Час</RimTalk_MatchSource_CategoryTime>
+  <RimTalk_MatchSource_CategoryExtension>Розширення</RimTalk_MatchSource_CategoryExtension>
+  <!-- ==================== Settings UI ==================== -->
+  <!-- Main UI -->
+  <RimTalk_Settings_APIConfigTitle>Налаштування API</RimTalk_Settings_APIConfigTitle>
+  <RimTalk_Settings_AdvancedSettings>Розширені налаштування…</RimTalk_Settings_AdvancedSettings>
+  <!-- Preset Configuration -->
+  <RimTalk_Settings_PresetConfig>Налаштування пресета</RimTalk_Settings_PresetConfig>
+  <RimTalk_Settings_PresetConfigDesc>Швидко перемикайтеся між легким і значним додаванням пам’яті та знань із приблизною оцінкою використання токенів.</RimTalk_Settings_PresetConfigDesc>
+  <RimTalk_Settings_PresetLight>Легкий</RimTalk_Settings_PresetLight>
+  <RimTalk_Settings_PresetBalanced>Збалансований</RimTalk_Settings_PresetBalanced>
+  <RimTalk_Settings_PresetEnhanced>Розширений</RimTalk_Settings_PresetEnhanced>
+  <RimTalk_Settings_PresetCardContent>{0}\nСпогади {1} | Знання {2}\n~{3} токенів</RimTalk_Settings_PresetCardContent>
+  <RimTalk_Settings_PresetCardTooltip>{0} спогадів + {1} знань\nОрієнтовне споживання ~{2} токенів</RimTalk_Settings_PresetCardTooltip>
+  <RimTalk_Settings_PresetApplied>Застосовано пресет: {0} (Спогади {1}, Знання {2})</RimTalk_Settings_PresetApplied>
+  <!-- Feature Entries -->
+  <RimTalk_Settings_FeatureEntries>Записи функцій</RimTalk_Settings_FeatureEntries>
+  <RimTalk_Settings_KnowledgeLibrary>Бібліотека знань</RimTalk_Settings_KnowledgeLibrary>
+  <RimTalk_Settings_KnowledgeLibraryTip>Відкрити та керувати глобальною бібліотекою знань</RimTalk_Settings_KnowledgeLibraryTip>
+  <RimTalk_Settings_PromptReplacement>Заміна промптів</RimTalk_Settings_PromptReplacement>
+  <RimTalk_Settings_PromptReplacementTip>Редагувати правила заміни й нормалізації промптів</RimTalk_Settings_PromptReplacementTip>
+  <RimTalk_Settings_InjectionPreviewer>Попередній перегляд ін’єкцій</RimTalk_Settings_InjectionPreviewer>
+  <RimTalk_Settings_InjectionPreviewerTip>Перегляд ефектів ін’єкцій пам’яті/знань у реальному часі</RimTalk_Settings_InjectionPreviewerTip>
+  <!-- Dynamic Injection Settings -->
+  <RimTalk_Settings_DynamicInjectionSection>Налаштування динамічних ін’єкцій</RimTalk_Settings_DynamicInjectionSection>
+  <RimTalk_Settings_EnableDynamicInjection>Увімкнути динамічні ін’єкції</RimTalk_Settings_EnableDynamicInjection>
+  <RimTalk_Settings_DynamicInjectionDesc>Інтелектуально вибирати найрелевантніші спогади та знання для ін’єкції в розмови ШІ.</RimTalk_Settings_DynamicInjectionDesc>
+  <RimTalk_Settings_MaxInjectedMemoriesLabel>Макс. кількість ін’єктованих спогадів: {0}</RimTalk_Settings_MaxInjectedMemoriesLabel>
+  <RimTalk_Settings_MaxInjectedKnowledgeLabel>Макс. кількість ін’єктованих знань: {0}</RimTalk_Settings_MaxInjectedKnowledgeLabel>
+  <RimTalk_Settings_MemoryScoreThresholdLabel>Порогове значення оцінки спогадів: {0}</RimTalk_Settings_MemoryScoreThresholdLabel>
+  <RimTalk_Settings_KnowledgeScoreThresholdLabel>Порогове значення оцінки знань: {0}</RimTalk_Settings_KnowledgeScoreThresholdLabel>
+  <!-- Memory Capacity Settings -->
+  <RimTalk_Settings_MemoryCapacitySection>Налаштування місткості пам’яті</RimTalk_Settings_MemoryCapacitySection>
+  <RimTalk_Settings_SCMCapacityLabel>SCM (короткочасна пам’ять): {0} записів</RimTalk_Settings_SCMCapacityLabel>
+  <RimTalk_Settings_ELSCapacityLabel>ELS (середньострокова пам’ять): {0} записів</RimTalk_Settings_ELSCapacityLabel>
+  <!-- Decay Settings -->
+  <RimTalk_Settings_MemoryDecaySection>Налаштування згасання пам’яті</RimTalk_Settings_MemoryDecaySection>
+  <RimTalk_Settings_SCMDecayLabel>Швидкість згасання SCM: {0}</RimTalk_Settings_SCMDecayLabel>
+  <RimTalk_Settings_ELSDecayLabel>Швидкість згасання ELS: {0}</RimTalk_Settings_ELSDecayLabel>
+  <RimTalk_Settings_CLPADecayLabel>Швидкість занепаду CLPA: {0}</RimTalk_Settings_CLPADecayLabel>
+  <!-- Summarization Settings -->
+  <RimTalk_Settings_SummarizationSection>Налаштування узагальнення пам’яті</RimTalk_Settings_SummarizationSection>
+  <RimTalk_Settings_EnableDailySummarization>Увімкнути щоденне узагальнення</RimTalk_Settings_EnableDailySummarization>
+  <RimTalk_Settings_TriggerTimeLabel>Час запуску: {0}:00</RimTalk_Settings_TriggerTimeLabel>
+  <RimTalk_Settings_EnableAutoArchive>Увімкнути автоматичне архівування</RimTalk_Settings_EnableAutoArchive>
+  <!-- AI Configuration -->
+  <RimTalk_Settings_AIConfigSection>Конфігурація ШІ</RimTalk_Settings_AIConfigSection>
+  <RimTalk_Settings_PreferRimTalkAI>Надавати перевагу конфігурації RimTalk</RimTalk_Settings_PreferRimTalkAI>
+  <RimTalk_Settings_WillFollowRimTalkConfig>Автоматично використовуватиме конфігурацію ШІ мода RimTalk</RimTalk_Settings_WillFollowRimTalkConfig>
+  <RimTalk_Settings_APIKey>Ключ API</RimTalk_Settings_APIKey>
+  <RimTalk_Settings_APIURL>URL API</RimTalk_Settings_APIURL>
+  <RimTalk_Settings_ModelName>Модель</RimTalk_Settings_ModelName>
+  <RimTalk_Settings_EnablePromptCaching>Увімкнути кешування промптів</RimTalk_Settings_EnablePromptCaching>
+  <RimTalk_Settings_EnablePromptCachingUnavailable>Увімкнути кешування промптів (недоступно)</RimTalk_Settings_EnablePromptCachingUnavailable>
+  <RimTalk_Settings_OpenAICachingSupport>✓ OpenAI підтримує кешування промптів (бета)</RimTalk_Settings_OpenAICachingSupport>
+  <RimTalk_Settings_OpenAICachingModels>Застосовні моделі: gpt-4o, gpt-4-turbo</RimTalk_Settings_OpenAICachingModels>
+  <RimTalk_Settings_DeepSeekCachingSupport>✓ DeepSeek підтримує кешування промптів</RimTalk_Settings_DeepSeekCachingSupport>
+  <RimTalk_Settings_DeepSeekCachingSavings>Можна заощадити близько 50% витрат</RimTalk_Settings_DeepSeekCachingSavings>
+  <RimTalk_Settings_Player2NoCaching>✗ Player2 не підтримує кешування промптів</RimTalk_Settings_Player2NoCaching>
+  <RimTalk_Settings_Player2LocalNoCache>Локальний клієнт не потребує кешування</RimTalk_Settings_Player2LocalNoCache>
+  <RimTalk_Settings_GoogleNoCaching>✗ Google Gemini не підтримує кешування промптів</RimTalk_Settings_GoogleNoCaching>
+  <RimTalk_Settings_CustomNoCaching>✗ Користувацький API не підтримує кешування промптів</RimTalk_Settings_CustomNoCaching>
+  <RimTalk_Settings_CustomCachingDepends>Залежить від реалізації вашого API</RimTalk_Settings_CustomCachingDepends>
+  <RimTalk_Settings_ValidateConfig>✓ Перевірити конфігурацію</RimTalk_Settings_ValidateConfig>
+  <RimTalk_Settings_ValidateConfigTip>Порада: перевірка протестує підключення до API та конфігурацію</RimTalk_Settings_ValidateConfigTip>
+  <RimTalk_Settings_UsingRimTalkConfigNoValidation>Наразі використовується конфігурація RimTalk, перевірка для незалежної конфігурації не потрібна</RimTalk_Settings_UsingRimTalkConfigNoValidation>
+  <RimTalk_Settings_PleaseEnterAPIKey>Спочатку введіть ключ API</RimTalk_Settings_PleaseEnterAPIKey>
+  <RimTalk_Settings_PleaseEnterAPIURL>Спочатку введіть URL API</RimTalk_Settings_PleaseEnterAPIURL>
+  <RimTalk_Settings_PleaseEnterModel>Спочатку введіть модель</RimTalk_Settings_PleaseEnterModel>
+  <RimTalk_Settings_Validating>Перевірка конфігурації...</RimTalk_Settings_Validating>
+  <RimTalk_Settings_ValidationSuccess>✓ Конфігурацію успішно перевірено! Провайдер: {0}</RimTalk_Settings_ValidationSuccess>
+  <RimTalk_Settings_ValidationFailed>✗ Не вдалося перевірити конфігурацію, перевірте ключ API та URL</RimTalk_Settings_ValidationFailed>
+  <RimTalk_Settings_ValidationError>✗ Перевірку не пройдено: {0}</RimTalk_Settings_ValidationError>
+  <!-- Memory Types -->
+  <RimTalk_Settings_IsRoundMemoryActive>Увімкнути пам’ять раундів</RimTalk_Settings_IsRoundMemoryActive>
+  <RimTalk_Settings_IsRoundMemoryActiveDesc>Якщо ввімкнено, розширення пам’яті захоплює та додає спогади для кожного раунду розмови, а не для окремих повідомлень</RimTalk_Settings_IsRoundMemoryActiveDesc>
+  <RimTalk_Settings_IsPlayerDialogueInject>Записувати діалоги гравця</RimTalk_Settings_IsPlayerDialogueInject>
+  <RimTalk_Settings_IsPlayerDialogueInjectDesc>Якщо ввімкнено, повідомлення, надіслані гравцем через вікно діалогу, також записуватимуться в пам’ять раундів</RimTalk_Settings_IsPlayerDialogueInjectDesc>
+  <RimTalk_Settings_MaxABMInjectionRoundsLabel>Раунди ін’єкції ABM: {0}</RimTalk_Settings_MaxABMInjectionRoundsLabel>
+  <RimTalk_Settings_MaxABMInjectionRoundsDesc>Визначає, скільки останніх раундів розмови додається до контексту ШІ</RimTalk_Settings_MaxABMInjectionRoundsDesc>
+  <RimTalk_Settings_MemoryTypesSection>Перемикачі типів пам’яті</RimTalk_Settings_MemoryTypesSection>
+  <RimTalk_Settings_ActionMemory>Пам’ять дій</RimTalk_Settings_ActionMemory>
+  <RimTalk_Settings_ConversationMemory>Пам’ять розмови</RimTalk_Settings_ConversationMemory>
+  <!-- Experimental Features -->
+  <RimTalk_Settings_ExperimentalSection>🚀 Експериментальні функції</RimTalk_Settings_ExperimentalSection>
+  <RimTalk_Settings_EnableProactiveRecall>Увімкнути проактивне пригадування</RimTalk_Settings_EnableProactiveRecall>
+  <RimTalk_Settings_TriggerChanceLabel>Шанс спрацьовування: {0}</RimTalk_Settings_TriggerChanceLabel>
+  <!-- Vector Enhancement -->
+  <RimTalk_Settings_VectorEnhancementSection>🔬 Налаштування векторного покращення</RimTalk_Settings_VectorEnhancementSection>
+  <!-- Advanced Settings Window -->
+  <RimTalk_Settings_AdvancedSettingsTitle>Розширені налаштування</RimTalk_Settings_AdvancedSettingsTitle>
+  <RimTalk_Settings_AdvancedSettingsDesc>Містить детальні налаштування ін’єкції, місткості пам’яті, згасання тощо.</RimTalk_Settings_AdvancedSettingsDesc>
+  <!-- Prompt Replacement Window -->
+  <RimTalk_Settings_PromptReplacementTitle>Заміна промпту</RimTalk_Settings_PromptReplacementTitle>
+  <RimTalk_Settings_PromptReplacementDesc>Автоматично нормалізувати промпти перед надсиланням до ШІ.</RimTalk_Settings_PromptReplacementDesc>
+  <!-- ==================== SettingsUIDrawers Translations ==================== -->
+  <!-- AI Provider Selection -->
+  <RimTalk_Settings_AIProvider>Провайдер ШІ</RimTalk_Settings_AIProvider>
+  <RimTalk_Settings_CurrentProvider>Поточний: {0}</RimTalk_Settings_CurrentProvider>
+  <RimTalk_Settings_SelectProvider>Вибрати провайдера</RimTalk_Settings_SelectProvider>
+  <!-- Provider Descriptions -->
+  <RimTalk_Settings_OpenAIDesc1>✦ Моделі серії OpenAI GPT — стабільні та надійні</RimTalk_Settings_OpenAIDesc1>
+  <RimTalk_Settings_OpenAIDesc2>Рекомендовані моделі: gpt-3.5-turbo, gpt-4</RimTalk_Settings_OpenAIDesc2>
+  <RimTalk_Settings_DeepSeekDesc1>✦ Оптимізовані для китайської мови моделі DeepSeek — вигідні за ціною</RimTalk_Settings_DeepSeekDesc1>
+  <RimTalk_Settings_DeepSeekDesc2>Рекомендовані моделі: deepseek-chat, deepseek-coder</RimTalk_Settings_DeepSeekDesc2>
+  <RimTalk_Settings_Player2Desc1>✦ Оптимізований для ігор ШІ Player2 із підтримкою локального клієнта</RimTalk_Settings_Player2Desc1>
+  <RimTalk_Settings_Player2Desc2>Рекомендовані моделі: gpt-4o, gpt-4-turbo</RimTalk_Settings_Player2Desc2>
+  <RimTalk_Settings_GoogleDesc1>✦ Серія Google Gemini із потужними мультимодальними можливостями</RimTalk_Settings_GoogleDesc1>
+  <RimTalk_Settings_GoogleDesc2>Рекомендована модель: gemini-2.0-flash-exp</RimTalk_Settings_GoogleDesc2>
+  <RimTalk_Settings_CustomDesc1>✦ Користувацька кінцева точка API з підтримкою сторонніх проксі</RimTalk_Settings_CustomDesc1>
+  <RimTalk_Settings_CustomDesc2>Налаштуйте URL API та модель вручну</RimTalk_Settings_CustomDesc2>
+  <!-- Knowledge Matching Sources -->
+  <RimTalk_Settings_KnowledgeMatchingSources>Вибір джерела для зіставлення знань</RimTalk_Settings_KnowledgeMatchingSources>
+  <RimTalk_Settings_KnowledgeMatchingSourcesDesc>Виберіть змінні для зіставлення знань. Властивості персонажів автоматично зіставлятимуться для всіх учасників діалогу.</RimTalk_Settings_KnowledgeMatchingSourcesDesc>
+  <RimTalk_Settings_RefreshList>Оновити список</RimTalk_Settings_RefreshList>
+  <RimTalk_Settings_ListRefreshed>Список змінних оновлено</RimTalk_Settings_ListRefreshed>
+  <RimTalk_Settings_VariableCount>Усього змінних: {0} (властивості персонажів: {1})</RimTalk_Settings_VariableCount>
+  <RimTalk_Settings_PawnPropertyTooltip>Властивість: {0}\nТип: властивість персонажа\n\n{1}\n\nЯкщо позначено, ця властивість автоматично зіставлятиметься для всіх персонажів у діалозі.</RimTalk_Settings_PawnPropertyTooltip>
+  <RimTalk_Settings_VariableTooltip>Змінна: {0}\n\n{1}</RimTalk_Settings_VariableTooltip>
+  <RimTalk_Settings_AtLeastOneSource>Потрібно вибрати принаймні одне джерело для зіставлення</RimTalk_Settings_AtLeastOneSource>
+  <RimTalk_Settings_SelectedCount>Вибрано: {0} (властивості персонажів: {1}, інше: {2})</RimTalk_Settings_SelectedCount>
+  <!-- Knowledge Chaining Settings -->
+  <RimTalk_Settings_EnableKnowledgeChaining>Увімкнути ланцюжки знань (експериментально)</RimTalk_Settings_EnableKnowledgeChaining>
+  <RimTalk_Settings_KnowledgeChainingDesc>Дозволяє знанням запускати інші знання для зіставлення в кілька раундів.</RimTalk_Settings_KnowledgeChainingDesc>
+  <RimTalk_Settings_MaxChainingRoundsLabel>Максимум раундів: {0}</RimTalk_Settings_MaxChainingRoundsLabel>
+  <!-- Prompt Normalization -->
+  <RimTalk_Settings_ReplacementRulesList>Список правил заміни</RimTalk_Settings_ReplacementRulesList>
+  <RimTalk_Settings_AddNewRule>+ Додати нове правило</RimTalk_Settings_AddNewRule>
+  <RimTalk_Settings_EnabledRulesCount>Увімкнено: {0} / {1} правил</RimTalk_Settings_EnabledRulesCount>
+  <RimTalk_Settings_RuleExample>✦ Приклад: Шаблон \(Player\) → Замінити Master</RimTalk_Settings_RuleExample>
+  <RimTalk_Settings_RegexSupport>Підтримує регулярні вирази (без урахування регістру)</RimTalk_Settings_RegexSupport>
+  <!-- Vector Enhancement Settings -->
+  <RimTalk_Settings_EnableVectorEnhancement>Увімкнути векторне розширення</RimTalk_Settings_EnableVectorEnhancement>
+  <RimTalk_Settings_VectorEnhancementDesc>Використовувати семантичний пошук за векторами для покращення зіставлення знань.</RimTalk_Settings_VectorEnhancementDesc>
+  <RimTalk_Settings_SimilarityThresholdLabel>Поріг подібності: {0}</RimTalk_Settings_SimilarityThresholdLabel>
+  <RimTalk_Settings_MaxVectorResultsLabel>Макс. додаткових результатів: {0}</RimTalk_Settings_MaxVectorResultsLabel>
+  <RimTalk_Settings_CloudEmbeddingConfig>Налаштування хмарних векторних представлень</RimTalk_Settings_CloudEmbeddingConfig>
+  <RimTalk_Settings_EmbeddingAPIKey>Ключ API</RimTalk_Settings_EmbeddingAPIKey>
+  <RimTalk_Settings_EmbeddingAPIURL>URL API</RimTalk_Settings_EmbeddingAPIURL>
+  <RimTalk_Settings_EmbeddingModel>Модель</RimTalk_Settings_EmbeddingModel>
+  <RimTalk_Settings_EmbeddingAPIKeyTip>Порада: залиште ключ API порожнім, щоб використати ключ із наведених вище налаштувань ШІ.</RimTalk_Settings_EmbeddingAPIKeyTip>
+  <!-- ==================== MainTabWindow_Memory Translations ==================== -->
+  <!-- Controls -->
+  <RimTalk_MindStream_RightClickToCreate>Клацніть правою кнопкою, щоб створити {0} пам’ять</RimTalk_MindStream_RightClickToCreate>
+  <RimTalk_MindStream_SummarizeSelectedBoth>Підсумувати вибране (ABM:{0} + SCM:{1})</RimTalk_MindStream_SummarizeSelectedBoth>
+  <RimTalk_MindStream_SummarizeSelectedABM>Підсумувати вибране (ABM:{0})</RimTalk_MindStream_SummarizeSelectedABM>
+  <RimTalk_MindStream_SummarizeSelectedSCM>Підсумувати вибране (SCM:{0})</RimTalk_MindStream_SummarizeSelectedSCM>
+  <RimTalk_MindStream_SummarizeAllBoth>Підсумувати все (ABM:{0} + SCM:{1})</RimTalk_MindStream_SummarizeAllBoth>
+  <RimTalk_MindStream_SummarizeAllABM>Підсумувати все (ABM:{0})</RimTalk_MindStream_SummarizeAllABM>
+  <RimTalk_MindStream_SummarizeAllSCM>Підсумувати все (SCM:{0})</RimTalk_MindStream_SummarizeAllSCM>
+  <RimTalk_MindStream_ArchiveAllCount>Архівувати все ({0})</RimTalk_MindStream_ArchiveAllCount>
+  <RimTalk_MindStream_DeleteAllCount>Видалити все ({0})</RimTalk_MindStream_DeleteAllCount>
+  <RimTalk_MindStream_PleaseSelectColonist>Спершу виберіть колоніста</RimTalk_MindStream_PleaseSelectColonist>
+  <RimTalk_MindStream_AddConversationTo>Додати пам’ять розмови до {0}</RimTalk_MindStream_AddConversationTo>
+  <RimTalk_MindStream_AddActionTo>Додати пам’ять дій до {0}</RimTalk_MindStream_AddActionTo>
+  <!-- TopBar -->
+  <RimTalk_MindStream_SummaryPrompt>Промпт підсумку</RimTalk_MindStream_SummaryPrompt>
+  <!-- Utilities -->
+  <RimTalk_Close>Закрити</RimTalk_Close>
+  <RimTalk_MindStream_GuideContent>=== Посібник з роботи потоку свідомості ===
+
+【Вибір спогадів】
+• Клацання: вибрати один спогад
+• Ctrl+клацання: вибрати/скасувати вибір кількох
+• Shift+клацання: вибрати діапазон
+• Виділення перетягуванням: пакетний вибір
+
+【Пакетні операції】
+• Підсумувати: підсумувати спогади SCM до ELS
+• Архівувати: архівувати спогади ELS до CLPA
+• Видалити: видалити вибрані спогади
+
+【Функції правої кнопки】
+• Клацніть правою кнопкою на прапорці ELS/CLPA, щоб створити новий спогад
+
+【Описи шарів】
+• ABM (синій): надкороткочасна пам’ять
+• SCM (зелений): короткочасна пам’ять
+• ELS (жовтий): журнал подій
+• CLPA (фіолетовий): довготривалий архів</RimTalk_MindStream_GuideContent>
+  <!-- ==================== Dialog_PromptEditor Translations ==================== -->
+  <RimTalk_PromptEditor_Title>Налаштування промпту підсумку</RimTalk_PromptEditor_Title>
+  <RimTalk_PromptEditor_Desc>Налаштуйте шаблони промптів, які ШІ використовує для підсумовування спогадів.</RimTalk_PromptEditor_Desc>
+  <RimTalk_PromptEditor_ResetDefault>Відновити типові значення</RimTalk_PromptEditor_ResetDefault>
+  <RimTalk_PromptEditor_ResetConfirm>Ви впевнені, що хочете відновити стандартні промпти?</RimTalk_PromptEditor_ResetConfirm>
+  <RimTalk_PromptEditor_DailySummary>Промпт щоденного підсумку</RimTalk_PromptEditor_DailySummary>
+  <RimTalk_PromptEditor_DailySummaryDesc>Використовується для щоденного підсумовування SCM → ELS (обробляє близько 20 спогадів)</RimTalk_PromptEditor_DailySummaryDesc>
+  <RimTalk_PromptEditor_Placeholders>Заповнювачі: {0}=ім’я колоніста, {1}=список спогадів</RimTalk_PromptEditor_Placeholders>
+  <RimTalk_PromptEditor_DeepArchive>Промпт глибокого архівування</RimTalk_PromptEditor_DeepArchive>
+  <RimTalk_PromptEditor_DeepArchiveDesc>Використовується для глибокого архівування ELS → CLPA (обробляє приблизно 15 спогадів)</RimTalk_PromptEditor_DeepArchiveDesc>
+  <RimTalk_PromptEditor_MaxTokens>Максимальна кількість токенів виводу</RimTalk_PromptEditor_MaxTokens>
+  <RimTalk_PromptEditor_MaxTokensDesc>Визначає максимальну довжину згенерованого ШІ підсумку.</RimTalk_PromptEditor_MaxTokensDesc>
+  <RimTalk_PromptEditor_MaxTokensLabel>Макс. токенів: {0}</RimTalk_PromptEditor_MaxTokensLabel>
+  <RimTalk_PromptEditor_Tips>💡 Поради:</RimTalk_PromptEditor_Tips>
+  <RimTalk_PromptEditor_Tip1>• Невеликі значення (100–500) для коротких підсумків</RimTalk_PromptEditor_Tip1>
+  <RimTalk_PromptEditor_Tip2>• Великі значення (1000–4000) для детальних підсумків</RimTalk_PromptEditor_Tip2>
+  <RimTalk_PromptEditor_Tip3>• Дуже великі значення збільшать витрати на API</RimTalk_PromptEditor_Tip3>
+  <RimTalk_PromptEditor_Saved>Конфігурацію промпту підсумку збережено</RimTalk_PromptEditor_Saved>
+  <!-- ==================== Dialog_InjectionPreview Translations ==================== -->
+  <RimTalk_Preview_Title>Попередній перегляд ін’єкції</RimTalk_Preview_Title>
+  <RimTalk_Preview_CurrentPawn>Поточний персонаж:</RimTalk_Preview_CurrentPawn>
+  <RimTalk_Preview_TargetPawn>Цільовий персонаж:</RimTalk_Preview_TargetPawn>
+  <RimTalk_Preview_None>Немає</RimTalk_Preview_None>
+  <RimTalk_Preview_NoneClickToSelect>Немає (натисніть, щоб вибрати)</RimTalk_Preview_NoneClickToSelect>
+  <RimTalk_Preview_Clear>Очистити</RimTalk_Preview_Clear>
+  <RimTalk_Preview_Refresh>Оновити попередній перегляд</RimTalk_Preview_Refresh>
+  <RimTalk_Preview_NoColonist>Немає доступних колоністів</RimTalk_Preview_NoColonist>
+  <RimTalk_Preview_KnowledgeSection>Ін’єкція знань</RimTalk_Preview_KnowledgeSection>
+  <RimTalk_Preview_MatchingSource>Відповідне джерело</RimTalk_Preview_MatchingSource>
+  <RimTalk_Preview_ParsedMatchText>Текст відповідності після обробки:</RimTalk_Preview_ParsedMatchText>
+  <RimTalk_Preview_NoParsedText>(Текст після обробки відсутній)</RimTalk_Preview_NoParsedText>
+  <RimTalk_Preview_MatchedKnowledge>Знайдені відповідні знання:</RimTalk_Preview_MatchedKnowledge>
+  <RimTalk_Preview_NoMatchedKnowledge>Відповідних знань не знайдено</RimTalk_Preview_NoMatchedKnowledge>
+  <RimTalk_Preview_NoMatchingSources>Відповідні джерела не налаштовано</RimTalk_Preview_NoMatchingSources>
+  <RimTalk_Preview_Score>Оцінка: {0}</RimTalk_Preview_Score>
+  <RimTalk_Preview_MemorySection>Ін’єкція пам’яті</RimTalk_Preview_MemorySection>
+  <RimTalk_Preview_MemoryLayers>Шари пам’яті:</RimTalk_Preview_MemoryLayers>
+  <RimTalk_Preview_InjectionConfig>Налаштування ін’єкції:</RimTalk_Preview_InjectionConfig>
+  <RimTalk_Preview_ClickRefresh>Натисніть «Оновити попередній перегляд», щоб переглянути результати</RimTalk_Preview_ClickRefresh>
+  <RimTalk_Preview_NoMemoryComp>У вибраного персонажа немає компонента пам’яті</RimTalk_Preview_NoMemoryComp>
+  <RimTalk_Preview_SelectedMemories>Вибрані спогади:</RimTalk_Preview_SelectedMemories>
+  <RimTalk_Preview_ScoreDetail>Оцінка: {0}</RimTalk_Preview_ScoreDetail>
+  <RimTalk_Preview_NoMemoriesAboveThreshold>Немає спогадів вище порогового значення</RimTalk_Preview_NoMemoriesAboveThreshold>
+  <RimTalk_Preview_StaticMode>Статичний режим (динамічне впровадження вимкнено)</RimTalk_Preview_StaticMode>
+  <RimTalk_Preview_Error>Помилка: {0}</RimTalk_Preview_Error>
+  <RimTalk_Preview_ABMCount>ABM: {0} розмов</RimTalk_Preview_ABMCount>
+  <RimTalk_Preview_ELSCount>ELS: {0} записів</RimTalk_Preview_ELSCount>
+  <RimTalk_Preview_CLPACount>CLPA: {0} записів</RimTalk_Preview_CLPACount>
+  <RimTalk_Preview_MaxInjectedMemories>Максимум впроваджених спогадів: {0}</RimTalk_Preview_MaxInjectedMemories>
+  <RimTalk_Preview_MemoryThreshold>Порогове значення спогадів: {0}</RimTalk_Preview_MemoryThreshold>
+  <RimTalk_Preview_MaxInjectedKnowledge>Максимум впроваджених знань: {0}</RimTalk_Preview_MaxInjectedKnowledge>
+  <RimTalk_Preview_KnowledgeThreshold>Порогове значення знань: {0}</RimTalk_Preview_KnowledgeThreshold>
+  <RimTalk_Preview_DynamicEnabled>Динамічне впровадження: увімкнено</RimTalk_Preview_DynamicEnabled>
+  <RimTalk_Preview_DynamicDisabled>Динамічне впровадження: вимкнено</RimTalk_Preview_DynamicDisabled>
+  <RimTalk_Preview_Colonist>(Колоніст)</RimTalk_Preview_Colonist>
+  <RimTalk_Preview_Prisoner>(В'язень)</RimTalk_Preview_Prisoner>
+  <RimTalk_Preview_Slave>(Раб)</RimTalk_Preview_Slave>
+  <RimTalk_Preview_Guest>(Гість)</RimTalk_Preview_Guest>
+  <RimTalk_Preview_SameAsCurrent>(Так само, як поточний)</RimTalk_Preview_SameAsCurrent>
+  <RimTalk_Preview_NoHumanlikes>Немає доступних людей-колоністів для вибору</RimTalk_Preview_NoHumanlikes>
+  <RimTalk_Preview_Help>Довідка</RimTalk_Preview_Help>
+  <RimTalk_Preview_NoContext>[Немає контексту, спочатку запустіть діалог]</RimTalk_Preview_NoContext>
+  <RimTalk_Preview_HelpContent>=== Довідка переглядача ін’єкцій ===
+
+【Огляд】
+Цей інструмент дає змогу переглядати ефекти ін’єкції пам’яті та знань і зрозуміти, яка інформація використовуватиметься під час розмов із ШІ.
+
+【Ін’єкція знань】
+• Джерела зіставлення: виберіть змінні, які використовуються для зіставлення знань
+• Змінні властивостей персонажа аналізують усіх учасників
+• Проаналізований текст зіставляється з ключовими словами в бібліотеці знань
+• Результати зіставлення сортуються за оцінкою
+
+【Ін’єкція пам’яті】
+• ABM: надкороткострокова пам’ять діалогу
+• SCM: короткострокова пам’ять (застаріла, тепер узагальнюється в ELS)
+• ELS: сховище журналу подій (пам’яті, узагальнені ШІ)
+• CLPA: довгостроковий архів (архіви важливих подій)
+
+【Як користуватися】
+1. Виберіть поточного персонажа (обов’язково)
+2. Необов’язково: виберіть цільового персонажа (симулює розмову)
+3. Позначте потрібні джерела зіставлення
+4. Натисніть «Оновити попередній перегляд», щоб переглянути результати
+
+【Поради】
+• Налаштування джерел зіставлення синхронізуються із глобальними налаштуваннями
+• Для аналізу змінних властивостей персонажа потрібна лише інформація про персонажа
+• Для змінних середовища потрібна інформація про карту
+• Для аналізу інших змінних потрібен щонайменше один згенерований діалог
+</RimTalk_Preview_HelpContent>
+</LanguageData>

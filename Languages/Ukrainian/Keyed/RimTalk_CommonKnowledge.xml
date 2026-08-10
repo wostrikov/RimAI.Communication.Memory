@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <!-- Common Knowledge Library UI -->
+  <RimTalk_Knowledge_New>Нове</RimTalk_Knowledge_New>
+  <RimTalk_Knowledge_Import>Імпортувати</RimTalk_Knowledge_Import>
+  <RimTalk_Knowledge_Export>Експортувати</RimTalk_Knowledge_Export>
+  <RimTalk_Knowledge_Delete>Видалити</RimTalk_Knowledge_Delete>
+  <RimTalk_Knowledge_ClearAll>Очистити все</RimTalk_Knowledge_ClearAll>
+  <RimTalk_Knowledge_TotalAndEnabled>Усього: {0} | Увімкнено: {1}</RimTalk_Knowledge_TotalAndEnabled>
+  <!-- Auto Generate Section -->
+  <RimTalk_Knowledge_AutoGenerate>Автоматично генерувати відомості</RimTalk_Knowledge_AutoGenerate>
+  <RimTalk_Knowledge_PawnStatus>Відомості про статус колоністів</RimTalk_Knowledge_PawnStatus>
+  <RimTalk_Knowledge_PawnStatusDesc>Щодня автоматично оновлювати статус колоністів (час приєднання, стосунки тощо)</RimTalk_Knowledge_PawnStatusDesc>
+  <RimTalk_Knowledge_EventRecord>Відомості про записи подій</RimTalk_Knowledge_EventRecord>
+  <RimTalk_Knowledge_EventRecordDesc>Щодня видобувати з ігрового журналу важливі події (смерть, шлюб, приєднання, будівництво тощо)</RimTalk_Knowledge_EventRecordDesc>
+  <RimTalk_Knowledge_GenerateNow>Згенерувати зараз (вручну)</RimTalk_Knowledge_GenerateNow>
+  <RimTalk_Knowledge_GenerateNowDesc>Негайно згенерувати всі ввімкнені типи відомостей</RimTalk_Knowledge_GenerateNowDesc>
+  <RimTalk_Knowledge_EnableAtLeastOne>Увімкніть принаймні один тип генерування відомостей</RimTalk_Knowledge_EnableAtLeastOne>
+  <RimTalk_Knowledge_MustEnterGame>Спершу потрібно увійти в гру</RimTalk_Knowledge_MustEnterGame>
+  <RimTalk_Knowledge_GeneratedCount>Згенеровано {0} відомостей про статус колоністів</RimTalk_Knowledge_GeneratedCount>
+  <RimTalk_Knowledge_AllExist>Усі відомості про статус колоністів уже існують, генерувати їх не потрібно</RimTalk_Knowledge_AllExist>
+  <RimTalk_Knowledge_EventGeneratedCount>Згенеровано {0} відомостей про записи подій</RimTalk_Knowledge_EventGeneratedCount>
+  <RimTalk_Knowledge_NoNewEvents>Нових важливих подій не знайдено або всі події вже записано</RimTalk_Knowledge_NoNewEvents>
+  <RimTalk_Knowledge_EventGenerateFailed>Не вдалося згенерувати запис події: {0}</RimTalk_Knowledge_EventGenerateFailed>
+  <!-- Detail Panel -->
+  <RimTalk_Knowledge_SelectEntry>Виберіть запис відомостей</RimTalk_Knowledge_SelectEntry>
+  <RimTalk_Knowledge_Tag>Тег:</RimTalk_Knowledge_Tag>
+  <RimTalk_Knowledge_Importance>Важливість:</RimTalk_Knowledge_Importance>
+  <RimTalk_Knowledge_Status>Статус:</RimTalk_Knowledge_Status>
+  <RimTalk_Knowledge_Disabled>Вимкнено</RimTalk_Knowledge_Disabled>
+  <RimTalk_Knowledge_Keywords>Ключові слова:</RimTalk_Knowledge_Keywords>
+  <RimTalk_Knowledge_Content>Вміст:</RimTalk_Knowledge_Content>
+  <RimTalk_Knowledge_Edit>Редагувати</RimTalk_Knowledge_Edit>
+  <!-- Edit Panel -->
+  <RimTalk_Knowledge_KeywordsHint>Ключові слова (розділяйте комами, залиште порожнім для автоматичного вилучення):</RimTalk_Knowledge_KeywordsHint>
+  <RimTalk_Knowledge_Save>Зберегти</RimTalk_Knowledge_Save>
+  <RimTalk_Knowledge_Cancel>Скасувати</RimTalk_Knowledge_Cancel>
+  <RimTalk_Knowledge_NewTag>Новий тег</RimTalk_Knowledge_NewTag>
+  <RimTalk_Knowledge_ContentRequired>Вміст не може бути порожнім</RimTalk_Knowledge_ContentRequired>
+  <RimTalk_Knowledge_SaveSuccess>Успішно збережено</RimTalk_Knowledge_SaveSuccess>
+  <!-- Confirmations -->
+  <RimTalk_Knowledge_ClearAllConfirm>Ви впевнені, що хочете очистити всі записи знань {0}? Цю дію неможливо скасувати!</RimTalk_Knowledge_ClearAllConfirm>
+  <RimTalk_Knowledge_Cleared>Бібліотеку знань очищено</RimTalk_Knowledge_Cleared>
+  <!-- Import Dialog -->
+  <RimTalk_Knowledge_ImportTitle>Імпортувати знання</RimTalk_Knowledge_ImportTitle>
+  <RimTalk_Knowledge_ImportDesc>Введіть або вставте текст знань\nФормат: [Тег]Вміст\nОдин запис у рядку</RimTalk_Knowledge_ImportDesc>
+  <RimTalk_Knowledge_ImportSuccess>Успішно імпортовано {0} записів знань</RimTalk_Knowledge_ImportSuccess>
+  <RimTalk_Knowledge_Confirm>Підтвердити</RimTalk_Knowledge_Confirm>
+  <!-- Export -->
+  <RimTalk_Knowledge_NoContent>Немає вмісту для експорту</RimTalk_Knowledge_NoContent>
+  <RimTalk_Knowledge_ExportSuccess>Експортовано до: {0}</RimTalk_Knowledge_ExportSuccess>
+  <RimTalk_Knowledge_ExportFailed>Помилка експорту: {0}</RimTalk_Knowledge_ExportFailed>
+  <!-- Create Memory Dialog -->
+  <RimTalk_Memory_AddToLayer>Додати {0} до {1} для {2}</RimTalk_Memory_AddToLayer>
+  <RimTalk_Memory_Content>Вміст пам’яті:</RimTalk_Memory_Content>
+  <RimTalk_Memory_TagsOptional>Теги (через кому, необов’язково):</RimTalk_Memory_TagsOptional>
+  <RimTalk_Memory_NotesOptional>Нотатки (необов’язково):</RimTalk_Memory_NotesOptional>
+  <RimTalk_Memory_ImportanceLabel>Важливість: {0}</RimTalk_Memory_ImportanceLabel>
+  <RimTalk_Memory_PinMemory>Закріпити цю пам’ять (не буде автоматично видалена або занепадати)</RimTalk_Memory_PinMemory>
+  <RimTalk_Memory_ContentRequired>Вміст пам’яті не може бути порожнім</RimTalk_Memory_ContentRequired>
+  <RimTalk_Memory_AddedToELS>Пам’ять додано до ELS персонажа {0} (середньострокова пам’ять)</RimTalk_Memory_AddedToELS>
+  <RimTalk_Memory_AddedToCLPA>Пам’ять додано до CLPA персонажа {0} (довгострокова пам’ять)</RimTalk_Memory_AddedToCLPA>
+  <!-- Layer Names -->
+  <RimTalk_Layer_ELS>ELS (середньострокова пам’ять)</RimTalk_Layer_ELS>
+  <RimTalk_Layer_CLPA>CLPA (довгострокова пам’ять)</RimTalk_Layer_CLPA>
+  <!-- Memory Type Names -->
+  <RimTalk_Type_Action>Пам’ять дій</RimTalk_Type_Action>
+  <RimTalk_Type_Conversation>Пам’ять розмов</RimTalk_Type_Conversation>
+  <!-- Knowledge Chaining -->
+  <RimTalk_ExtendedProperties>Розширені властивості</RimTalk_ExtendedProperties>
+  <RimTalk_CanBeExtracted>Можна вилучити: </RimTalk_CanBeExtracted>
+  <RimTalk_CanBeMatched>Можна зіставити: </RimTalk_CanBeMatched>
+  <RimTalk_Yes>Так (✓)</RimTalk_Yes>
+  <RimTalk_No>Ні (×)</RimTalk_No>
+  <RimTalk_EnableAllExtract>Увімкнути все вилучення</RimTalk_EnableAllExtract>
+  <RimTalk_DisableAllExtract>Вимкнути все вилучення</RimTalk_DisableAllExtract>
+  <RimTalk_EnableAllMatch>Увімкнути все зіставлення</RimTalk_EnableAllMatch>
+  <RimTalk_DisableAllMatch>Вимкнути все зіставлення</RimTalk_DisableAllMatch>
+  <RimTalk_CanBeExtractedEnabled>Вилучення вмісту для ланцюжка переказів увімкнено (натисніть, щоб вимкнути)</RimTalk_CanBeExtractedEnabled>
+  <RimTalk_CanBeExtractedDisabled>Вилучення вмісту для ланцюжка переказів вимкнено (натисніть, щоб увімкнути)</RimTalk_CanBeExtractedDisabled>
+  <RimTalk_CanBeMatchedEnabled>Зіставлення ключових слів увімкнено (натисніть, щоб вимкнути)</RimTalk_CanBeMatchedEnabled>
+  <RimTalk_CanBeMatchedDisabled>Зіставлення ключових слів вимкнено (натисніть, щоб увімкнути)</RimTalk_CanBeMatchedDisabled>
+  <!-- Common Functionality -->
+  <RimTalk_Knowledge_Categories>Категорії</RimTalk_Knowledge_Categories>
+  <RimTalk_Knowledge_CategoryAll>Усі</RimTalk_Knowledge_CategoryAll>
+  <RimTalk_Knowledge_CategoryInstructions>Інструкції</RimTalk_Knowledge_CategoryInstructions>
+  <RimTalk_Knowledge_CategoryLore>Лор</RimTalk_Knowledge_CategoryLore>
+  <RimTalk_Knowledge_CategoryPawnStatus>Стан персонажа</RimTalk_Knowledge_CategoryPawnStatus>
+  <RimTalk_Knowledge_CategoryHistory>Історія</RimTalk_Knowledge_CategoryHistory>
+  <RimTalk_Knowledge_CategoryOther>Інше</RimTalk_Knowledge_CategoryOther>
+  <RimTalk_Knowledge_CategoryUnknown>Невідомо</RimTalk_Knowledge_CategoryUnknown>
+  <RimTalk_Knowledge_Total>Усього: {0}</RimTalk_Knowledge_Total>
+  <RimTalk_Knowledge_Enabled>Увімкнено: {0}</RimTalk_Knowledge_Enabled>
+  <RimTalk_Knowledge_Selected>Вибрано: {0}</RimTalk_Knowledge_Selected>
+  <RimTalk_Knowledge_Showing>Показано {0} / {1}</RimTalk_Knowledge_Showing>
+  <RimTalk_Knowledge_ExportAll>Експортувати все</RimTalk_Knowledge_ExportAll>
+  <RimTalk_Knowledge_ExportCount>Експортувати ({0})</RimTalk_Knowledge_ExportCount>
+  <RimTalk_Knowledge_DeleteCount>Видалити ({0})</RimTalk_Knowledge_DeleteCount>
+  <RimTalk_Knowledge_Details>Подробиці</RimTalk_Knowledge_Details>
+  <RimTalk_Knowledge_StatusEnabled>Увімкнено</RimTalk_Knowledge_StatusEnabled>
+  <RimTalk_Knowledge_StatusDisabled>Вимкнено</RimTalk_Knowledge_StatusDisabled>
+  <RimTalk_Knowledge_ItemsSelected>Вибрано елементів: {0}</RimTalk_Knowledge_ItemsSelected>
+  <RimTalk_Knowledge_EnabledCount>Увімкнено: {0}</RimTalk_Knowledge_EnabledCount>
+  <RimTalk_Knowledge_DisabledCount>Вимкнено: {0}</RimTalk_Knowledge_DisabledCount>
+  <RimTalk_Knowledge_AvgImportance>Сер. важливість: {0}</RimTalk_Knowledge_AvgImportance>
+  <RimTalk_Knowledge_EnableAll>Увімкнути все</RimTalk_Knowledge_EnableAll>
+  <RimTalk_Knowledge_DisableAll>Вимкнути все</RimTalk_Knowledge_DisableAll>
+  <RimTalk_Knowledge_ExportItems>Експортувати вибране ({0})</RimTalk_Knowledge_ExportItems>
+  <RimTalk_Knowledge_DeleteItems>Видалити вибране ({0})</RimTalk_Knowledge_DeleteItems>
+  <RimTalk_Knowledge_NewEntry>Новий запис</RimTalk_Knowledge_NewEntry>
+  <RimTalk_Knowledge_EditEntry>Редагувати запис</RimTalk_Knowledge_EditEntry>
+  <RimTalk_Knowledge_Global>Глобальне</RimTalk_Knowledge_Global>
+  <RimTalk_Knowledge_GlobalAll>Глобальне (усі персонажі)</RimTalk_Knowledge_GlobalAll>
+  <RimTalk_Knowledge_ExclusiveTo>Лише для {0}</RimTalk_Knowledge_ExclusiveTo>
+  <RimTalk_Knowledge_VisibilityGlobal>Глобальне (усі персонажі)</RimTalk_Knowledge_VisibilityGlobal>
+  <RimTalk_Knowledge_VisibilityExclusive>Лише для {0}</RimTalk_Knowledge_VisibilityExclusive>
+  <RimTalk_Knowledge_VisibilityDeleted>(Персонажа видалено)</RimTalk_Knowledge_VisibilityDeleted>
+  <RimTalk_Knowledge_DeleteConfirm>Видалити записи знань {0}?</RimTalk_Knowledge_DeleteConfirm>
+  <RimTalk_Knowledge_Deleted>Видалено {0} записів знань</RimTalk_Knowledge_Deleted>
+  <RimTalk_Knowledge_ClearConfirm>Очистити всю базу знань? Цю дію неможливо скасувати!</RimTalk_Knowledge_ClearConfirm>
+  <RimTalk_Knowledge_AllCleared>Бібліотеку знань очищено</RimTalk_Knowledge_AllCleared>
+  <RimTalk_Knowledge_ImportDescription>Вставте текст знань (формат: [Тег]Вміст, по одному на рядок)</RimTalk_Knowledge_ImportDescription>
+  <RimTalk_Knowledge_Imported>Імпортовано {0} записів знань</RimTalk_Knowledge_Imported>
+  <RimTalk_Knowledge_ExportedToClipboard>Експортовано {0} записів знань до буфера обміну</RimTalk_Knowledge_ExportedToClipboard>
+  <RimTalk_Knowledge_TagContentEmpty>Тег і вміст не можуть бути порожніми</RimTalk_Knowledge_TagContentEmpty>
+  <RimTalk_Knowledge_EntrySaved>Знання збережено</RimTalk_Knowledge_EntrySaved>
+  <RimTalk_Knowledge_NoColonists>На поточній мапі немає колоністів</RimTalk_Knowledge_NoColonists>
+  <RimTalk_Knowledge_GeneratedPawnStatus>Згенеровано {0} записів знань про стан персонажів</RimTalk_Knowledge_GeneratedPawnStatus>
+  <RimTalk_Knowledge_EventScanTriggered>Сканування подій запущено</RimTalk_Knowledge_EventScanTriggered>
+  <RimTalk_Knowledge_GenerationFailed>Не вдалося згенерувати: {0}</RimTalk_Knowledge_GenerationFailed>
+  <!-- Help Guide -->
+  <RimTalk_Knowledge_Help>Довідка</RimTalk_Knowledge_Help>
+  <RimTalk_Knowledge_HelpTitle>Посібник із бібліотеки загальних знань</RimTalk_Knowledge_HelpTitle>
+  <RimTalk_Knowledge_HelpContent>【Логіка отримання знань】
+Бібліотека знань автоматично додає релевантні знання під час розмов із ШІ:
+
+1. Зіставлення тегів: витягує теги з контексту розмови та зіставляє їх із тегами знань
+   • Будь-який режим: збіг, якщо знайдено будь-який тег
+   • Режим «Усі»: збіг, лише якщо знайдено всі теги
+   • ⚠️ Використовується зіставлення підрядків (без урахування регістру)
+
+2. Зіставлення векторної подібності (потребує векторного сервісу):
+   • Використовує алгоритми семантичної подібності для пошуку найрелевантніших знань
+   • Може знаходити семантично пов’язаний вміст навіть без точного збігу тегів
+
+3. Ранжування за важливістю:
+   • Знайдені знання сортуються за важливістю (0,0–1,0) у порядку спадання
+   • Додаються лише N найважливіших записів (кількість налаштовується в налаштуваннях)
+
+【Як створювати ефективні записи знань】
+
+✓ Використовуйте теги, розділені комами (рекомендовано)
+  • Добре: [Lore,Ringworld] або [Rules,Dialog]
+  • Добре: [CharacterBackground,John] або [Event,Active,Raid]
+  • Чому: коми є стандартними роздільниками, це зрозуміло й послідовно
+
+✓ Теги мають бути зрозумілими, але не надто короткими
+  • Добре: [Lore,PlanetSetting] (3+ символи)
+  • Погано: [War] або [AI] (1–2 символи, схильні до хибних збігів)
+  • Чому: короткі теги збігаються із занадто великою кількістю нерелевантних контекстів
+
+✓ Використовуйте складені теги для точності
+  • Добре: [Lore,Ringworld,Technology] або [CharacterBackground,John,Past]
+  • Погано: [John] (може спрацьовувати в нерелевантних розмовах)
+
+✓ Теги мають активуватися розмовами
+  • Проблема: тег [Rules,CombatSystem] не спрацює в розмовах про «стрілянину» чи «ближній бій»
+  • Рішення: використовуйте [Combat,Shooting,Melee,Dodge], щоб додати тригерні теги
+  • Або: [Rules,Combat,Shooting] збереже категоризацію й додасть тригери
+
+✓ Не використовуйте назви навичок як одноосібні теги
+  • Проблема: [Shooting] спрацьовує в УСІХ розмовах про персонажів із навичкою стрільби (≥10)
+  • Причина: текст збігу містить назви навичок персонажа високого рівня
+  • Погано: [Shooting], [Melee], [Construction] (часті хибні збіги)
+  • Добре: [Rules,ShootingCombat,Aim], [Tips,Melee,Brawl] (потребує явної згадки)
+
+✓ Робіть вміст конкретним і практичним
+  • Добре: ця планета — кільцевий світ із силою тяжіння 0,8 від земної
+  • Погано: ця планета особлива
+
+✓ Встановлюйте належні рівні важливості
+  • Основні налаштування/правила: 0,8–1,0
+  • Загальний фон: 0,5–0,7
+  • Незначні деталі: 0,3–0,5
+
+✓ Розумно використовуйте розширені властивості
+  • Можна зіставляти: увімкніть, щоб запис брав участь у пошуку за тегами/векторами
+  • Можна витягувати: увімкніть для посилання в ланцюжку знань
+
+【Поширені запитання】
+З: Чому мої знання додаються надто часто?
+В: Тег може бути надто коротким або широким. Використовуйте складені теги з 3+ символів, як-от [Lore,ColonyHistory], замість [History]
+
+З: Чому мої знання не додаються?
+В: Перевірте, чи ввімкнено знання, чи правильно вибрано режим зіставлення, чи не надто низька важливість і чи відповідають теги розмові
+
+З: Як зробити так, щоб ШІ використовував певні знання лише в конкретних ситуаціях?
+В: Використовуйте точні складені теги (наприклад, [Rules,Combat,RangedWeapons]) і помірний рівень важливості
+</RimTalk_Knowledge_HelpContent>
+  <!-- Tag Testing Tool -->
+  <RimTalk_Knowledge_TagTest>🔍 Перевірка тегів</RimTalk_Knowledge_TagTest>
+  <RimTalk_Knowledge_TagTestTitle>Інструмент перевірки відповідності тегів</RimTalk_Knowledge_TagTestTitle>
+  <RimTalk_Knowledge_TagTestInputTag>Теги для перевірки (через кому):</RimTalk_Knowledge_TagTestInputTag>
+  <RimTalk_Knowledge_TagTestInputContext>Вміст розмови:</RimTalk_Knowledge_TagTestInputContext>
+  <RimTalk_Knowledge_TagTestSelectPawn>Виберіть персонажа (необов’язково):</RimTalk_Knowledge_TagTestSelectPawn>
+  <RimTalk_Knowledge_TagTestNoPawn>Немає (лише розмова)</RimTalk_Knowledge_TagTestNoPawn>
+  <RimTalk_Knowledge_TagTestResult>Результат відповідності:</RimTalk_Knowledge_TagTestResult>
+  <RimTalk_Knowledge_TagTestMatched>✅ Є відповідність</RimTalk_Knowledge_TagTestMatched>
+  <RimTalk_Knowledge_TagTestNotMatched>❌ Немає відповідності</RimTalk_Knowledge_TagTestNotMatched>
+  <RimTalk_Knowledge_TagTestMatchText>Фактичний текст відповідності:</RimTalk_Knowledge_TagTestMatchText>
+  <RimTalk_Knowledge_TagTestClear>Очистити</RimTalk_Knowledge_TagTestClear>
+</LanguageData>
