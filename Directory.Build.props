@@ -1,7 +1,6 @@
 <Project>
+  <PropertyGroup><BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\bin\</BaseOutputPath><BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\obj\</BaseIntermediateOutputPath></PropertyGroup>
 	<PropertyGroup>
-		<!-- 移动obj文件夹至Source下 -->
-		<BaseIntermediateOutputPath>Source\obj\</BaseIntermediateOutputPath>
 		<MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
 	</PropertyGroup>
 

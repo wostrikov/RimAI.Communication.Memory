@@ -6,7 +6,10 @@
 		<DefineConstants>$(DefineConstants);V$(GameVersion.Replace('.', '_'))</DefineConstants>
 
 		<RimWorldDir Condition=" '$(RimWorldDir)' == '' ">$(RIMWORLD_DIR)</RimWorldDir>
-		<RimTalkDir Condition=" '$(RimTalkDir)' == '' ">..\..\workshop\content\294100\3551203752</RimTalkDir>
+		<RimWorldWorkshopDir Condition=" '$(RimWorldWorkshopDir)' == '' ">$(RIMWORLD_WORKSHOP_DIR)</RimWorldWorkshopDir>
+		<RimTalkDir Condition=" '$(RimTalkDir)' == '' ">$(RimWorldWorkshopDir)\3551203752</RimTalkDir>
+		<BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\bin\</BaseOutputPath>
+		<BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\obj\</BaseIntermediateOutputPath>
 
 		<ModFolderName>RimTalk-ExpandMemory</ModFolderName>
 
@@ -27,7 +30,7 @@
 		<Deterministic>false</Deterministic>
 
 		<!-- 输出文件夹 -->
-		<OutputPath>$(GameVersion)/Assemblies</OutputPath>
+		<OutputPath>$(BaseOutputPath)$(Configuration)\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
 		<!-- 杂项配置，VS开发的时候没用到过，应该是用于VScode的 -->
@@ -40,7 +43,7 @@
 		<!-- NuGet包引用 -->
 		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4633" PrivateAssets="All" />
 		<PackageReference Include="Lib.Harmony.Ref" Version="2.*" PrivateAssets="All" />
-		<PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="5.3.0" PrivateAssets="All" />
+		<!-- The installed SDK compiler supports the language features used here; avoid a .NET 9-only build tool dependency. -->
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<!-- 程序集引用 -->

@@ -15,7 +15,10 @@ namespace RimTalk.Memory.Patches
         [HarmonyPrefix]
         static void Prefix(TalkRequest request, List<Pawn> pawns)
         {
-            request?.Participants = pawns;
+            if (request != null)
+            {
+                request.Participants = pawns;
+            }
         }
     }
 
