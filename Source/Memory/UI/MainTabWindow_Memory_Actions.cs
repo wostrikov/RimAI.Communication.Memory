@@ -36,22 +36,22 @@ namespace RimTalk.Memory.UI
                 
             if (allMemoriesToSummarize.Count == 0)
             {
-                Messages.Message("没有可总结的记忆（ABM或SCM）", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("Немає спогадів ABM або SCM, які можна підсумувати", MessageTypeDefOf.RejectInput, false);
                 return;
             }
             
             string confirmMessage;
             if (abmMemories.Count > 0 && scmMemories.Count > 0)
             {
-                confirmMessage = $"确定要总结 {abmMemories.Count} 条ABM记忆和 {scmMemories.Count} 条SCM记忆吗？";
+                confirmMessage = $"Підсумувати {abmMemories.Count} спогадів ABM і {scmMemories.Count} спогадів SCM?";
             }
             else if (abmMemories.Count > 0)
             {
-                confirmMessage = $"确定要总结 {abmMemories.Count} 条ABM记忆吗？";
+                confirmMessage = $"Підсумувати {abmMemories.Count} спогадів ABM?";
             }
             else
             {
-                confirmMessage = $"确定要总结 {scmMemories.Count} 条SCM记忆吗？";
+                confirmMessage = $"Підсумувати {scmMemories.Count} спогадів SCM?";
             }
             
             Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(

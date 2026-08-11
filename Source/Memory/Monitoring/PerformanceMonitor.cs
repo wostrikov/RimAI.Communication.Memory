@@ -40,11 +40,11 @@ namespace RimTalk.Memory.Monitoring
             sessionStartTick = Find.TickManager?.TicksGame ?? 0;
             
             // 注册各模块
-            RegisterModule("Embedding", "语义嵌入");
-            RegisterModule("VectorDB", "向量数据库");
-            RegisterModule("RAG", "RAG检索");
-            RegisterModule("AIDatabase", "AI数据库");
-            RegisterModule("Injection", "动态注入");
+            RegisterModule("Embedding", "Семантичні вбудовування");
+            RegisterModule("VectorDB", "Векторна база даних");
+            RegisterModule("RAG", "Пошук RAG");
+            RegisterModule("AIDatabase", "База даних ШІ");
+            RegisterModule("Injection", "Динамічне додавання");
             
             if (Prefs.DevMode)
             {
@@ -149,42 +149,42 @@ namespace RimTalk.Memory.Monitoring
             var sb = new StringBuilder();
             
             sb.AppendLine("═══════════════════════════════════════");
-            sb.AppendLine("  RimTalk ExpandMemory 性能报告");
+            sb.AppendLine("  Звіт продуктивності RimTalk ExpandMemory");
             sb.AppendLine("═══════════════════════════════════════");
             sb.AppendLine();
             
             // 会话信息
             int sessionDuration = (Find.TickManager?.TicksGame ?? 0) - sessionStartTick;
             int sessionDays = sessionDuration / GenDate.TicksPerDay;
-            sb.AppendLine($"会话时长: {sessionDays}天 ({sessionDuration} ticks)");
+            sb.AppendLine($"Тривалість сеансу: {sessionDays} дн. ({sessionDuration} тіків)");
             sb.AppendLine();
             
             // API统计
-            sb.AppendLine("─── API调用统计 ───");
-            sb.AppendLine($"总请求数: {totalAPIRequests}");
-            sb.AppendLine($"  成功: {successfulRequests} ({GetPercentage(successfulRequests, totalAPIRequests)})");
-            sb.AppendLine($"  失败: {failedRequests} ({GetPercentage(failedRequests, totalAPIRequests)})");
-            sb.AppendLine($"估算成本: ?{estimatedCostYuan:F4}");
+            sb.AppendLine("─── Статистика викликів API ───");
+            sb.AppendLine($"Усього запитів: {totalAPIRequests}");
+            sb.AppendLine($"  Успішно: {successfulRequests} ({GetPercentage(successfulRequests, totalAPIRequests)})");
+            sb.AppendLine($"  Невдало: {failedRequests} ({GetPercentage(failedRequests, totalAPIRequests)})");
+            sb.AppendLine($"Орієнтовна вартість: ¥{estimatedCostYuan:F4}");
             sb.AppendLine();
             
             // 模块统计
-            sb.AppendLine("─── 模块统计 ───");
+            sb.AppendLine("─── Статистика модулів ───");
             foreach (var kvp in moduleStats.OrderByDescending(k => k.Value.APIRequests))
             {
                 var stats = kvp.Value;
                 sb.AppendLine($"\n【{stats.ModuleName}】");
-                sb.AppendLine($"  API请求: {stats.APIRequests}次");
+                sb.AppendLine($"  Запити API: {stats.APIRequests}");
                 
                 if (stats.APIRequests > 0)
                 {
-                    sb.AppendLine($"    成功率: {GetPercentage(stats.SuccessfulRequests, stats.APIRequests)}");
-                    sb.AppendLine($"    成本: ?{stats.TotalCostYuan:F4}");
+                    sb.AppendLine($"    Успішність: {GetPercentage(stats.SuccessfulRequests, stats.APIRequests)}");
+                    sb.AppendLine($"    Вартість: ¥{stats.TotalCostYuan:F4}");
                 }
                 
                 if (stats.CacheRequests > 0)
                 {
-                    sb.AppendLine($"  缓存请求: {stats.CacheRequests}次");
-                    sb.AppendLine($"    命中率: {GetPercentage(stats.CacheHits, stats.CacheRequests)}");
+                    sb.AppendLine($"  Запити кешу: {stats.CacheRequests}");
+                    sb.AppendLine($"    Частка влучень: {GetPercentage(stats.CacheHits, stats.CacheRequests)}");
                 }
             }
             sb.AppendLine();
@@ -192,16 +192,16 @@ namespace RimTalk.Memory.Monitoring
             // 性能指标
             if (performanceMetrics.Count > 0)
             {
-                sb.AppendLine("─── 性能指标 ───");
+                sb.AppendLine("─── Показники продуктивності ───");
                 foreach (var kvp in performanceMetrics.OrderByDescending(k => k.Value.TotalDurationMs))
                 {
                     var metric = kvp.Value;
                     long avgMs = metric.ExecutionCount > 0 ? metric.TotalDurationMs / metric.ExecutionCount : 0;
                     
                     sb.AppendLine($"\n{metric.OperationName}:");
-                    sb.AppendLine($"  执行次数: {metric.ExecutionCount}");
-                    sb.AppendLine($"  平均耗时: {avgMs}ms");
-                    sb.AppendLine($"  最小/最大: {metric.MinDurationMs}ms / {metric.MaxDurationMs}ms");
+                    sb.AppendLine($"  Кількість виконань: {metric.ExecutionCount}");
+                    sb.AppendLine($"  Середній час: {avgMs} мс");
+                    sb.AppendLine($"  Мін./макс.: {metric.MinDurationMs} мс / {metric.MaxDurationMs} мс");
                 }
             }
             
@@ -219,7 +219,7 @@ namespace RimTalk.Memory.Monitoring
             double successRate = totalAPIRequests > 0 ? 
                 (double)successfulRequests / totalAPIRequests * 100 : 0;
             
-            return $"API: {totalAPIRequests}次 ({successRate:F1}%成功) | 成本: ?{estimatedCostYuan:F4}";
+            return $"API: {totalAPIRequests} ({successRate:F1}% успішно) | Вартість: ¥{estimatedCostYuan:F4}";
         }
         
         /// <summary>
@@ -258,7 +258,7 @@ namespace RimTalk.Memory.Monitoring
                 string report = GetFullReport();
                 System.IO.File.WriteAllText(filePath, report);
                 
-                Messages.Message($"性能报告已导出: {filePath}", MessageTypeDefOf.PositiveEvent);
+                Messages.Message($"Звіт продуктивності експортовано: {filePath}", MessageTypeDefOf.PositiveEvent);
                 Log.Message($"[Performance Monitor] Report exported to: {filePath}");
             }
             catch (Exception ex)

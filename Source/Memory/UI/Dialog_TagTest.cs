@@ -75,7 +75,7 @@ namespace RimTalk.Memory.UI
             
             // 测试按钮和清除按钮
             float buttonWidth = (inRect.width - 10f) / 2f;
-            if (Widgets.ButtonText(new Rect(0f, y, buttonWidth, 32f), "?? 测试"))
+            if (Widgets.ButtonText(new Rect(0f, y, buttonWidth, 32f), "Перевірити"))
             {
                 ExecuteTagTest();
             }
@@ -112,7 +112,7 @@ namespace RimTalk.Memory.UI
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             GUI.color = new Color(0.6f, 0.6f, 0.6f);
-            Widgets.Label(rect, "点击 ?? 测试 按钮开始测试");
+            Widgets.Label(rect, "Натисніть «Перевірити», щоб почати тест");
             GUI.color = Color.white;
             Text.Anchor = TextAnchor.UpperLeft;
         }
@@ -216,12 +216,12 @@ namespace RimTalk.Memory.UI
         {
             if (string.IsNullOrWhiteSpace(testTag))
             {
-                Messages.Message("请输入标签", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("Введіть мітку", MessageTypeDefOf.RejectInput, false);
                 return;
             }
             
             // 创建临时常识条目
-            var tempEntry = new CommonKnowledgeEntry(testTag, "测试内容")
+            var tempEntry = new CommonKnowledgeEntry(testTag, "Тестовий вміст")
             {
                 matchMode = KeywordMatchMode.Any
             };

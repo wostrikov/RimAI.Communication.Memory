@@ -410,7 +410,7 @@ namespace RimTalk.Memory
                 
                 // ⭐ 给用户反馈消息（保留）
                 Messages.Message(
-                    $"{pawn.LabelShort}: {scmCount}条短期记忆已总结",
+                    $"{pawn.LabelShort}: підсумовано {scmCount} короткочасних спогадів",
                     MessageTypeDefOf.TaskCompletion,
                     false
                 );
@@ -429,7 +429,7 @@ namespace RimTalk.Memory
                     Log.Message($"[RimTalk Memory] All manual summarizations complete!");
                 }
                 // ⭐ 所有总结完成后的消息（保留）
-                Messages.Message("所有殖民者手动总结完成", MessageTypeDefOf.PositiveEvent, false);
+                Messages.Message("Ручне підсумування завершено для всіх колоністів", MessageTypeDefOf.PositiveEvent, false);
             }
         }
         
@@ -529,7 +529,7 @@ namespace RimTalk.Memory
             // 第一行：参与者列表
             if (record.ParticipantNames != null && record.ParticipantNames.Count > 0)
             {
-                sb.AppendLine($"[对话参与者：{string.Join("、", record.ParticipantNames)}]");
+                sb.AppendLine($"[Учасники розмови: {string.Join(", ", record.ParticipantNames)}]");
             }
             
             // 对话内容
@@ -601,7 +601,7 @@ namespace RimTalk.Memory
             }
             else
             {
-                Messages.Message("没有需要手动总结的殖民者", MessageTypeDefOf.RejectInput, false);
+                Messages.Message("Немає колоністів, спогади яких потребують ручного підсумування", MessageTypeDefOf.RejectInput, false);
             }
         }
 
@@ -752,7 +752,7 @@ namespace RimTalk.Memory
                                     archiveEntry.Content = aiSummary;
                                     archiveEntry.RemoveTag("简单归档");
                                     archiveEntry.AddTag("AI归档");
-                                    archiveEntry.Notes = "AI 深度归档已完成。";
+                                    archiveEntry.Notes = "Глибоке архівування ШІ завершено.";
                                 }
                             });
                             
@@ -760,7 +760,7 @@ namespace RimTalk.Memory
                             
                             archiveEntry.AddTag("简单归档");
                             archiveEntry.AddTag("待AI更新");
-                            archiveEntry.Notes = "AI 深度归档正在后台处理中...";
+                            archiveEntry.Notes = "ШІ виконує глибоке архівування у фоновому режимі…";
                         }
                         
                         // 添加到 CLPA
@@ -827,7 +827,7 @@ namespace RimTalk.Memory
                 
                 // 可选：给用户一个通知
                 Messages.Message(
-                    $"CLPA自动归档完成：{totalArchivedPawns}名殖民者，{totalArchivedEntries}条归档记忆，{totalRemovedELS}条ELS已归档",
+                    $"Автоархівування CLPA завершено: колоністів — {totalArchivedPawns}, архівних спогадів — {totalArchivedEntries}, архівовано ELS — {totalRemovedELS}",
                     MessageTypeDefOf.NeutralEvent,
                     false
                 );

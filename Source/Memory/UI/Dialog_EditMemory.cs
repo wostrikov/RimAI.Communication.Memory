@@ -48,7 +48,7 @@ namespace RimTalk.Memory.UI
         public override void DoWindowContents(Rect inRect)
         {
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0f, 0f, inRect.width, 35f), "编辑记忆");
+            Widgets.Label(new Rect(0f, 0f, inRect.width, 35f), "Редагування спогаду");
             Text.Font = GameFont.Small;
 
             float curY = 45f;
@@ -57,14 +57,14 @@ namespace RimTalk.Memory.UI
             Rect infoRect = new Rect(0f, curY, inRect.width, 60f);
             GUI.color = Color.gray;
             Widgets.Label(new Rect(infoRect.x, infoRect.y, infoRect.width, 25f), 
-                $"类型: {memory.TypeName}  |  层级: {memory.LayerName}  |  时间: {memory.AgeString}");
+                $"Тип: {memory.TypeName}  |  Рівень: {memory.LayerName}  |  Час: {memory.AgeString}");
             Widgets.Label(new Rect(infoRect.x, infoRect.y + 25f, infoRect.width, 25f), 
-                $"重要性: {memory.Importance:F2}  |  活跃度: {memory.Activity:F2}");
+                $"Важливість: {memory.Importance:F2}  |  Активність: {memory.Activity:F2}");
             GUI.color = Color.white;
             curY += 65f;
 
             // 内容编辑
-            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "内容:");
+            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Вміст:");
             curY += 25f;
             
             // 内容区域扩大并增加滑条
@@ -83,7 +83,7 @@ namespace RimTalk.Memory.UI
             curY += 155f;
 
             // 备注编辑
-            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "备注:");
+            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Примітки:");
             curY += 25f;
             
             Rect notesRect = new Rect(0f, curY, inRect.width, 60f);
@@ -91,7 +91,7 @@ namespace RimTalk.Memory.UI
             curY += 65f;
 
             // 标签管理
-            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "标签:");
+            Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Мітки:");
             curY += 25f;
 
             DrawTagsSection(new Rect(0f, curY, inRect.width, 100f));
@@ -100,7 +100,7 @@ namespace RimTalk.Memory.UI
             // 固定选项
             Rect pinnedRect = new Rect(0f, curY, inRect.width, 30f);
             bool wasPinned = memory.IsPinned;
-            Widgets.CheckboxLabeled(pinnedRect, "固定此记忆（不会被删除或衰减）", ref memory.IsPinned);
+            Widgets.CheckboxLabeled(pinnedRect, "Закріпити цей спогад (він не видалятиметься й не згасатиме)", ref memory.IsPinned);
             if (memory.IsPinned != wasPinned)
             {
                 if (memory.IsPinned)
@@ -115,14 +115,14 @@ namespace RimTalk.Memory.UI
             float buttonY = inRect.height - 40f;
             
             // 保存按钮
-            if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth * 2 - 10f, buttonY, buttonWidth, 35f), "保存"))
+            if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth * 2 - 10f, buttonY, buttonWidth, 35f), "Зберегти"))
             {
                 SaveChanges();
                 Close();
             }
 
             // 取消按钮
-            if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth, buttonY, buttonWidth, 35f), "取消"))
+            if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth, buttonY, buttonWidth, 35f), "Скасувати"))
             {
                 Close();
             }
@@ -148,7 +148,7 @@ namespace RimTalk.Memory.UI
                     
                     // 移除按钮
                     Rect removeRect = new Rect(tagRect.xMax - 60f, tagRect.y, 55f, 22f);
-                    if (Widgets.ButtonText(removeRect, "移除"))
+                    if (Widgets.ButtonText(removeRect, "Прибрати"))
                     {
                         memory.RemoveTag(tag);
                     }
@@ -177,7 +177,7 @@ namespace RimTalk.Memory.UI
                 
                 // 添加按钮
                 Rect addRect = new Rect(tagRect.xMax - 60f, tagRect.y, 55f, 22f);
-                if (Widgets.ButtonText(addRect, "添加"))
+                if (Widgets.ButtonText(addRect, "Додати"))
                 {
                     memory.AddTag(tag);
                 }
@@ -191,14 +191,14 @@ namespace RimTalk.Memory.UI
             curY += 10f;
             
             Rect customLabelRect = new Rect(0f, curY, viewRect.width, 22f);
-            Widgets.Label(customLabelRect, "自定义标签:");
+            Widgets.Label(customLabelRect, "Власна мітка:");
             curY += 25f;
             
             Rect inputRect = new Rect(0f, curY, viewRect.width - 70f, 22f);
             newTagInput = Widgets.TextField(inputRect, newTagInput);
             
             Rect addCustomRect = new Rect(viewRect.width - 60f, curY, 55f, 22f);
-            if (Widgets.ButtonText(addCustomRect, "添加") && !string.IsNullOrWhiteSpace(newTagInput))
+            if (Widgets.ButtonText(addCustomRect, "Додати") && !string.IsNullOrWhiteSpace(newTagInput))
             {
                 memory.AddTag(newTagInput.Trim());
                 newTagInput = "";
@@ -217,7 +217,7 @@ namespace RimTalk.Memory.UI
                 memory.AddTag(MemoryTags.用户编辑);
             }
 
-            Messages.Message($"记忆已更新", MessageTypeDefOf.TaskCompletion);
+            Messages.Message("Спогад оновлено", MessageTypeDefOf.TaskCompletion);
         }
     }
 }
