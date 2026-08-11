@@ -267,7 +267,7 @@ namespace RimTalk.Memory.UI
             float contentHeight = contentRect.height - 40f;
             Rect textRect = new Rect(contentRect.x, contentY, contentRect.width, contentHeight);
             
-            string displayText = memory.Content;
+            string displayText = memory.DisplayContent;
             int maxLength = GetContentMaxLength(memory.Layer);
             if (displayText.Length > maxLength)
             {
@@ -279,7 +279,7 @@ namespace RimTalk.Memory.UI
             // Tooltip for full content
             if (memory.Content.Length > maxLength && Mouse.IsOver(textRect))
             {
-                TooltipHandler.TipRegion(textRect, memory.Content);
+                TooltipHandler.TipRegion(textRect, memory.DisplayContent);
             }
             
             // Footer (importance/activity bars)

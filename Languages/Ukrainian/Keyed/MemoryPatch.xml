@@ -1,5 +1,20 @@
 <?xml version='1.0' encoding='utf-8'?>
 <LanguageData>
+  <RimTalk_MemoryLayer_Active>Надкоротка</RimTalk_MemoryLayer_Active>
+  <RimTalk_MemoryLayer_Situational>Короткочасна</RimTalk_MemoryLayer_Situational>
+  <RimTalk_MemoryLayer_EventLog>Середньострокова</RimTalk_MemoryLayer_EventLog>
+  <RimTalk_MemoryLayer_Archive>Довгострокова</RimTalk_MemoryLayer_Archive>
+  <RimTalk_Memory_Unknown>Невідомо</RimTalk_Memory_Unknown>
+  <RimTalk_MemoryAge_Invalid>Некоректний час</RimTalk_MemoryAge_Invalid>
+  <RimTalk_MemoryAge_JustNow>Щойно</RimTalk_MemoryAge_JustNow>
+  <RimTalk_MemoryAge_HoursAgo>Кілька годин тому</RimTalk_MemoryAge_HoursAgo>
+  <RimTalk_MemoryAge_Today>Сьогодні</RimTalk_MemoryAge_Today>
+  <RimTalk_MemoryAge_OneDayAgo>День тому</RimTalk_MemoryAge_OneDayAgo>
+  <RimTalk_MemoryAge_TwoDaysAgo>Позавчора</RimTalk_MemoryAge_TwoDaysAgo>
+  <RimTalk_MemoryAge_DaysAgo>Кілька днів тому</RimTalk_MemoryAge_DaysAgo>
+  <RimTalk_MemoryAge_LastWeek>Минулого тижня</RimTalk_MemoryAge_LastWeek>
+  <RimTalk_Memory_Participants>Учасники розмови</RimTalk_Memory_Participants>
+  <RimTalk_Memory_UnknownDate>Невідома дата</RimTalk_Memory_UnknownDate>
   <!-- ==================== Common UI ==================== -->
   <RimTalk_Memory_Title>Спогади {0}</RimTalk_Memory_Title>
   <RimTalk_SelectColonist>Вибрати колоніста</RimTalk_SelectColonist>

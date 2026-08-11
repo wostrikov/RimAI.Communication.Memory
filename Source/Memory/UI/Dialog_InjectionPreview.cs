@@ -902,7 +902,7 @@ namespace RimTalk.Memory.Debug
                             
                             sb.AppendLine($"[{i + 1}] {layerTag} {GetTypeTag(memory.Type)}");
                             sb.AppendLine($"    " + "RimTalk_Preview_ScoreDetail".Translate(score.TotalScore.ToString("F3")));
-                            sb.AppendLine($"    {memory.Content}");
+                            sb.AppendLine($"    {memory.DisplayContent}");
                             sb.AppendLine();
                         }
                     }
@@ -921,12 +921,12 @@ namespace RimTalk.Memory.Debug
                     foreach (var memory in memoryComp.EventLogMemories.Take(5))
                     {
                         count++;
-                        sb.AppendLine($"[ELS-{count}] {memory.Content}");
+                        sb.AppendLine($"[ELS-{count}] {memory.DisplayContent}");
                     }
                     foreach (var memory in memoryComp.ArchiveMemories.Take(5))
                     {
                         count++;
-                        sb.AppendLine($"[CLPA-{count}] {memory.Content}");
+                        sb.AppendLine($"[CLPA-{count}] {memory.DisplayContent}");
                     }
                     
                     cachedMemoryCount = count;

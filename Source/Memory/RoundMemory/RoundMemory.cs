@@ -53,7 +53,7 @@ namespace RimTalk.Memory
             IsHomeMap = Pawns.Select(p => p.Map).FirstOrDefault(m => m is not null)?.IsPlayerHome ?? false;
 
             // 显式显示参与者名单（可选：并在构建时就初始化内容）
-            Content = $"[对话参与者: {GetParticipantsRoster()}]{(content is null ? string.Empty : $"\n{content}")}";
+            Content = $"[{"RimTalk_Memory_Participants".Translate()}: {GetParticipantsRoster()}]{(content is null ? string.Empty : $"\n{content}")}";
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace RimTalk.Memory
         public string GetDateAndTime()
         {
             // 若信息缺失，返回未知
-            if (!planetTile.Valid || AbsTick == -1) return "Unknown Date";
+            if (!planetTile.Valid || AbsTick == -1) return "RimTalk_Memory_UnknownDate".Translate();
 
             // 若位置获取异常，则使用默认值
             var location = Find.WorldGrid?.LongLatOf(planetTile) ?? Vector2.zero;

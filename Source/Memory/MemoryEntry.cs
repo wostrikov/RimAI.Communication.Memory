@@ -20,6 +20,20 @@ namespace RimTalk.Memory
         public int GameTick = -1;           // 时间戳（单位 tick）
         public string Content;              // 内容
 
+        // Presentation-only migration for metadata emitted by older builds.
+        // The semantic conversation body remains byte-for-byte unchanged in the save.
+        public string DisplayContent
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Content)) return Content;
+                const string legacyPrefix = "[对话参与者:";
+                return Content.StartsWith(legacyPrefix, StringComparison.Ordinal)
+                    ? $"[{"RimTalk_Memory_Participants".Translate()}:" + Content.Substring(legacyPrefix.Length)
+                    : Content;
+            }
+        }
+
         // 分类
         public MemoryType Type;             // 类型
         public MemoryLayer Layer;           // 层级
@@ -57,11 +71,11 @@ namespace RimTalk.Memory
         /// </summary>
         public string LayerName => Layer switch
         {
-            MemoryLayer.Active => "超短期",
-            MemoryLayer.Situational => "短期",
-            MemoryLayer.EventLog => "中期",
-            MemoryLayer.Archive => "长期",
-            _ => "未知"
+            MemoryLayer.Active => "RimTalk_MemoryLayer_Active".Translate(),
+            MemoryLayer.Situational => "RimTalk_MemoryLayer_Situational".Translate(),
+            MemoryLayer.EventLog => "RimTalk_MemoryLayer_EventLog".Translate(),
+            MemoryLayer.Archive => "RimTalk_MemoryLayer_Archive".Translate(),
+            _ => "RimTalk_Memory_Unknown".Translate()
         };
 
         /// <summary>
@@ -69,14 +83,14 @@ namespace RimTalk.Memory
         /// </summary>
         public string TypeName => Type switch
         {
-            MemoryType.Conversation => "对话",
-            MemoryType.Action => "行动",
-            MemoryType.Observation => "观察",
-            MemoryType.Event => "事件",
-            MemoryType.Emotion => "情绪",
-            MemoryType.Relationship => "关系",
-            MemoryType.Internal => "内部",
-            _ => "未知"
+            MemoryType.Conversation => "RimTalk_MemoryType_Conversation".Translate(),
+            MemoryType.Action => "RimTalk_MemoryType_Action".Translate(),
+            MemoryType.Observation => "RimTalk_MemoryType_Observation".Translate(),
+            MemoryType.Event => "RimTalk_MemoryType_Event".Translate(),
+            MemoryType.Emotion => "RimTalk_MemoryType_Emotion".Translate(),
+            MemoryType.Relationship => "RimTalk_MemoryType_Relationship".Translate(),
+            MemoryType.Internal => "RimTalk_MemoryType_Internal".Translate(),
+            _ => "RimTalk_Memory_Unknown".Translate()
         };
 
         /// <summary>
@@ -90,14 +104,14 @@ namespace RimTalk.Memory
         /// </summary>
         public string AgeString => (Find.TickManager?.TicksGame - GameTick) switch
         {
-            null or < 0 => "异常时间",
-            < GenDate.TicksPerHour => "刚刚",
-            < GenDate.TicksPerHour * 6 => "几小时前",
-            < GenDate.TicksPerDay => "一天内",
-            < GenDate.TicksPerDay * 2 => "一天前",
-            < GenDate.TicksPerDay * 3 => "前天",
-            < GenDate.TicksPerDay * 7 => "前几天",
-            < GenDate.TicksPerDay * 14 => "上周",
+            null or < 0 => "RimTalk_MemoryAge_Invalid".Translate(),
+            < GenDate.TicksPerHour => "RimTalk_MemoryAge_JustNow".Translate(),
+            < GenDate.TicksPerHour * 6 => "RimTalk_MemoryAge_HoursAgo".Translate(),
+            < GenDate.TicksPerDay => "RimTalk_MemoryAge_Today".Translate(),
+            < GenDate.TicksPerDay * 2 => "RimTalk_MemoryAge_OneDayAgo".Translate(),
+            < GenDate.TicksPerDay * 3 => "RimTalk_MemoryAge_TwoDaysAgo".Translate(),
+            < GenDate.TicksPerDay * 7 => "RimTalk_MemoryAge_DaysAgo".Translate(),
+            < GenDate.TicksPerDay * 14 => "RimTalk_MemoryAge_LastWeek".Translate(),
             _ => GenDate.DateFullStringAt(GenDate.TickGameToAbs(GameTick), Vector2.zero)
         };
 

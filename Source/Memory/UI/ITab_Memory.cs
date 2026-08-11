@@ -212,7 +212,7 @@ namespace RimTalk.Memory.UI
             Text.Font = GameFont.Small;
 
             // 截断到合适长度显示
-            string displayText = memory.Content;
+            string displayText = memory.DisplayContent;
             if (!string.IsNullOrEmpty(displayText) && displayText.Length > 80)
             {
                 displayText = displayText.Substring(0, 77) + "...";
@@ -224,7 +224,7 @@ namespace RimTalk.Memory.UI
             // 添加 Tooltip 显示完整内容
             if (Mouse.IsOver(contentRect))
             {
-                TooltipHandler.TipRegion(contentRect, memory.Content);
+                TooltipHandler.TipRegion(contentRect, memory.DisplayContent);
             }
 
             // Importance bar
