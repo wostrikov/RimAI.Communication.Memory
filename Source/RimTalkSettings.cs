@@ -76,7 +76,7 @@ namespace RimTalk.MemoryPatch
         public bool useRimTalkAIConfig = true;
         public string independentApiKey = "";
         public string independentApiUrl = "";
-        public string independentModel = "gpt-3.5-turbo";
+        public string independentModel = "";
         public string independentProvider = "OpenAI";
         public bool enablePromptCaching = true;
         
@@ -204,7 +204,7 @@ namespace RimTalk.MemoryPatch
             Scribe_Values.Look(ref useRimTalkAIConfig, "ai_useRimTalkConfig", true);
             Scribe_Values.Look(ref independentApiKey, "ai_independentApiKey", "");
             Scribe_Values.Look(ref independentApiUrl, "ai_independentApiUrl", "");
-            Scribe_Values.Look(ref independentModel, "ai_independentModel", "gpt-3.5-turbo");
+            Scribe_Values.Look(ref independentModel, "ai_independentModel", "");
             Scribe_Values.Look(ref independentProvider, "ai_independentProvider", "OpenAI");
             Scribe_Values.Look(ref enablePromptCaching, "ai_enablePromptCaching", true);
             
@@ -218,6 +218,9 @@ namespace RimTalk.MemoryPatch
                 const string legacyArchive = "殖民者{0}的记忆归档\n\n记忆列表\n{1}\n\n要求提炼核心特征和里程碑事件\n合并相似经历突出长期趋势\n极简表达不超过60字\n只输出总结文字不要其他格式";
                 if (dailySummaryPrompt == legacyDaily) dailySummaryPrompt = "";
                 if (deepArchivePrompt == legacyArchive) deepArchivePrompt = "";
+                if (independentModel == "gpt-3.5-turbo") independentModel = "";
+                if ((useRimTalkAIConfig || independentProvider == "OpenAI") && !string.IsNullOrEmpty(independentApiKey))
+                    independentApiKey = "";
             }
 
             Scribe_Values.Look(ref enableMemoryUI, "memoryPatch_enableMemoryUI", true);
@@ -547,6 +550,7 @@ namespace RimTalk.MemoryPatch
                 listing.Label("  " + "RimTalk_Settings_WillFollowRimTalkConfig".Translate());
                 GUI.color = Color.white;
                 listing.Gap();
+                return;
             }
             
             listing.Gap();
@@ -558,7 +562,15 @@ namespace RimTalk.MemoryPatch
             
             // API 配置
             listing.Label("RimTalk_Settings_APIKey".Translate() + ":");
-            independentApiKey = listing.TextEntry(independentApiKey);
+            if (independentProvider == "OpenAI")
+            {
+                listing.Label("OPENAI_RIMTALK ✓");
+                independentApiKey = "";
+            }
+            else
+            {
+                independentApiKey = GUI.PasswordField(listing.GetRect(30f), independentApiKey ?? "", '•');
+            }
             
             listing.Label("RimTalk_Settings_APIURL".Translate() + ":");
             independentApiUrl = listing.TextEntry(independentApiUrl);

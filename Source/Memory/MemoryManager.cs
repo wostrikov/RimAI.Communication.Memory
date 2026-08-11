@@ -823,7 +823,7 @@ namespace RimTalk.Memory
             // 输出总结日志
             if (totalArchivedPawns > 0)
             {
-                Log.Message($"[RimTalk Memory] ✅ CLPA auto-archive complete: {totalArchivedPawns} colonists, {totalArchivedEntries} CLPA entries created, {totalRemovedELS} ELS removed (前25%)");
+                Log.Message($"[RimTalk Memory] ✅ Автоархівацію CLPA завершено: колоністів {totalArchivedPawns}, створено записів CLPA {totalArchivedEntries}, вилучено ELS {totalRemovedELS} (перші 25%)");
                 
                 // 可选：给用户一个通知
                 Messages.Message(

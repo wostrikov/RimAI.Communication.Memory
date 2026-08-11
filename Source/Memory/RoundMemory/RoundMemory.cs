@@ -46,7 +46,7 @@ namespace RimTalk.Memory
             // 因为RimTalk的问题，这里获取地点的方式很蛋疼，没辙
             if (Pawns.Count == 0)
             {
-                Log.Warning("[RoundMemory] 创建RoundMemory时发现不存在对话参与者");
+                Log.Warning("[RoundMemory] Під час створення RoundMemory не знайдено учасників діалогу");
                 return;
             }
             planetTile = Pawns.FirstOrDefault()?.Tile ?? PlanetTile.Invalid;
@@ -117,7 +117,7 @@ namespace RimTalk.Memory
             // 确保集合不为 null
             if (Pawns is null)
             {
-                Log.Warning($"[RoundMemory] ExposeData for RoundMemory: tick={AbsTick}时发现其Pawns为空");
+                Log.Warning($"[RoundMemory] ExposeData: для RoundMemory з tick={AbsTick} список Pawns порожній");
                 Pawns = new();
             }
             // 清理Pawns中的null条目

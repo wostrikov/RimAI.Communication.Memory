@@ -187,7 +187,7 @@ namespace RimTalk.Memory.UI
                     break;
                     
                 default:
-                    Log.Warning($"[RimTalk Memory] 不支持手动添加到 {targetLayer} 层级");
+                    Log.Warning($"[RimTalk Memory] Ручне додавання до рівня {targetLayer} не підтримується");
                     break;
             }
         }

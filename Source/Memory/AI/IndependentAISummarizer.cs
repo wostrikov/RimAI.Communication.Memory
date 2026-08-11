@@ -36,6 +36,7 @@ namespace RimTalk.Memory.AI
         );
         
         private static bool isInitialized = false;
+        private static bool useRimTalkAdapter = false;
         private static string apiKey, apiUrl, model, provider;
         
         // ? 修复1: 添加缓存大小限制，防止内存泄漏
@@ -106,6 +107,7 @@ namespace RimTalk.Memory.AI
             apiUrl = "";
             model = "";
             provider = "";
+            useRimTalkAdapter = false;
             isInitialized = false;
             
             // 清除所有缓存
@@ -143,25 +145,19 @@ namespace RimTalk.Memory.AI
                 {
                     if (TryLoadFromRimTalk())
                     {
-                        if (ValidateConfiguration())
-                        {
-                            Log.Message($"[AI] ? Loaded from RimTalk ({provider}/{model})");
-                            isInitialized = true;
-                            return;
-                        }
-                        else
-                        {
-                            Log.Warning("[AI] ?? RimTalk config invalid, using independent config");
-                        }
+                        Log.Message($"[AI] Loaded from RimTalk ({provider}/{model})");
+                        isInitialized = true;
+                        return;
                     }
-                    else
-                    {
-                        Log.Warning("[AI] ?? RimTalk not configured, using independent config as fallback");
-                    }
+                    Log.Warning("[AI] Конфігурацію RimTalk не налаштовано; незалежний fallback вимкнено для inherited mode");
+                    isInitialized = false;
+                    return;
                 }
                 
                 // 使用独立配置
-                apiKey = settings.independentApiKey;
+                apiKey = settings.independentProvider == "OpenAI"
+                    ? Environment.GetEnvironmentVariable("OPENAI_RIMTALK")
+                    : settings.independentApiKey;
                 apiUrl = settings.independentApiUrl;
                 model = settings.independentModel;
                 provider = settings.independentProvider;
@@ -219,7 +215,7 @@ namespace RimTalk.Memory.AI
                 }
                 
                 Log.Message($"[AI] ? Initialized with independent config ({provider}/{model})");
-                Log.Message($"[AI]    API Key: {SanitizeApiKey(apiKey)}");
+                Log.Message($"[AI]    Credential source: {(provider == "OpenAI" ? "OPENAI_RIMTALK" : "provider-specific setting")}");
                 Log.Message($"[AI]    API URL: {apiUrl}");
                 isInitialized = true;
             }
@@ -239,7 +235,7 @@ namespace RimTalk.Memory.AI
             if (string.IsNullOrEmpty(apiKey))
             {
                 Log.Error("[AI] ? API Key is empty!");
-                Log.Error("[AI]    Please configure in: Options → Mod Settings → RimTalk-Expand Memory → AI配置");
+                Log.Error("[AI]    Налаштуйте доступ у: Параметри → Налаштування модів → RimTalk-Expand Memory → AI");
                 return false;
             }
             
@@ -248,7 +244,7 @@ namespace RimTalk.Memory.AI
             {
                 Log.Error($"[AI] ? API Key too short (length: {apiKey.Length})!");
                 Log.Error("[AI]    Valid API Keys are usually 20+ characters");
-                Log.Error($"[AI]    Your key: {SanitizeApiKey(apiKey)}");
+                Log.Error("[AI]    Credential is invalid or too short");
                 return false;
             }
             
@@ -259,7 +255,7 @@ namespace RimTalk.Memory.AI
                 if ((provider == "OpenAI" || provider == "DeepSeek") && !apiKey.StartsWith("sk-"))
                 {
                     Log.Warning($"[AI] ?? API Key doesn't start with 'sk-' for {provider}");
-                    Log.Warning($"[AI]    Your key: {SanitizeApiKey(apiKey)}");
+                    Log.Warning("[AI]    Credential format is unusual");
                     Log.Warning("[AI]    If using third-party proxy, select 'Custom' or 'Player2' provider");
                 }
             }
@@ -274,25 +270,11 @@ namespace RimTalk.Memory.AI
             // 检查Model
             if (string.IsNullOrEmpty(model))
             {
-                Log.Warning("[AI] ?? Model name is empty, using default");
-                model = "gpt-3.5-turbo";
+                Log.Error("[AI] Назву моделі не налаштовано");
+                return false;
             }
             
             return true;
-        }
-        
-        /// <summary>
-        /// ? v3.3.3: 安全显示API Key（只显示前后缀）
-        /// </summary>
-        private static string SanitizeApiKey(string key)
-        {
-            if (string.IsNullOrEmpty(key))
-                return "(empty)";
-            
-            if (key.Length <= 10)
-                return key.Substring(0, Math.Min(3, key.Length)) + "...";
-            
-            return $"{key.Substring(0, 7)}...{key.Substring(key.Length - 4)} (length: {key.Length})";
         }
         
         /// <summary>
@@ -323,11 +305,7 @@ namespace RimTalk.Memory.AI
                 
                 Type type3 = obj2.GetType();
                 
-                FieldInfo field = type3.GetField("ApiKey");
-                if (field != null)
-                {
-                    apiKey = (field.GetValue(obj2) as string);
-                }
+                apiKey = null;
                 
                 FieldInfo field2 = type3.GetField("BaseUrl");
                 if (field2 != null)
@@ -379,13 +357,15 @@ namespace RimTalk.Memory.AI
                     }
                 }
                 
-                if (string.IsNullOrEmpty(model))
+                if (model == "Custom")
                 {
-                    model = "gpt-3.5-turbo";
+                    FieldInfo customModel = type3.GetField("CustomModelName");
+                    model = customModel?.GetValue(obj2) as string;
                 }
                 
-                if (!string.IsNullOrEmpty(apiKey) && !string.IsNullOrEmpty(apiUrl))
+                if (!string.IsNullOrEmpty(model))
                 {
+                    useRimTalkAdapter = true;
                     Log.Message($"[AI] Loaded from RimTalk ({provider}/{model})");
                     isInitialized = true;
                     return true;
@@ -724,6 +704,35 @@ namespace RimTalk.Memory.AI
 
         private static async Task<string> CallAIAsync(string prompt)
         {
+            if (useRimTalkAdapter)
+            {
+                var client = await global::RimTalk.Client.AIClientFactory.GetAIClientAsync();
+                if (client == null) return null;
+                var payload = await client.GetChatCompletionAsync(
+                    new List<(global::RimTalk.Data.Role role, string message)>(),
+                    new List<(global::RimTalk.Data.Role role, string message)>
+                    {
+                        (global::RimTalk.Data.Role.User, prompt)
+                    });
+                return payload?.Response;
+            }
+
+            if (provider == "OpenAI")
+            {
+                var client = new global::RimTalk.Client.OpenAI.OpenAIClient(
+                    global::RimTalk.Client.OpenAI.OpenAIProviderAdapter.ResponsesEndpoint,
+                    model,
+                    global::RimTalk.Client.OpenAI.OpenAIProviderAdapter.ResolveCredential(),
+                    officialOpenAI: true);
+                var payload = await client.GetChatCompletionAsync(
+                    new List<(global::RimTalk.Data.Role role, string message)>(),
+                    new List<(global::RimTalk.Data.Role role, string message)>
+                    {
+                        (global::RimTalk.Data.Role.User, prompt)
+                    });
+                return payload?.Response;
+            }
+
             const int MAX_RETRIES = 3;
             const int RETRY_DELAY_MS = 2000; // 2秒重试延迟
             
@@ -746,7 +755,7 @@ namespace RimTalk.Memory.AI
                         Log.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
                         Log.Message($"[AI Summarizer]   Provider: {provider}");
                         Log.Message($"[AI Summarizer]   Model: {model}");
-                        Log.Message($"[AI Summarizer]   API Key: {SanitizeApiKey(apiKey)}");
+                        Log.Message($"[AI Summarizer]   Credential source: {(provider == "OpenAI" ? "OPENAI_RIMTALK" : "provider-specific setting")}");
                     }
 
                     var request = (HttpWebRequest)WebRequest.Create(actualUrl);
@@ -834,7 +843,7 @@ namespace RimTalk.Memory.AI
 	                            // 认证错误：显示完整错误信息（帮助调试）
 	                            errorDetail = errorText;
 	                            Log.Error($"[AI Summarizer] ? Authentication Error ({errorResponse.StatusCode}):");
-	                            Log.Error($"[AI Summarizer]    API Key: {SanitizeApiKey(apiKey)}");
+	                            Log.Error("[AI Summarizer]    Credential rejected by provider");
 	                            Log.Error($"[AI Summarizer]    Provider: {provider}");
 	                            Log.Error($"[AI Summarizer]    Response: {errorText}");
 	                            Log.Error("[AI Summarizer] ");
@@ -1089,7 +1098,7 @@ namespace RimTalk.Memory.AI
                     if (match.Success)
                     {
                         player2LocalKey = match.Groups[1].Value;
-                        Log.Message($"[AI] ? Got Player2 local key: {SanitizeApiKey(player2LocalKey)}");
+                        Log.Message("[AI] Player2 local credential acquired");
                     }
                 }
             }

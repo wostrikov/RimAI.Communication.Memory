@@ -243,11 +243,11 @@ namespace RimTalk.Memory.UI
             testExecuted = true;
             
             // 显示详细的匹配文本信息
-            Log.Message($"[标签测试] 标签: {testTag}");
-            Log.Message($"[标签测试] 对话: {testContext}");
-            Log.Message($"[标签测试] Pawn: {(testPawn != null ? testPawn.LabelShort : "无")}");
-            Log.Message($"[标签测试] 实际匹配文本: {testMatchText}");
-            Log.Message($"[标签测试] 结果: {(testResult ? "匹配成功" : "不匹配")}");
+            Log.Message($"[Тест тегу] Тег: {testTag}");
+            Log.Message($"[Тест тегу] Діалог: {testContext}");
+            Log.Message($"[Тест тегу] Pawn: {(testPawn != null ? testPawn.LabelShort : "немає")}");
+            Log.Message($"[Тест тегу] Фактичний текст зіставлення: {testMatchText}");
+            Log.Message($"[Тест тегу] Результат: {(testResult ? "збіг" : "немає збігу")}");
         }
 
         /// <summary>
@@ -437,7 +437,7 @@ namespace RimTalk.Memory.UI
             }
             catch (Exception ex)
             {
-                Log.Warning($"[标签测试] 构建Pawn信息时出错: {ex.Message}");
+                Log.Warning($"[Тест тегу] Помилка під час побудови даних Pawn: {ex.Message}");
             }
 
             return sb.ToString().Trim();

@@ -50,7 +50,7 @@ namespace RimTalk.Memory.AI
             try
             {
                 // ? v3.3.2.27: enableSemanticEmbedding已移除，始终不初始化
-                Log.Message("[Embedding] v3.3.2.27: Semantic embedding功能已移除，使用SuperKeywordEngine替代");
+                Log.Message("[Embedding] v3.3.2.27: semantic embedding вилучено; використовується SuperKeywordEngine");
                 return;
             }
             catch (Exception ex)

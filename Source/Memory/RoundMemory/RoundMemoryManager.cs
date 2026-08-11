@@ -22,7 +22,7 @@ namespace RimTalk.Memory
                 if (Current.Game is null)
                 {
                     _instance = null; // 存档外时强制置空，避免误用
-                    Log.Error("[RoundMemory] 尝试在存档外访问RoundMemory中控台");
+                    Log.Error("[RoundMemory] Спроба доступу до контролера RoundMemory поза збереженням");
                 }
                 return _instance; // 存档外时会返回null
             }
@@ -62,7 +62,7 @@ namespace RimTalk.Memory
         {
             if (Instance is null)
             {
-                Log.Error("[RoundMemory] 警告：发号时发现RoundMemory中控台不存在，返回-1");
+                Log.Error("[RoundMemory] Контролер RoundMemory відсутній під час видачі номера; повернено -1");
                 return -1;
             }
             return System.Threading.Interlocked.Increment(ref Instance._nextRoundMemoryId);
@@ -75,14 +75,14 @@ namespace RimTalk.Memory
         {
             if (Instance is null)
             {
-                Log.Error("[RoundMemory] 警告：捕获玩家对话时发现RoundMemory中控台不存在");
+                Log.Error("[RoundMemory] Контролер RoundMemory відсутній під час захоплення діалогу гравця");
                 return;
             }
 
             string playerName = playerPawn?.LabelShort;
             Instance._playerDialogue = $"{(string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName)}: {playerDialogue}";
 
-            Log.Message($"[RoundMemory] 成功捕获玩家发言");
+            Log.Message("[RoundMemory] Репліку гравця успішно захоплено");
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace RimTalk.Memory
         {
             if (Instance is null)
             {
-                Log.Error("[RoundMemory] 警告：构建轮次记忆时发现RoundMemory中控台不存在");
+                Log.Error("[RoundMemory] Контролер RoundMemory відсутній під час побудови пам'яті раунду");
                 return;
             }
 
@@ -108,7 +108,7 @@ namespace RimTalk.Memory
             {
                 if (!participants?.Any() ?? true)
                 {
-                    Log.Warning("[RoundMemory] 流式创建新轮次记忆时未提供参与者，创建失败");
+                    Log.Warning("[RoundMemory] Для потокового створення пам'яті раунду не вказано учасників");
                     return;
                 }
 
@@ -140,7 +140,7 @@ namespace RimTalk.Memory
         {
             if (Instance is null)
             {
-                Log.Error("[RoundMemory] 警告：构建轮次记忆时发现RoundMemory中控台不存在");
+                Log.Error("[RoundMemory] Контролер RoundMemory відсутній під час побудови пам'яті раунду");
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace RimTalk.Memory
             Dictionary<long, RoundMemory> managerMap = new();
             if (_roundMemories is null)
             {
-                Log.Warning("[RoundMemory] RoundMemory为空，无法进行指针修正");
+                Log.Warning("[RoundMemory] RoundMemory порожня; виправити вказівники неможливо");
                 return;
             }
             for (int i = 0; i < _roundMemories.Count; i++)
@@ -238,7 +238,7 @@ namespace RimTalk.Memory
                 var roundMemory = _roundMemories[i];
                 if (roundMemory is null)
                 {
-                    Log.Warning("[RoundMemory] 检测到RoundMemory中有 null 条目，跳过");
+                    Log.Warning("[RoundMemory] Виявлено null-запис; його пропущено");
                     continue;
                 }
                 managerMap[roundMemory.RoundMemoryUniqueID] = roundMemory;
@@ -276,7 +276,7 @@ namespace RimTalk.Memory
                     // 替换后，localRef 变成垃圾，等待 GC 回收
                     ABMs[i] = managerRef;
 
-                    if (Prefs.DevMode) Log.Message("[RoundMemory] ABM指针已修正");
+                    if (Prefs.DevMode) Log.Message("[RoundMemory] Вказівник ABM виправлено");
                 }
             }
         }

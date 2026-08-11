@@ -33,7 +33,7 @@ namespace RimTalk.MemoryPatch
             
             // 第一行：OpenAI, DeepSeek, Player2
             DrawProviderButton(new Rect(providerButtonRect1.x, providerButtonRect1.y, buttonWidth, 30f), 
-                "OpenAI", settings, "OpenAI", "gpt-3.5-turbo", "https://api.openai.com/v1/chat/completions",
+                "OpenAI", settings, "OpenAI", "", "https://api.openai.com/v1/responses",
                 new Color(0.5f, 1f, 0.5f));
             
             DrawProviderButton(new Rect(providerButtonRect1.x + buttonWidth + 10f, providerButtonRect1.y, buttonWidth, 30f),
@@ -41,7 +41,7 @@ namespace RimTalk.MemoryPatch
                 new Color(0.5f, 0.7f, 1f));
             
             DrawProviderButton(new Rect(providerButtonRect1.x + 2 * (buttonWidth + 10f), providerButtonRect1.y, buttonWidth, 30f),
-                "Player2", settings, "Player2", "gpt-4o", "https://api.player2.game/v1/chat/completions",
+                "Player2", settings, "Player2", "", "https://api.player2.game/v1/chat/completions",
                 new Color(1f, 0.8f, 0.5f));
             
             // 第二行：Google, Custom
@@ -446,7 +446,7 @@ namespace RimTalk.MemoryPatch
                 GUI.color = Color.white;
                 
                 listing.Label("RimTalk_Settings_EmbeddingAPIKey".Translate() + ":");
-                settings.embeddingApiKey = listing.TextEntry(settings.embeddingApiKey);
+                settings.embeddingApiKey = GUI.PasswordField(listing.GetRect(30f), settings.embeddingApiKey ?? "", '•');
                 
                 listing.Label("RimTalk_Settings_EmbeddingAPIURL".Translate() + ":");
                 settings.embeddingApiUrl = listing.TextEntry(settings.embeddingApiUrl);

@@ -30,19 +30,19 @@ namespace RimTalk.Memory.Patches.RimChat
                 chatMessageDataType = AccessTools.TypeByName("RimChat.AI.ChatMessageData");
                 if (chatMessageDataType is null)
                 {
-                    Log.Message("[RimTalk.Memory.Patches.RimChat]: 无法找到ChatMessageData类型，补丁将被禁用。");
+                    Log.Message("[RimTalk.Memory.Patches.RimChat]: тип ChatMessageData не знайдено; patch вимкнено.");
                     return false;
                 }
 
                 // 获取成功，初始化字段访问器
                 roleRef = AccessTools.FieldRefAccess<string>(chatMessageDataType, "role");
                 contentRef = AccessTools.FieldRefAccess<string>(chatMessageDataType, "content");
-                Log.Message("[RimTalk.Memory.Patches.RimChat]: 字段访问器初始化成功。");
+                Log.Message("[RimTalk.Memory.Patches.RimChat]: доступ до полів успішно ініціалізовано.");
                 return true;
             }
             catch 
             {
-                Log.Error("[RimTalk.Memory.Patches.RimChat]: 初始化RimChat补丁时出现异常");
+                Log.Error("[RimTalk.Memory.Patches.RimChat]: помилка під час ініціалізації patch RimChat");
                 return false;
             }
         }

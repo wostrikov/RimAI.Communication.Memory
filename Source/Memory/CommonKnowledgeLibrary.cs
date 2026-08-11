@@ -264,7 +264,7 @@ namespace RimTalk.Memory
                     if (braceEnd > tagStart)
                     {
                         tagEnd = braceEnd;
-                        Log.Warning($"[CommonKnowledge] 检测到错误的标签格式（使用了花括号）: {line.Substring(0, Math.Min(50, line.Length))}");
+                        Log.Warning($"[CommonKnowledge] Виявлено неправильний формат тегу (використано фігурні дужки): {line.Substring(0, Math.Min(50, line.Length))}");
                     }
                 }
             }

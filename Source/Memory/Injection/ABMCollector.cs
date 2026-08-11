@@ -126,7 +126,7 @@ namespace RimTalk.Memory.Injection
         public static void ResetDuplicateCache()
         {
             RoundMemoryCache.Clear();
-            if (Prefs.DevMode) Log.Message($"[RoundMemory] 重置查重缓存");
+            if (Prefs.DevMode) Log.Message("[RoundMemory] Кеш перевірки дублікатів скинуто");
         }
 
         /// <summary>
