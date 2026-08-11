@@ -50,7 +50,7 @@ namespace RimTalk.Memory.API
                     return PromptNormalizer.Normalize(GetLegacyMemories(memoryComp, settings));
                 }
 
-                return "(No memory component)";
+                return "(Компонент пам'яті відсутній)";
             }
             catch (Exception ex)
             {
@@ -144,7 +144,7 @@ namespace RimTalk.Memory.API
 
             if (recentMemories.Count == 0)
             {
-                return "(No memories yet)";
+                return "(Спогадів поки немає)";
             }
 
             // 按时间排序
@@ -166,7 +166,7 @@ namespace RimTalk.Memory.API
 
             if (memories == null || memories.Count == 0)
             {
-                return "(No memories yet)";
+                return "(Спогадів поки немає)";
             }
 
             var sb = new StringBuilder();
@@ -248,7 +248,7 @@ namespace RimTalk.Memory.API
                 var comp = pawn.TryGetComp<FourLayerMemoryComp>();
                 if (comp == null || comp.EventLogMemories == null || comp.EventLogMemories.Count == 0)
                 {
-                    return "(No ELS memories)";
+                    return "(Спогадів ELS немає)";
                 }
 
                 // ⭐ v5.1: 应用提示词规范化规则
@@ -274,7 +274,7 @@ namespace RimTalk.Memory.API
                 var comp = pawn.TryGetComp<FourLayerMemoryComp>();
                 if (comp == null || comp.ArchiveMemories == null || comp.ArchiveMemories.Count == 0)
                 {
-                    return "(No CLPA memories)";
+                    return "(Спогадів CLPA немає)";
                 }
 
                 // ⭐ v5.1: 应用提示词规范化规则
@@ -325,7 +325,7 @@ namespace RimTalk.Memory.API
                 var comp = pawn.TryGetComp<FourLayerMemoryComp>();
                 if (comp == null || comp.EventLogMemories == null || comp.EventLogMemories.Count == 0)
                 {
-                    return "(No ELS memories)";
+                    return "(Спогадів ELS немає)";
                 }
 
                 var settings = RimTalkMemoryPatchMod.Settings;
@@ -343,7 +343,7 @@ namespace RimTalk.Memory.API
 
                 if (string.IsNullOrEmpty(result))
                 {
-                    return "(No matched ELS memories)";
+                    return "(Відповідних спогадів ELS немає)";
                 }
 
                 // ⭐ v5.1: 应用提示词规范化规则
@@ -370,7 +370,7 @@ namespace RimTalk.Memory.API
                 var comp = pawn.TryGetComp<FourLayerMemoryComp>();
                 if (comp == null || comp.ArchiveMemories == null || comp.ArchiveMemories.Count == 0)
                 {
-                    return "(No CLPA memories)";
+                    return "(Спогадів CLPA немає)";
                 }
 
                 var settings = RimTalkMemoryPatchMod.Settings;
@@ -388,7 +388,7 @@ namespace RimTalk.Memory.API
 
                 if (string.IsNullOrEmpty(result))
                 {
-                    return "(No matched CLPA memories)";
+                    return "(Відповідних спогадів CLPA немає)";
                 }
 
                 // ⭐ v5.1: 应用提示词规范化规则

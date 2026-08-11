@@ -147,7 +147,7 @@ namespace RimTalk.Memory.Injection
             
             if (abmList.Count == 0)
             {
-                return "(No ABM memories)";
+                return "(Спогадів ABM немає)";
             }
             
             return MemoryFormatter.Format(abmList, startIndex: 1);

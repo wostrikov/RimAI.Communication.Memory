@@ -27,6 +27,16 @@ namespace RimTalk.Memory.API
         // ⭐ v4.0+: 使用标准化的 ModId 格式
         private const string MOD_ID = "RimTalk.MemoryPatch";
         private const string ENTRY_NAME = "Memory & Knowledge Context";
+        private const string LEGACY_ENGLISH_MEMORY_CONTENT = @"---
+# Memory Context
+{{-for p in pawns }}
+## {{ p.name }}'s Memories:
+{{ p.memory }}
+{{- end }}
+
+# World Knowledge:
+{{knowledge}}
+---";
         // ⭐ 不再手动设置 ID - 新 API 会自动根据 SourceModId + Name 生成确定性 ID
         // 格式: mod_{sanitized_mod_id}_{sanitized_name}
         
@@ -182,7 +192,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "memory",
                         memoryProvider,
-                        "Character's personal memories and experiences",
+                        "Особисті спогади й досвід персонажа",
                         100 // priority
                     });
                     
@@ -206,7 +216,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "ABM",
                         abmProvider,
-                        "Character's active buffer memories (recent conversations)",
+                        "Активний буфер пам'яті персонажа (недавні розмови)",
                         100
                     });
                     
@@ -230,7 +240,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "ELS",
                         elsProvider,
-                        "Character's event log summary (mid-term memories)",
+                        "Зведення журналу подій персонажа (середньострокова пам'ять)",
                         100
                     });
                     
@@ -254,7 +264,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "CLPA",
                         clpaProvider,
-                        "Character's persona archive (long-term memories)",
+                        "Архів особистості персонажа (довгострокова пам'ять)",
                         100
                     });
                     
@@ -278,7 +288,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "matchELS",
                         matchElsProvider,
-                        "Context-matched event log memories (mid-term)",
+                        "Спогади журналу подій, дібрані за контекстом (середньострокові)",
                         100
                     });
                     
@@ -302,7 +312,7 @@ namespace RimTalk.Memory.API
                         MOD_ID,
                         "matchCLPA",
                         matchClpaProvider,
-                        "Context-matched archive memories (long-term)",
+                        "Архівні спогади, дібрані за контекстом (довгострокові)",
                         100
                     });
                     
@@ -325,33 +335,33 @@ namespace RimTalk.Memory.API
                 // 原有变量 {{knowledge}} — 保持 "1. [tag] content" 格式，兼容旧预设
                 RegisterOneContextVariable(registerCtxVar, "knowledge",
                     new Func<object, string>(KnowledgeVariableProvider.GetMatchedKnowledge),
-                    "World knowledge matched to conversation context", 100);
+                    "Знання про світ, дібрані за контекстом розмови", 100);
                 
                 // 新增：按分类分组的完整输出
                 RegisterOneContextVariable(registerCtxVar, "knowledge_grouped",
                     new Func<object, string>(KnowledgeVariableProvider.GetGroupedKnowledge),
-                    "World knowledge grouped by category headers", 101);
+                    "Знання про світ, згруповані за заголовками категорій", 101);
                 
                 // 新增：按分类拆分的独立变量
                 RegisterOneContextVariable(registerCtxVar, "knowledge_rules",
                     new Func<object, string>(KnowledgeVariableProvider.GetKnowledgeRules),
-                    "Knowledge: rules and instructions", 102);
+                    "Знання: правила та інструкції", 102);
                 
                 RegisterOneContextVariable(registerCtxVar, "knowledge_lore",
                     new Func<object, string>(KnowledgeVariableProvider.GetKnowledgeLore),
-                    "Knowledge: world lore and background", 103);
+                    "Знання: устрій і передісторія світу", 103);
                 
                 RegisterOneContextVariable(registerCtxVar, "knowledge_status",
                     new Func<object, string>(KnowledgeVariableProvider.GetKnowledgeStatus),
-                    "Knowledge: pawn/colonist status", 104);
+                    "Знання: стан персонажа/колоніста", 104);
                 
                 RegisterOneContextVariable(registerCtxVar, "knowledge_history",
                     new Func<object, string>(KnowledgeVariableProvider.GetKnowledgeHistory),
-                    "Knowledge: historical events", 105);
+                    "Знання: історичні події", 105);
                 
                 RegisterOneContextVariable(registerCtxVar, "knowledge_other",
                     new Func<object, string>(KnowledgeVariableProvider.GetKnowledgeOther),
-                    "Knowledge: uncategorized", 106);
+                    "Знання: без категорії", 106);
             }
         }
         
@@ -408,9 +418,20 @@ namespace RimTalk.Memory.API
                             var existingEntry = getEntryMethod.Invoke(preset, new object[] { entryId });
                             if (existingEntry != null)
                             {
-                                // ⭐ 条目已存在 → 直接更新 Content
-                                SetProperty(existingEntry, "Content", GetMemoryEntryContent());
-                                Log.Message($"[MemoryPatch] ✓ Updated existing PromptEntry: {ENTRY_NAME}");
+                                // Migrate only the exact shipped English default. User-edited
+                                // prompt content is persistent state and must never be replaced.
+                                string existingContent = existingEntry is PromptEntry promptEntry
+                                    ? promptEntry.Content
+                                    : null;
+                                if (NormalizePrompt(existingContent) == NormalizePrompt(LEGACY_ENGLISH_MEMORY_CONTENT))
+                                {
+                                    SetProperty(existingEntry, "Content", GetMemoryEntryContent());
+                                    Log.Message($"[MemoryPatch] ✓ Migrated unchanged PromptEntry: {ENTRY_NAME}");
+                                }
+                                else if (NormalizePrompt(existingContent) != NormalizePrompt(GetMemoryEntryContent()))
+                                {
+                                    Log.Message($"[MemoryPatch] Preserved customized PromptEntry: {ENTRY_NAME}");
+                                }
                                 
                                 // ⭐ v5.0: 仍然检查并禁用 Chat History
                                 DisableChatHistoryIfEnabled(preset);
@@ -613,15 +634,20 @@ namespace RimTalk.Memory.API
         private static string GetMemoryEntryContent()
         {
             return @"---
-# Memory Context
+# Контекст пам'яті
 {{-for p in pawns }}
-## {{ p.name }}'s Memories:
+## Спогади: {{ p.name }}
 {{ p.memory }}
 {{- end }}
 
-# World Knowledge:
+# Знання про світ:
 {{knowledge}}
 ---";
+        }
+
+        private static string NormalizePrompt(string value)
+        {
+            return (value ?? string.Empty).Replace("\r\n", "\n").Trim();
         }
         
         /// <summary>

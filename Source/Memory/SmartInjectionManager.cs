@@ -109,7 +109,7 @@ namespace RimTalk.Memory
                         // ? 步骤2：优先注入指令部分（Current Guidelines）- 使用 XML 格式
                         if (instructionEntries.Count > 0)
                         {
-                            sb.AppendLine("## Current Guidelines");
+                            sb.AppendLine("## Поточні настанови");
                             int index = 1;
                             foreach (var scored in instructionEntries)
                             {
@@ -131,7 +131,7 @@ namespace RimTalk.Memory
                             if (sb.Length > 0)
                                 sb.AppendLine();
                             
-                            sb.AppendLine("## World Knowledge");
+                            sb.AppendLine("## Знання про світ");
                             int index = 1;
                             foreach (var scored in loreEntries)
                             {
@@ -170,7 +170,7 @@ namespace RimTalk.Memory
                         if (sb.Length > 0)
                             sb.AppendLine();
                         
-                        sb.AppendLine("## Character Memories");
+                        sb.AppendLine("## Спогади персонажа");
                         sb.AppendLine(memoriesText);
                         
                         if (Prefs.DevMode)

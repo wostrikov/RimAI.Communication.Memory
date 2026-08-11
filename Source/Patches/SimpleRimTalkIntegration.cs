@@ -181,13 +181,13 @@ namespace RimTalk.Memory.Patches
             // 构建system_rule格式
             var sb = new System.Text.StringBuilder();
             
-            sb.AppendLine("## System Rule");
+            sb.AppendLine("## Системне правило");
             sb.AppendLine();
             
             // 常识库部分（更通用的知识）
             if (!string.IsNullOrEmpty(knowledgeContext))
             {
-                sb.AppendLine("### World Knowledge");
+                sb.AppendLine("### Знання про світ");
                 sb.AppendLine(knowledgeContext);
                 sb.AppendLine();
             }
@@ -195,14 +195,14 @@ namespace RimTalk.Memory.Patches
             // 角色记忆部分（个人经历）
             if (!string.IsNullOrEmpty(memoryContext))
             {
-                sb.AppendLine("### Character Memories");
+                sb.AppendLine("### Спогади персонажа");
                 sb.AppendLine(memoryContext);
                 sb.AppendLine();
             }
             
             sb.AppendLine("---");
             sb.AppendLine();
-            sb.AppendLine("## User Prompt");
+            sb.AppendLine("## Промпт користувача");
             sb.AppendLine(basePrompt);
 
             string fullPrompt = sb.ToString();

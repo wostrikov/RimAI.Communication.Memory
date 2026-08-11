@@ -99,7 +99,7 @@ namespace RimTalk.Memory.API
                 
                 if (string.IsNullOrEmpty(matchText))
                 {
-                    return "(No context available for matching)";
+                    return "(Немає контексту для зіставлення)";
                 }
                 
                 // 2. 获取 Pawn 信息
@@ -116,7 +116,7 @@ namespace RimTalk.Memory.API
                 var memoryManager = Find.World?.GetComponent<MemoryManager>();
                 if (memoryManager?.CommonKnowledge == null)
                 {
-                    return "(No world knowledge available)";
+                    return "(Знання про світ відсутні)";
                 }
                 
                 // 4. 关键词匹配（传递pawn信息以支持专属常识过滤）
@@ -151,7 +151,7 @@ namespace RimTalk.Memory.API
                 // 5. 返回关键词匹配结果
                 if (string.IsNullOrEmpty(keywordKnowledge))
                 {
-                    return "(No matching knowledge found)";
+                    return "(Відповідних знань не знайдено)";
                 }
                 
                 // ⭐ v5.1: 应用提示词规范化规则（迁移自 SmartInjectionManager）
@@ -176,7 +176,7 @@ namespace RimTalk.Memory.API
             {
                 var matchedScores = GetMatchedScores(promptContext);
                 if (matchedScores == null || matchedScores.Count == 0)
-                    return "(No matching knowledge found)";
+                    return "(Відповідних знань не знайдено)";
 
                 // ⭐ v5.1: 应用提示词规范化规则
                 return PromptNormalizer.Normalize(FormatGroupedKnowledge(matchedScores));

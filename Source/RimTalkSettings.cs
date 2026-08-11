@@ -212,6 +212,14 @@ namespace RimTalk.MemoryPatch
             Scribe_Values.Look(ref deepArchivePrompt, "ai_deepArchivePrompt", "");
             Scribe_Values.Look(ref summaryMaxTokens, "ai_summaryMaxTokens", 8000);  // ⭐ v3.4.0: 与字段默认值同步
 
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                const string legacyDaily = "殖民者{0}的记忆总结\n\n记忆列表\n{1}\n\n要求提炼地点人物事件\n相似事件合并标注频率\n极简表达不超过80字\n只输出总结文字不要其他格式";
+                const string legacyArchive = "殖民者{0}的记忆归档\n\n记忆列表\n{1}\n\n要求提炼核心特征和里程碑事件\n合并相似经历突出长期趋势\n极简表达不超过60字\n只输出总结文字不要其他格式";
+                if (dailySummaryPrompt == legacyDaily) dailySummaryPrompt = "";
+                if (deepArchivePrompt == legacyArchive) deepArchivePrompt = "";
+            }
+
             Scribe_Values.Look(ref enableMemoryUI, "memoryPatch_enableMemoryUI", true);
             Scribe_Values.Look(ref enableActionMemory, "memoryPatch_enableActionMemory", true);
             Scribe_Values.Look(ref enableConversationMemory, "memoryPatch_enableConversationMemory", true);
