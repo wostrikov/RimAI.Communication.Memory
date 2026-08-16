@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using RimTalk.Memory.Injection;
-using RimTalk.Prompt;
+using Ustas.RimAI.Communication.Memory.Injection;
+using Ustas.RimAI.Communication.Prompt;
 
-namespace RimTalk.Memory.Patches.Injection
+namespace Ustas.RimAI.Communication.Memory.Patches.Injection
 {
     
     // 通过 patch rimtalk 在合适的时点重置去重缓存

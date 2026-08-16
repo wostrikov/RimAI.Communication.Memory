@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 简单的文本输入对话框，用于导入常识

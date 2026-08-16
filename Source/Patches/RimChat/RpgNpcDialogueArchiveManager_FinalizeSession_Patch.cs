@@ -1,16 +1,16 @@
 ﻿using HarmonyLib;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Verse;
 
-namespace RimTalk.Memory.Patches.RimChat
+namespace Ustas.RimAI.Communication.Memory.Patches.Relations
 {
 
     // 捕获RimChat RPG对话
-    [HarmonyPatch("RimChat.Memory.RpgNpcDialogueArchiveManager", "FinalizeSession")]
+    [HarmonyPatch("Ustas.RimAI.Communication.Relations.Memory.RpgNpcDialogueArchiveManager", "FinalizeSession")]
     public static class RpgNpcDialogueArchiveManager_FinalizeSession_Patch
     {
         // 声明字段访问器
@@ -27,22 +27,22 @@ namespace RimTalk.Memory.Patches.RimChat
             try
             {
                 // 尝试获取ChatMessageData类
-                chatMessageDataType = AccessTools.TypeByName("RimChat.AI.ChatMessageData");
+                chatMessageDataType = AccessTools.TypeByName("Ustas.RimAI.Communication.Relations.AI.ChatMessageData");
                 if (chatMessageDataType is null)
                 {
-                    Log.Message("[RimTalk.Memory.Patches.RimChat]: тип ChatMessageData не знайдено; patch вимкнено.");
+                    Log.Message("[RimAI.Memory]: тип ChatMessageData не знайдено; patch вимкнено.");
                     return false;
                 }
 
                 // 获取成功，初始化字段访问器
                 roleRef = AccessTools.FieldRefAccess<string>(chatMessageDataType, "role");
                 contentRef = AccessTools.FieldRefAccess<string>(chatMessageDataType, "content");
-                Log.Message("[RimTalk.Memory.Patches.RimChat]: доступ до полів успішно ініціалізовано.");
+                Log.Message("[RimAI.Memory]: доступ до полів успішно ініціалізовано.");
                 return true;
             }
             catch 
             {
-                Log.Error("[RimTalk.Memory.Patches.RimChat]: помилка під час ініціалізації patch RimChat");
+                Log.Error("[RimAI.Memory]: помилка під час ініціалізації patch RimChat");
                 return false;
             }
         }

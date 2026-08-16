@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using RimTalk.Memory.Capture;
+using Ustas.RimAI.Communication.Memory.Capture;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk.Memory.Patches.Capture
+namespace Ustas.RimAI.Communication.Memory.Patches.Capture
 {
 
     // 通过 Postfix 捕获 StartJob 后的 curJob

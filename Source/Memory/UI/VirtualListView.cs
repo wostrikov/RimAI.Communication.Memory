@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 虚拟化列表视图 - 只渲染可见项，提升大列表性能

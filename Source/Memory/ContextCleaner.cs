@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 上下文清理器

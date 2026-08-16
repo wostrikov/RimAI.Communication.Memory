@@ -4,9 +4,9 @@ using System.Linq;
 using System.Collections.Generic;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.Patches.Capture
+namespace Ustas.RimAI.Communication.Memory.Patches.Capture
 {
     /// <summary>
     /// ⚠️ v4.0: 此 Patch 已弃用
@@ -29,20 +29,20 @@ namespace RimTalk.Memory.Patches.Capture
         [HarmonyTargetMethod]
         public static System.Reflection.MethodBase TargetMethod()
         {
-            // 查找 RimTalk.PlayLogEntry_RimTalkInteraction 类
+            // 查找 Ustas.RimAI.Communication.PlayLogEntry_RimTalkInteraction 类
             var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(a => a.GetName().Name == "RimTalk");
+                .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
             
             if (rimTalkAssembly == null)
             {
-                Log.Warning("[RimTalk Memory] Cannot find RimTalk assembly!");
+                Log.Warning("[RimAI.Memory] Cannot find RimTalk assembly!");
                 return null;
             }
             
-            var playLogType = rimTalkAssembly.GetType("RimTalk.PlayLogEntry_RimTalkInteraction");
+            var playLogType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.PlayLogEntry_RimTalkInteraction");
             if (playLogType == null)
             {
-                Log.Warning("[RimTalk Memory] Cannot find PlayLogEntry_RimTalkInteraction type!");
+                Log.Warning("[RimAI.Memory] Cannot find PlayLogEntry_RimTalkInteraction type!");
                 return null;
             }
             
@@ -56,12 +56,12 @@ namespace RimTalk.Memory.Patches.Capture
             
             if (constructor != null)
             {
-                Log.Message("[RimTalk Memory] ✅ Successfully targeted PlayLogEntry_RimTalkInteraction constructor!");
+                Log.Message("[RimAI.Memory] ✅ Successfully targeted PlayLogEntry_RimTalkInteraction constructor!");
             }
             else
             {
                 // 如果找不到特定签名的构造函数，尝试回退到查找参数最多的构造函数
-                Log.Warning("[RimTalk Memory] Cannot find exact constructor for PlayLogEntry_RimTalkInteraction, falling back to parameter count.");
+                Log.Warning("[RimAI.Memory] Cannot find exact constructor for PlayLogEntry_RimTalkInteraction, falling back to parameter count.");
                 var constructors = playLogType.GetConstructors();
                 constructor = constructors.OrderByDescending(c => c.GetParameters().Length).FirstOrDefault();
             }
@@ -85,7 +85,7 @@ namespace RimTalk.Memory.Patches.Capture
                 
                 if (cachedStringField == null)
                 {
-                    Log.Warning("[RimTalk Memory] Cannot find _cachedString field!");
+                    Log.Warning("[RimAI.Memory] Cannot find _cachedString field!");
                     return;
                 }
                 
@@ -120,7 +120,7 @@ namespace RimTalk.Memory.Patches.Capture
                 
                 if (initiator == null)
                 {
-                    // Log.Warning("[RimTalk Memory] Cannot resolve initiator!"); // Reduce noise
+                    // Log.Warning("[RimAI.Memory] Cannot resolve initiator!"); // Reduce noise
                     return;
                 }
                 
@@ -130,7 +130,7 @@ namespace RimTalk.Memory.Patches.Capture
                     processedConversations.Clear();
                     lastCleanupTick = Find.TickManager.TicksGame;
                     if (Prefs.DevMode)
-                        Log.Message("[RimTalk Memory] Cleaned conversation cache");
+                        Log.Message("[RimAI.Memory] Cleaned conversation cache");
                 }
                 
                 // 生成唯一ID进行去重
@@ -153,7 +153,7 @@ namespace RimTalk.Memory.Patches.Capture
                 processedConversations.Add(conversationId);
                 
                 string recipientLabel = recipient != null && recipient != initiator ? recipient.LabelShort : "self";
-                Log.Message($"[RimTalk Memory] 📝 Captured: {initiator.LabelShort} -> {recipientLabel}: {content.Substring(0, Math.Min(50, content.Length))}...");
+                Log.Message($"[RimAI.Memory] 📝 Captured: {initiator.LabelShort} -> {recipientLabel}: {content.Substring(0, Math.Min(50, content.Length))}...");
                 
                 // 调用记忆API记录对话
                 // 注意：recipient可能是null或者是同一个pawn
@@ -161,7 +161,7 @@ namespace RimTalk.Memory.Patches.Capture
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk Memory] Error in RimTalkConversationCapturePatch: {ex}");
+                Log.Error($"[RimAI.Memory] Error in RimTalkConversationCapturePatch: {ex}");
             }
         }
     }

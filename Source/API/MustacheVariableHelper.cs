@@ -5,7 +5,7 @@ using System.Reflection;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.API
+namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
     /// 辅助类：从 RimTalk 获取可用的变量列表
@@ -28,7 +28,7 @@ namespace RimTalk.Memory.API
             if (_rimTalkAssembly == null)
             {
                 _rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "RimTalk");
+                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
             }
             return _rimTalkAssembly;
         }
@@ -54,7 +54,7 @@ namespace RimTalk.Memory.API
             
             try
             {
-                var variableDefsType = assembly.GetType("RimTalk.Prompt.VariableDefinitions");
+                var variableDefsType = assembly.GetType("Ustas.RimAI.Communication.Prompt.VariableDefinitions");
                 var getMethod = variableDefsType?.GetMethod("GetScribanVariables", BindingFlags.Public | BindingFlags.Static);
                 
                 if (getMethod != null)
@@ -154,7 +154,7 @@ namespace RimTalk.Memory.API
             try
             {
                 // 先尝试 ContextHookRegistry.TryGetPawnVariable
-                var hookType = assembly.GetType("RimTalk.API.ContextHookRegistry");
+                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
                 if (hookType != null)
                 {
                     var tryGetMethod = hookType.GetMethod("TryGetPawnVariable", BindingFlags.Public | BindingFlags.Static);
@@ -170,8 +170,8 @@ namespace RimTalk.Memory.API
                 }
                 
                 // 使用 ScribanParser 渲染
-                var parserType = assembly.GetType("RimTalk.Prompt.ScribanParser");
-                var contextType = assembly.GetType("RimTalk.Prompt.PromptContext");
+                var parserType = assembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser");
+                var contextType = assembly.GetType("Ustas.RimAI.Communication.Prompt.PromptContext");
                 
                 if (parserType != null && contextType != null)
                 {
@@ -356,7 +356,7 @@ namespace RimTalk.Memory.API
             
             try
             {
-                var hookType = assembly.GetType("RimTalk.API.ContextHookRegistry");
+                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
                 var getAllMethod = hookType?.GetMethod("GetAllCustomVariables", BindingFlags.Public | BindingFlags.Static);
                 
                 if (getAllMethod != null)
@@ -394,7 +394,7 @@ namespace RimTalk.Memory.API
             
             try
             {
-                var hookType = assembly.GetType("RimTalk.API.ContextHookRegistry");
+                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
                 var getAllMethod = hookType?.GetMethod("GetAllCustomVariables", BindingFlags.Public | BindingFlags.Static);
                 
                 if (getAllMethod != null)

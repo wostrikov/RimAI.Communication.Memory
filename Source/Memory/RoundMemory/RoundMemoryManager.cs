@@ -1,12 +1,12 @@
-﻿using RimTalk.Memory.Utils;
-using RimTalk.MemoryPatch;
+﻿using Ustas.RimAI.Communication.Memory.Utils;
+using Ustas.RimAI.Communication.Memory;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
 
     // 轮次记忆中控台

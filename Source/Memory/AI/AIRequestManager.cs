@@ -1,7 +1,7 @@
 ﻿using RimWorld.Planet;
 using Verse;
 
-namespace RimTalk.Memory.AI
+namespace Ustas.RimAI.Communication.Memory.AI
 {
     /// <summary>
     /// AI 请求管理器 - 启动协程

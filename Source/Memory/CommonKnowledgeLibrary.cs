@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 常识库管理器
@@ -60,7 +60,7 @@ namespace RimTalk.Memory
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"[RimTalk-ExpandMemory] Failed to export vectors for save: {ex}");
+                        Log.Error($"[RimAI.Memory] Failed to export vectors for save: {ex}");
                         vectorIds = null;
                         vectorDataSerialized = null;
                         vectorHashes = null;
@@ -85,7 +85,7 @@ namespace RimTalk.Memory
                         // 先恢复向量数据（如果存在）
                         if (vectorIds != null && vectorDataSerialized != null && vectorHashes != null && vectorIds.Count > 0)
                         {
-                            Log.Message($"[RimTalk-ExpandMemory] Restoring {vectorIds.Count} vectors from save...");
+                            Log.Message($"[RimAI.Memory] Restoring {vectorIds.Count} vectors from save...");
                             
                             // 将 List<string> 转换回 List<List<float>>
                             var vectorData = new List<List<float>>();
@@ -114,16 +114,16 @@ namespace RimTalk.Memory
                         }
                         else
                         {
-                            Log.Message("[RimTalk-ExpandMemory] No saved vectors found, will perform full sync.");
+                            Log.Message("[RimAI.Memory] No saved vectors found, will perform full sync.");
                         }
                         
                         // 再进行增量同步（只处理新增/修改的条目）
-                        Log.Message("[RimTalk-ExpandMemory] Syncing knowledge library to vector database...");
+                        Log.Message("[RimAI.Memory] Syncing knowledge library to vector database...");
                         VectorDB.VectorService.Instance.SyncKnowledgeLibrary(this);
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"[RimTalk-ExpandMemory] Failed to restore/sync vectors on game load: {ex}");
+                        Log.Error($"[RimAI.Memory] Failed to restore/sync vectors on game load: {ex}");
                     }
                 }
             }
@@ -147,7 +147,7 @@ namespace RimTalk.Memory
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"[RimTalk-ExpandMemory] Failed to sync vector on AddEntry: {ex.Message}");
+                        Log.Warning($"[RimAI.Memory] Failed to sync vector on AddEntry: {ex.Message}");
                     }
                 }
             }
@@ -174,7 +174,7 @@ namespace RimTalk.Memory
                     }
                     catch (Exception ex)
                     {
-                        Log.Warning($"[RimTalk-ExpandMemory] Failed to remove vector on RemoveEntry: {ex.Message}");
+                        Log.Warning($"[RimAI.Memory] Failed to remove vector on RemoveEntry: {ex.Message}");
                     }
                 }
                 
@@ -196,7 +196,7 @@ namespace RimTalk.Memory
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"[RimTalk-ExpandMemory] Failed to clear vectors on Clear: {ex.Message}");
+                    Log.Warning($"[RimAI.Memory] Failed to clear vectors on Clear: {ex.Message}");
                 }
             }
             
@@ -239,7 +239,7 @@ namespace RimTalk.Memory
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"[RimTalk-ExpandMemory] Failed to sync vectors on ImportFromText: {ex.Message}");
+                    Log.Warning($"[RimAI.Memory] Failed to sync vectors on ImportFromText: {ex.Message}");
                 }
             }
 
@@ -785,7 +785,7 @@ namespace RimTalk.Memory
             }
             catch (Exception ex)
             {
-                Log.Warning($"[RimTalk-ExpandMemory] Error building complete pawn info text: {ex.Message}");
+                Log.Warning($"[RimAI.Memory] Error building complete pawn info text: {ex.Message}");
             }
 
                 return sb.ToString().Trim();

@@ -3,10 +3,10 @@ using Verse;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk.Memory;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// MainTabWindow_Memory - ImportExport 导入导出部分
@@ -60,7 +60,7 @@ namespace RimTalk.Memory.UI
                 Messages.Message("RimTalk_Memory_ExportSuccess".Translate(allMemories.Count, fileName), 
                     MessageTypeDefOf.PositiveEvent, false);
                 
-                Log.Message($"[RimTalk] Exported {allMemories.Count} memories to: {fullPath}");
+                Log.Message($"[RimAI.Communication] Exported {allMemories.Count} memories to: {fullPath}");
                 
                 // ? 导出成功后询问是否打开文件夹
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
@@ -77,7 +77,7 @@ namespace RimTalk.Memory.UI
             {
                 Messages.Message("RimTalk_Memory_ExportFailed".Translate(ex.Message), 
                     MessageTypeDefOf.RejectInput, false);
-                Log.Error($"[RimTalk] Memory export failed: {ex}");
+                Log.Error($"[RimAI.Communication] Memory export failed: {ex}");
             }
         }
         
@@ -209,7 +209,7 @@ namespace RimTalk.Memory.UI
                         Messages.Message("RimTalk_Memory_ImportSuccess".Translate(imported, importedMemories.Count), 
                             MessageTypeDefOf.PositiveEvent, false);
                         
-                        Log.Message($"[RimTalk] Imported {imported}/{importedMemories.Count} memories from: {filePath}");
+                        Log.Message($"[RimAI.Communication] Imported {imported}/{importedMemories.Count} memories from: {filePath}");
                     }
                 ));
             }
@@ -217,7 +217,7 @@ namespace RimTalk.Memory.UI
             {
                 Messages.Message("RimTalk_Memory_ImportFailed".Translate(ex.Message), 
                     MessageTypeDefOf.RejectInput, false);
-                Log.Error($"[RimTalk] Memory import failed: {ex}");
+                Log.Error($"[RimAI.Communication] Memory import failed: {ex}");
             }
         }
     }

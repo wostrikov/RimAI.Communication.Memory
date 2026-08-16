@@ -2,10 +2,10 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 using System.Collections.Generic;
-using RimTalk.Memory;
+using Ustas.RimAI.Communication.Memory;
 using System;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// Mind Stream Timeline - Multi-Select Memory Cards

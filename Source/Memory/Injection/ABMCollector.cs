@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using RimTalk.Data;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.Injection
+namespace Ustas.RimAI.Communication.Memory.Injection
 {
     /// <summary>
     /// ABM 采集器

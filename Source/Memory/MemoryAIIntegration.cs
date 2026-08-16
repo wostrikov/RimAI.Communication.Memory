@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// Integration helper for AI conversation generation with memory context
@@ -87,7 +87,7 @@ namespace RimTalk.Memory
             if (!RimTalkMemoryPatchMod.Settings.enableConversationMemory)
             {
                 if (Prefs.DevMode)
-                    Log.Message("[RimTalk Memory] ⚠️ Conversation memory is DISABLED in settings!");
+                    Log.Message("[RimAI.Memory] ⚠️ Conversation memory is DISABLED in settings!");
                 return;
             }
             
@@ -97,7 +97,7 @@ namespace RimTalk.Memory
                 recordedConversations.Clear();
                 lastCleanupTick = Find.TickManager.TicksGame;
                 if (Prefs.DevMode)
-                    Log.Message("[RimTalk Memory] Cleaned conversation cache");
+                    Log.Message("[RimAI.Memory] Cleaned conversation cache");
             }
             
             // 生成唯一ID（基于tick、参与者和内容hash）
@@ -114,7 +114,7 @@ namespace RimTalk.Memory
             if (recordedConversations.Contains(conversationId))
             {
                 if (Prefs.DevMode)
-                    Log.Message($"[RimTalk Memory] ⏭️ Skipped duplicate in RecordConversation: {conversationId}");
+                    Log.Message($"[RimAI.Memory] ⏭️ Skipped duplicate in RecordConversation: {conversationId}");
                 return;
             }
             
@@ -146,7 +146,7 @@ namespace RimTalk.Memory
             string speakerLabel = speaker != null ? speaker.LabelShort : "Unknown";
             string listenerLabel = listener != null && listener != speaker ? listener.LabelShort : "self";
             string previewContent = content != null && content.Length > 50 ? content.Substring(0, 50) + "..." : content;
-            Log.Message($"[RimTalk Memory] ✅ RECORDED: {speakerLabel} -> {listenerLabel}: {previewContent}");
+            Log.Message($"[RimAI.Memory] ✅ RECORDED: {speakerLabel} -> {listenerLabel}: {previewContent}");
         }
     }
 }

@@ -3,7 +3,7 @@ using HarmonyLib;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
     /// <summary>
     /// ? 已废弃：MessagesPatch

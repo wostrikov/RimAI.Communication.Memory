@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 超级关键词检索引擎 v1.0

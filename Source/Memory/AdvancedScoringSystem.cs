@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-// SuperKeywordEngine 位于同一命名空间 RimTalk.Memory，无需额外 using
+// SuperKeywordEngine 位于同一命名空间 Ustas.RimAI.Communication.Memory，无需额外 using
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 高级评分系统 v3.0

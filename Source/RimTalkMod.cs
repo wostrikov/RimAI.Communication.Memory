@@ -1,11 +1,11 @@
 ﻿using Verse;
 using UnityEngine;
 using HarmonyLib;
-using RimTalk.Memory.API;
+using Ustas.RimAI.Communication.Memory.API;
 using Ustas.RimAI.Core.Memory;
 using Ustas.RimAI.Core.Modules;
 
-namespace RimTalk.MemoryPatch
+namespace Ustas.RimAI.Communication.Memory
 {
     public class RimTalkMemoryPatchMod : Mod
     {
@@ -21,7 +21,7 @@ namespace RimTalk.MemoryPatch
             // ⭐ 初始化提示词规范化器
             Memory.PromptNormalizer.UpdateRules(Settings.normalizationRules);
             
-            var harmony = new Harmony("cj.rimtalk.expandmemory");
+            var harmony = new Harmony("ustas.rimai.communication.memory");
             harmony.PatchAll();
             RimAIModuleRegistry.Current.Register(new RimAIModuleDescriptor(
                 "memory",
@@ -32,7 +32,7 @@ namespace RimTalk.MemoryPatch
             var memoryContext = new MemoryContextProvider();
             MemoryContextAccess.Register(memoryContext);
             MemoryContextAccess.RegisterKnowledge(memoryContext);
-            Log.Message("[RimTalk-Expand Memory] Loaded successfully");
+            Log.Message("[RimAI.Memory] Loaded successfully");
             
             if (Prefs.DevMode)
             {

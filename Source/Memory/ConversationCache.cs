@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 对话缓存系统 - 减少API调用，提升响应速度

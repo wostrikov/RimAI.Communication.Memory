@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using Verse;
-using RimTalk.Memory;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 扩展的常识条目
@@ -122,7 +122,7 @@ namespace RimTalk.Memory
                         };
                     }
                     
-                    Log.Message($"[RimTalk-ExpandMemory] Loaded extended properties for {keys.Count} knowledge entries");
+                    Log.Message($"[RimAI.Memory] Loaded extended properties for {keys.Count} knowledge entries");
                 }
             }
         }

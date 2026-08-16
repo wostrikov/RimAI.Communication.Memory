@@ -1,6 +1,6 @@
 using System;
 
-namespace RimTalk.Memory.AI
+namespace Ustas.RimAI.Communication.Memory.AI
 {
     /// <summary>
     /// Google Gemini API 请求格式 DTO 类

@@ -4,9 +4,9 @@ using System.Linq;
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 自动生成Pawn状态常识（殖民者标识）

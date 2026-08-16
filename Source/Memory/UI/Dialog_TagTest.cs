@@ -5,7 +5,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 标签测试工具弹窗

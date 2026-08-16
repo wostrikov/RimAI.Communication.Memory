@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity.Mathematics;
 
-namespace RimTalk.Memory.Utils
+namespace Ustas.RimAI.Communication.Memory.Utils
 {
 
     /// <summary>

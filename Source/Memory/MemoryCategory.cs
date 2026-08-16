@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
 
     /// <summary>

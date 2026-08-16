@@ -1,10 +1,10 @@
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 自适应阈值管理器 - 根据评分分布动态调整阈值

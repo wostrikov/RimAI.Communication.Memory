@@ -1,11 +1,11 @@
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Verse.AI;
 
-namespace RimTalk.Memory.Capture
+namespace Ustas.RimAI.Communication.Memory.Capture
 {
 
     public class JobMemoryCapturer

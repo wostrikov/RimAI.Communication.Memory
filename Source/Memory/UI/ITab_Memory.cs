@@ -3,9 +3,9 @@ using Verse;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// Inspector tab for viewing pawn memories

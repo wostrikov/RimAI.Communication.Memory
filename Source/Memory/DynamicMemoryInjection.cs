@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 动态记忆注入系统 - 整合场景分析和游戏状态感知

@@ -1,9 +1,9 @@
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// AI 总结提示词编辑对话框

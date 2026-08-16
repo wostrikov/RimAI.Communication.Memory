@@ -1,12 +1,12 @@
-using RimTalk.API;
-using RimTalk.MemoryPatch;
-using RimTalk.Prompt;
+using Ustas.RimAI.Communication.API;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Prompt;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
-namespace RimTalk.Memory.API
+namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
     /// RimTalk 新 API 集成入口
@@ -25,7 +25,7 @@ namespace RimTalk.Memory.API
     public static class RimTalkAPIIntegration
     {
         // ⭐ v4.0+: 使用标准化的 ModId 格式
-        private const string MOD_ID = "RimTalk.MemoryPatch";
+        private const string MOD_ID = "Ustas.RimAI.Communication.Memory";
         private const string ENTRY_NAME = "Memory & Knowledge Context";
         private const string LEGACY_ENGLISH_MEMORY_CONTENT = @"---
 # Memory Context
@@ -126,18 +126,18 @@ namespace RimTalk.Memory.API
             }
             
             // 检测关键类型
-            _promptAPIType = _rimTalkAssembly.GetType("RimTalk.API.RimTalkPromptAPI");
-            _promptEntryType = _rimTalkAssembly.GetType("RimTalk.Prompt.PromptEntry");
-            _promptRoleType = _rimTalkAssembly.GetType("RimTalk.Prompt.PromptRole");
-            _promptPositionType = _rimTalkAssembly.GetType("RimTalk.Prompt.PromptPosition");
+            _promptAPIType = _rimTalkAssembly.GetType("Ustas.RimAI.Communication.API.RimTalkPromptAPI");
+            _promptEntryType = _rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptEntry");
+            _promptRoleType = _rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptRole");
+            _promptPositionType = _rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptPosition");
             // ⭐ v5.0: 查找 PromptContext（新版）或 MustacheContext（旧版兼容）
-            _promptContextType = _rimTalkAssembly.GetType("RimTalk.Prompt.PromptContext")
-                ?? _rimTalkAssembly.GetType("RimTalk.Prompt.MustacheContext");
+            _promptContextType = _rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptContext")
+                ?? _rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.MustacheContext");
             
             // 检查 API 类是否存在
             if (_promptAPIType == null)
             {
-                Log.Message("[MemoryPatch] RimTalk.API.RimTalkPromptAPI not found - old RimTalk version");
+                Log.Message("[MemoryPatch] Ustas.RimAI.Communication.API.RimTalkPromptAPI not found - old RimTalk version");
                 return false;
             }
             
@@ -163,7 +163,7 @@ namespace RimTalk.Memory.API
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                if (assembly.GetName().Name == "RimTalk")
+                if (assembly.GetName().Name == "Ustas.RimAI.Communication")
                 {
                     return assembly;
                 }

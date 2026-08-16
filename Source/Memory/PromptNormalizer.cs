@@ -1,11 +1,11 @@
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 提示词规范化器 - 在发送给AI前自动替换/规范化提示词

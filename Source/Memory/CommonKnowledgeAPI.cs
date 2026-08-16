@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 常识库公共 API - 供其他 Mod 使用
@@ -157,7 +157,7 @@ namespace RimTalk.Memory
                 // 触发向量更新（如果启用）
                 try
                 {
-                    if (MemoryPatch.RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
+                    if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
                     {
                         VectorDB.VectorService.Instance.UpdateKnowledgeVector(entry.id, entry.content);
                     }

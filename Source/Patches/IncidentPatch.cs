@@ -4,9 +4,9 @@ using System.Linq;
 using HarmonyLib;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
     /// <summary>
     /// 监听游戏事件（Incident）系统，实时捕获重要事件

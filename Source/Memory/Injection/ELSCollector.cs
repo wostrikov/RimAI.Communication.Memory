@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.Injection
+namespace Ustas.RimAI.Communication.Memory.Injection
 {
     /// <summary>
     /// ELS/CLPA 采集器

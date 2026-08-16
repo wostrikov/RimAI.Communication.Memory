@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
-using RimTalk.MemoryPatch;
-using RimTalk.Memory;
-using RimTalk.Memory.Injection;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Injection;
 using Ustas.RimAI.Core.Memory;
 
-namespace RimTalk.Memory.API
+namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
     /// 为 {{pawn.memory}} Mustache 变量提供内容

@@ -4,7 +4,7 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 记忆编辑对话框 - 四层记忆系统

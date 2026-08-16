@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimTalk.Memory.AI
+namespace Ustas.RimAI.Communication.Memory.AI
 {
     /// <summary>
     /// 向量嵌入服务 - 支持Gemini和DeepSeek

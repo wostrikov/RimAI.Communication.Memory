@@ -6,7 +6,7 @@
 // using System.Threading.Tasks;
 // using Verse;
 
-// namespace RimTalk.Memory.AI
+// namespace Ustas.RimAI.Communication.Memory.AI
 // {
 //     /// <summary>
 //     /// SiliconFlow向量嵌入服务

@@ -1,7 +1,7 @@
 using System;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// CommonKnowledgeEntry扩展方法

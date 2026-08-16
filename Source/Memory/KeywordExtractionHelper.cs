@@ -4,7 +4,7 @@ using System.Linq;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 关键词提取辅助类

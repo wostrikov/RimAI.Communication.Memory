@@ -3,10 +3,10 @@ using Verse;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk.Memory;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// MainTabWindow_Memory - TopBar 绘制部分

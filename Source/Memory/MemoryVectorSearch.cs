@@ -4,7 +4,7 @@
 // using System.Threading.Tasks;
 // using Verse;
 
-// namespace RimTalk.Memory
+// namespace Ustas.RimAI.Communication.Memory
 // {
 //     /// <summary>
 //     /// 记忆向量检索辅助类

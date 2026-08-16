@@ -2,7 +2,7 @@ using HarmonyLib;
 using Verse;
 using System.Collections.Generic;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
 
     // 添加组件到类人生物

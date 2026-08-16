@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.Memory;
 
-namespace RimTalk.Memory.Injection
+namespace Ustas.RimAI.Communication.Memory.Injection
 {
     /// <summary>
     /// 统一记忆注入调度器

@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk.Memory;
-using RimTalk.Memory.Injection;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Injection;
 using Ustas.RimAI.Core.Memory;
 using Verse;
 
-namespace RimTalk.Memory.API
+namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>Canonical typed Memory/Knowledge context. Scriban providers are compatibility adapters.</summary>
     public sealed class MemoryContextProvider : IMemoryContextProvider, IKnowledgeContextProvider

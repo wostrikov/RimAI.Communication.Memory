@@ -3,7 +3,7 @@ using UnityEngine;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 手动创建记忆的对话框
@@ -187,7 +187,7 @@ namespace RimTalk.Memory.UI
                     break;
                     
                 default:
-                    Log.Warning($"[RimTalk Memory] Ручне додавання до рівня {targetLayer} не підтримується");
+                    Log.Warning($"[RimAI.Memory] Ручне додавання до рівня {targetLayer} не підтримується");
                     break;
             }
         }

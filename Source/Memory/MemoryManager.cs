@@ -5,10 +5,10 @@ using System.Text;
 using Verse;
 using RimWorld;
 using RimWorld.Planet;
-using RimTalk.MemoryPatch;
-using RimTalk.Memory.Patches;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Patches;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// WorldComponent to manage global memory decay and daily summarization
@@ -194,7 +194,7 @@ namespace RimTalk.Memory
             // 开发模式日志（每10次更新才输出一次）
             if (Prefs.DevMode && updatedCount > 0 && UnityEngine.Random.value < 0.1f)
             {
-                Log.Message($"[RimTalk Memory] Updated {updatedCount} event knowledge time prefixes");
+                Log.Message($"[RimAI.Memory] Updated {updatedCount} event knowledge time prefixes");
             }
         }
         
@@ -216,7 +216,7 @@ namespace RimTalk.Memory
             // 当天第一次检查，且时间在目标小时（ELS总结：每天一次）
             if (currentDay != lastSummarizationDay && currentHour == targetHour)
             {
-                Log.Message($"[RimTalk Memory] 🌙 Day {currentDay}, Hour {currentHour}: Triggering daily ELS summarization");
+                Log.Message($"[RimAI.Memory] 🌙 Day {currentDay}, Hour {currentHour}: Triggering daily ELS summarization");
                 
                 foreach (var map in Find.Maps)
                 {
@@ -277,13 +277,13 @@ namespace RimTalk.Memory
 
             if (queuedCount > 0)
             {
-                Log.Message($"[RimTalk Memory] 📋 Queued {queuedCount} colonists for summarization (15s delay between each)");
+                Log.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for summarization (15s delay between each)");
                 // 立即处理第一个
                 nextSummarizationTick = Find.TickManager.TicksGame;
             }
             else
             {
-                Log.Message($"[RimTalk Memory] ✅ No colonists need summarization");
+                Log.Message($"[RimAI.Memory] ✅ No colonists need summarization");
             }
         }
 
@@ -337,7 +337,7 @@ namespace RimTalk.Memory
                 // ⭐ v3.3.2: 降低日志输出 - 仅DevMode且10%概率
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimTalk Memory] Summarized memories for {pawn.LabelShort} ({summarizationQueue.Count} remaining)");
+                    Log.Message($"[RimAI.Memory] Summarized memories for {pawn.LabelShort} ({summarizationQueue.Count} remaining)");
                 }
             }
 
@@ -347,14 +347,14 @@ namespace RimTalk.Memory
                 nextSummarizationTick = currentTick + SUMMARIZATION_DELAY_TICKS;
                 
                 // ⭐ v3.3.2: 移除下一次总结时间的日志
-                // Log.Message($"[RimTalk Memory] Next colonist will be summarized in 15 seconds...");
+                // Log.Message($"[RimAI.Memory] Next colonist will be summarized in 15 seconds...");
             }
             else
             {
                 // ⭐ v3.3.2: 降低日志输出
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimTalk Memory] All colonists summarized!");
+                    Log.Message($"[RimAI.Memory] All colonists summarized!");
                 }
             }
         }
@@ -405,7 +405,7 @@ namespace RimTalk.Memory
                 // ⭐ v3.3.2: 降低日志输出
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimTalk Memory] Manual summarized for {pawn.LabelShort} ({scmCount} SCM -> ELS, {manualSummarizationQueue.Count} remaining)");
+                    Log.Message($"[RimAI.Memory] Manual summarized for {pawn.LabelShort} ({scmCount} SCM -> ELS, {manualSummarizationQueue.Count} remaining)");
                 }
                 
                 // ⭐ 给用户反馈消息（保留）
@@ -426,7 +426,7 @@ namespace RimTalk.Memory
                 // ⭐ v3.3.2: 降低日志输出
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimTalk Memory] All manual summarizations complete!");
+                    Log.Message($"[RimAI.Memory] All manual summarizations complete!");
                 }
                 // ⭐ 所有总结完成后的消息（保留）
                 Messages.Message("Ручне підсумування завершено для всіх колоністів", MessageTypeDefOf.PositiveEvent, false);
@@ -483,7 +483,7 @@ namespace RimTalk.Memory
             {
                 if (Prefs.DevMode)
                 {
-                    Log.Warning("[RimTalk Memory] No pawns found for conversation");
+                    Log.Warning("[RimAI.Memory] No pawns found for conversation");
                 }
                 return;
             }
@@ -511,7 +511,7 @@ namespace RimTalk.Memory
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[RimTalk Memory] ✅ Recorded conversation to {addedCount}/{pawns.Count} participants: {record.RawDialogue.Count} lines, convId={conversationId}");
+                Log.Message($"[RimAI.Memory] ✅ Recorded conversation to {addedCount}/{pawns.Count} participants: {record.RawDialogue.Count} lines, convId={conversationId}");
             }
         }
         */
@@ -595,7 +595,7 @@ namespace RimTalk.Memory
 
             if (queuedCount > 0)
             {
-                Log.Message($"[RimTalk Memory] 📋 Queued {queuedCount} colonists for manual summarization (1s delay between each)");
+                Log.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for manual summarization (1s delay between each)");
                 // 立即处理第一个
                 nextManualSummarizationTick = Find.TickManager.TicksGame;
             }
@@ -667,7 +667,7 @@ namespace RimTalk.Memory
                 return;
             
             // 到达归档时间
-            Log.Message($"[RimTalk Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {intervalDays} days)");
+            Log.Message($"[RimAI.Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {intervalDays} days)");
             
             int totalArchivedPawns = 0;
             int totalArchivedEntries = 0;
@@ -787,7 +787,7 @@ namespace RimTalk.Memory
                         if (Prefs.DevMode)
                         {
                             int remainingELS = fourLayerComp.EventLogMemories.Count;
-                            Log.Message($"[RimTalk Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
+                            Log.Message($"[RimAI.Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
                                        $"removed {removedCount} ELS (前25%), kept {remainingELS} ELS (including {remainingELS - nonPinnedELS.Count + removedCount} pinned/edited)");
                         }
                     }
@@ -811,7 +811,7 @@ namespace RimTalk.Memory
                         
                         if (Prefs.DevMode && toRemove.Count > 0)
                         {
-                            Log.Message($"[RimTalk Memory] Cleaned {toRemove.Count} old CLPA memories for {pawn.LabelShort}");
+                            Log.Message($"[RimAI.Memory] Cleaned {toRemove.Count} old CLPA memories for {pawn.LabelShort}");
                         }
                     }
                 }
@@ -823,7 +823,7 @@ namespace RimTalk.Memory
             // 输出总结日志
             if (totalArchivedPawns > 0)
             {
-                Log.Message($"[RimTalk Memory] ✅ Автоархівацію CLPA завершено: колоністів {totalArchivedPawns}, створено записів CLPA {totalArchivedEntries}, вилучено ELS {totalRemovedELS} (перші 25%)");
+                Log.Message($"[RimAI.Memory] ✅ Автоархівацію CLPA завершено: колоністів {totalArchivedPawns}, створено записів CLPA {totalArchivedEntries}, вилучено ELS {totalRemovedELS} (перші 25%)");
                 
                 // 可选：给用户一个通知
                 Messages.Message(
@@ -834,7 +834,7 @@ namespace RimTalk.Memory
             }
             else
             {
-                Log.Message($"[RimTalk Memory] ✅ CLPA auto-archive check complete: no memories to archive");
+                Log.Message($"[RimAI.Memory] ✅ CLPA auto-archive check complete: no memories to archive");
             }
         }
         
@@ -943,17 +943,17 @@ namespace RimTalk.Memory
                 if (commonKnowledge == null)
                 {
                     commonKnowledge = new CommonKnowledgeLibrary();
-                    Log.Warning("[RimTalk Memory] commonKnowledge was null, initialized new instance");
+                    Log.Warning("[RimAI.Memory] commonKnowledge was null, initialized new instance");
                 }
                 if (conversationCache == null)
                 {
                     conversationCache = new ConversationCache();
-                    Log.Warning("[RimTalk Memory] conversationCache was null, initialized new instance");
+                    Log.Warning("[RimAI.Memory] conversationCache was null, initialized new instance");
                 }
                 if (promptCache == null)
                 {
                     promptCache = new PromptCache();
-                    Log.Warning("[RimTalk Memory] promptCache was null, initialized new instance");
+                    Log.Warning("[RimAI.Memory] promptCache was null, initialized new instance");
                 }
                 
                 // ⭐ 重新初始化队列（不保存到存档）
@@ -969,16 +969,16 @@ namespace RimTalk.Memory
                 if (lastArchiveDay == -1)
                 {
                     lastArchiveDay = currentDay;
-                    Log.Warning($"[RimTalk Memory] ⚠️ Old save detected! Initialized lastArchiveDay to {currentDay} to prevent immediate archive.");
+                    Log.Warning($"[RimAI.Memory] ⚠️ Old save detected! Initialized lastArchiveDay to {currentDay} to prevent immediate archive.");
                 }
                 
                 if (lastSummarizationDay == -1)
                 {
                     lastSummarizationDay = currentDay;
-                    Log.Warning($"[RimTalk Memory] ⚠️ Old save detected! Initialized lastSummarizationDay to {currentDay} to prevent immediate summarization.");
+                    Log.Warning($"[RimAI.Memory] ⚠️ Old save detected! Initialized lastSummarizationDay to {currentDay} to prevent immediate summarization.");
                 }
                 
-                Log.Message($"[RimTalk Memory] MemoryManager loaded successfully.");
+                Log.Message($"[RimAI.Memory] MemoryManager loaded successfully.");
             }
         }
         

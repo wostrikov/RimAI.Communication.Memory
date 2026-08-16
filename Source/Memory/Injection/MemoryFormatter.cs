@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Text;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.Injection
+namespace Ustas.RimAI.Communication.Memory.Injection
 {
     /// <summary>
     /// 记忆格式化器

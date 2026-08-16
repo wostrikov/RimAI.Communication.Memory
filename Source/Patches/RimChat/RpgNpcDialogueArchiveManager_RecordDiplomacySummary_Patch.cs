@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using RimWorld;
 using System;
 using System.Collections;
@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Text;
 using Verse;
 
-namespace RimTalk.Memory.Patches.RimChat
+namespace Ustas.RimAI.Communication.Memory.Patches.Relations
 {
 
     // 捕获RimChat对话
-    [HarmonyPatch("RimChat.Memory.RpgNpcDialogueArchiveManager", "RecordDiplomacySummary")]
+    [HarmonyPatch("Ustas.RimAI.Communication.Relations.Memory.RpgNpcDialogueArchiveManager", "RecordDiplomacySummary")]
     public static class RpgNpcDialogueArchiveManager_RecordDiplomacySummary_Patch
     {
         // 声明字段访问器
@@ -31,10 +31,10 @@ namespace RimTalk.Memory.Patches.RimChat
             try
             {
                 // 尝试获取ChatMessageData类
-                dialogueMessageDataType = AccessTools.TypeByName("RimChat.Memory.DialogueMessageData");
+                dialogueMessageDataType = AccessTools.TypeByName("Ustas.RimAI.Communication.Relations.Memory.DialogueMessageData");
                 if (dialogueMessageDataType is null)
                 {
-                    Log.Message("[RimTalk.Memory.Patches.RimChat]: тип DialogueMessageData не знайдено; patch вимкнено.");
+                    Log.Message("[RimAI.Memory]: тип DialogueMessageData не знайдено; patch вимкнено.");
                     return false;
                 }
 
@@ -42,7 +42,7 @@ namespace RimTalk.Memory.Patches.RimChat
                 var isSystemMessageMethod = AccessTools.Method(dialogueMessageDataType, "IsSystemMessage");
                 if (isSystemMessageMethod is null)
                 {
-                    Log.Message("[RimTalk.Memory.Patches.RimChat]: метод IsSystemMessage не знайдено; patch вимкнено.");
+                    Log.Message("[RimAI.Memory]: метод IsSystemMessage не знайдено; patch вимкнено.");
                     return false;
                 }
 
@@ -51,12 +51,12 @@ namespace RimTalk.Memory.Patches.RimChat
                 isPlayerRef = AccessTools.FieldRefAccess<bool>(dialogueMessageDataType, "isPlayer");
                 messageRef = AccessTools.FieldRefAccess<string>(dialogueMessageDataType, "message");
 
-                Log.Message("[RimTalk.Memory.Patches.RimChat]: усі засоби доступу успішно ініціалізовано.");
+                Log.Message("[RimAI.Memory]: усі засоби доступу успішно ініціалізовано.");
                 return true;
             }
             catch 
             {
-                Log.Error("[RimTalk.Memory.Patches.RimChat]: помилка під час ініціалізації patch RimChat");
+                Log.Error("[RimAI.Memory]: помилка під час ініціалізації patch RimChat");
                 return false;
             }
         }

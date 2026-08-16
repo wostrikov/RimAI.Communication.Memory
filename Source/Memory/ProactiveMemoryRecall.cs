@@ -1,12 +1,12 @@
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-// SuperKeywordEngine 位于同一命名空间 RimTalk.Memory，无需额外 using
+// SuperKeywordEngine 位于同一命名空间 Ustas.RimAI.Communication.Memory，无需额外 using
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 主动记忆召回系统 - v3.0实验性功能

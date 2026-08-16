@@ -5,10 +5,10 @@ using System.Linq;
 using System.Reflection;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
-using RimTalk.Memory.Injection;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Injection;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
     /// <summary>
     /// Simple integration that exposes memory data through a public static API
@@ -78,7 +78,7 @@ namespace RimTalk.Memory.Patches
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[RimTalkMemoryAPI] Cached Prompt for matching: {prompt?.Substring(0, Math.Min(50, prompt?.Length ?? 0))}...");
+                Log.Message($"[RimAI.Memory] Cached Prompt for matching: {prompt?.Substring(0, Math.Min(50, prompt?.Length ?? 0))}...");
             }
         }
         

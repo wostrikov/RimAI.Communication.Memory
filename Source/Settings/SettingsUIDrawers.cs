@@ -1,12 +1,12 @@
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.Memory;
-using RimTalk.Memory.API;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.API;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace RimTalk.MemoryPatch
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 设置UI绘制辅助类 - 拆分UI代码以减少主文件大小

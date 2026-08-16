@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using RimTalk.Memory;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory;
 using Verse;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// MainTabWindow_Memory 辅助方法（部分类）

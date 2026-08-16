@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch; // ? 添加命名空间
+using Ustas.RimAI.Communication.Memory; // ? 添加命名空间
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 常识库UI绘制委托 - 可复用的UI绘制方法

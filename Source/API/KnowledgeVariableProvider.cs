@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Text;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
-using RimTalk.Memory;
-using RimTalk.Memory.UI;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.UI;
 using Ustas.RimAI.Core.Memory;
 
-namespace RimTalk.Memory.API
+namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
     /// 为 {{knowledge}} 变量提供内容
@@ -547,13 +547,13 @@ namespace RimTalk.Memory.API
             {
                 // 查找 RimTalk 程序集
                 var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "RimTalk");
+                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
                 
                 if (rimTalkAssembly == null) return null;
                 
                 // ⭐ v5.0: 优先使用 ScribanParser
-                var parserType = rimTalkAssembly.GetType("RimTalk.Prompt.ScribanParser")
-                    ?? rimTalkAssembly.GetType("RimTalk.Prompt.MustacheParser");
+                var parserType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser")
+                    ?? rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.MustacheParser");
                     
                 if (parserType == null) return null;
                 

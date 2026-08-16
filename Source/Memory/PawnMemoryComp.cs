@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
 
     /// <summary>

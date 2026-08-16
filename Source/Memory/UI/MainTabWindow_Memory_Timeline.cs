@@ -3,10 +3,10 @@ using Verse;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
-using RimTalk.Memory;
+using Ustas.RimAI.Communication.Memory;
 using System;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// MainTabWindow_Memory - Timeline 时间线绘制部分

@@ -4,10 +4,10 @@ using System.Reflection;
 using System.Threading;
 using HarmonyLib;
 using Verse;
-using RimTalk.Memory;
+using Ustas.RimAI.Communication.Memory;
 // ? v3.3.2.25: AIDatabase已移除
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
     /// <summary>
     /// AI响应后处理器

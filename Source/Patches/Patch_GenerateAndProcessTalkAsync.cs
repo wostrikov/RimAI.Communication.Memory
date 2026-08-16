@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using HarmonyLib;
-using RimTalk.Memory.API;
-using RimTalk.Memory.VectorDB;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory.API;
+using Ustas.RimAI.Communication.Memory.VectorDB;
+using Ustas.RimAI.Communication.Memory;
 using Verse;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
     /// <summary>
     /// Patch for TalkService.GenerateAndProcessTalkAsync
@@ -26,20 +26,20 @@ namespace RimTalk.Memory.Patches
         [HarmonyTargetMethod]
         public static MethodBase TargetMethod()
         {
-            // 查找 RimTalk.Service.TalkService.GenerateAndProcessTalkAsync
+            // 查找 Ustas.RimAI.Communication.Service.TalkService.GenerateAndProcessTalkAsync
             var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(a => a.GetName().Name == "RimTalk");
+                .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
             
             if (rimTalkAssembly == null)
             {
-                Log.Warning("[RimTalk Memory] RimTalk assembly not found for GenerateAndProcessTalkAsync patch");
+                Log.Warning("[RimAI.Memory] RimTalk assembly not found for GenerateAndProcessTalkAsync patch");
                 return null;
             }
 
-            var talkServiceType = rimTalkAssembly.GetType("RimTalk.Service.TalkService");
+            var talkServiceType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Service.TalkService");
             if (talkServiceType == null)
             {
-                Log.Warning("[RimTalk Memory] TalkService type not found");
+                Log.Warning("[RimAI.Memory] TalkService type not found");
                 return null;
             }
 
@@ -48,11 +48,11 @@ namespace RimTalk.Memory.Patches
             
             if (method == null)
             {
-                Log.Warning("[RimTalk Memory] GenerateAndProcessTalkAsync method not found");
+                Log.Warning("[RimAI.Memory] GenerateAndProcessTalkAsync method not found");
                 return null;
             }
 
-            Log.Message("[RimTalk Memory] ✓ Found GenerateAndProcessTalkAsync for patching");
+            Log.Message("[RimAI.Memory] ✓ Found GenerateAndProcessTalkAsync for patching");
             return method;
         }
 
@@ -178,14 +178,14 @@ namespace RimTalk.Memory.Patches
                                 
                                 // ⭐ 输出匹配结果日志（包含余弦相似度）
                                 var similarities = string.Join(", ", finalResults.Select(r => $"{r.Entry.tag}:{r.Similarity:F3}"));
-                                Log.Message($"[RimTalk Memory] Vector matched {finalResults.Count} knowledge entries. Similarities: {similarities}");
+                                Log.Message($"[RimAI.Memory] Vector matched {finalResults.Count} knowledge entries. Similarities: {similarities}");
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Warning($"[RimTalk Memory] Vector search error: {ex.Message}");
+                    Log.Warning($"[RimAI.Memory] Vector search error: {ex.Message}");
                 }
 
                 // ==========================================
@@ -237,13 +237,13 @@ namespace RimTalk.Memory.Patches
                             {
                                 // 查找 RimTalk 的 Role 枚举
                                 var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                                    .FirstOrDefault(a => a.GetName().Name == "RimTalk");
-                                var roleType = rimTalkAssembly?.GetType("RimTalk.Source.Data.Role");
+                                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
+                                var roleType = rimTalkAssembly?.GetType("Ustas.RimAI.Communication.Data.Role");
                                 
                                 // 回退到其他可能的路径
                                 if (roleType == null)
                                 {
-                                    roleType = rimTalkAssembly?.GetType("RimTalk.Data.Role");
+                                    roleType = rimTalkAssembly?.GetType("Ustas.RimAI.Communication.Data.Role");
                                 }
                                 
                                 if (roleType != null)
@@ -350,7 +350,7 @@ namespace RimTalk.Memory.Patches
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk Memory] Error in GenerateAndProcessTalkAsync Prefix: {ex}");
+                Log.Error($"[RimAI.Memory] Error in GenerateAndProcessTalkAsync Prefix: {ex}");
             }
         }
     }

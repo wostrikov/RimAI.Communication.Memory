@@ -7,14 +7,14 @@
 
 		<RimWorldDir Condition=" '$(RimWorldDir)' == '' ">$(RIMWORLD_DIR)</RimWorldDir>
 		<RimWorldWorkshopDir Condition=" '$(RimWorldWorkshopDir)' == '' ">$(RIMWORLD_WORKSHOP_DIR)</RimWorldWorkshopDir>
-		<RimTalkDir Condition=" '$(RimTalkDir)' == '' ">$(RimWorldWorkshopDir)\3551203752</RimTalkDir>
+		<RimTalkDir Condition=" '$(RimTalkDir)' == '' "></RimTalkDir>
 		<BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\bin\</BaseOutputPath>
 		<BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\obj\</BaseIntermediateOutputPath>
 
-		<ModFolderName>RimTalk-ExpandMemory</ModFolderName>
+		<ModFolderName>RimAI.Communication.Memory</ModFolderName>
 
 		<!-- 编程配置项 -->
-		<RootNamespace>RimTalk.Memory</RootNamespace>
+		<RootNamespace>Ustas.RimAI.Communication.Memory</RootNamespace>
 		<LangVersion>latest</LangVersion>
 
 		<!-- 编译配置项 -->
@@ -22,7 +22,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<Platforms>AnyCPU;x64</Platforms>
 		<PlatformTarget>x64</PlatformTarget>
-		<AssemblyName>RimTalkMemoryPatch</AssemblyName>
+		<AssemblyName>RimAI.Communication.Memory</AssemblyName>
 
 		<!-- 编译项优化 -->
 		<UseSharedCompilation>false</UseSharedCompilation>
@@ -48,14 +48,15 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 
 		<!-- 程序集引用 -->
-		<Reference Include="RimTalk" Condition="Exists('$(RimTalkDir)\$(GameVersion)\Assemblies\RimTalk.dll')">
-			<HintPath>$(RimTalkDir)\$(GameVersion)\Assemblies\RimTalk.dll</HintPath>
-			<Private>False</Private>
-		</Reference>
 		<Reference Include="System.Net.Http">
 			<Private>False</Private>
 		</Reference>
-		<ProjectReference Include="..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj" />
+		<ProjectReference Include="..\RimAI.Communication\RimTalk.csproj">
+			<Private>False</Private>
+		</ProjectReference>
+		<ProjectReference Include="..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
+			<Private>False</Private>
+		</ProjectReference>
 
 		<!-- 排除文件 -->
 		<Compile Remove="..\RimTalk\**" />

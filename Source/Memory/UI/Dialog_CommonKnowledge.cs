@@ -4,9 +4,9 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 常识库管理窗口 - Library Style with Drag Multi-Select

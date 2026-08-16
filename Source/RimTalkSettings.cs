@@ -1,14 +1,14 @@
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.Memory;
-using RimTalk.Memory.UI;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace RimTalk.MemoryPatch
+namespace Ustas.RimAI.Communication.Memory
 {
     public class RimTalkMemoryPatchSettings : ModSettings
     {

@@ -7,10 +7,10 @@ using System.Text;
 using UnityEngine;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
-using RimTalk.Memory.API;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.API;
 
-namespace RimTalk.Memory.Debug
+namespace Ustas.RimAI.Communication.Memory.Debug
 {
     /// <summary>
     /// 调试预览器 - 分析记忆和常识注入内容
@@ -621,13 +621,13 @@ namespace RimTalk.Memory.Debug
             try
             {
                 var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "RimTalk");
+                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
                 
                 if (rimTalkAssembly == null) return;
                 
-                _scribanParserType = rimTalkAssembly.GetType("RimTalk.Prompt.ScribanParser");
-                _promptContextType = rimTalkAssembly.GetType("RimTalk.Prompt.PromptContext");
-                _promptManagerType = rimTalkAssembly.GetType("RimTalk.Prompt.PromptManager");
+                _scribanParserType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser");
+                _promptContextType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptContext");
+                _promptManagerType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptManager");
                 
                 if (_scribanParserType != null)
                 {

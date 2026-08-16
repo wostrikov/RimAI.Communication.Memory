@@ -5,7 +5,7 @@ using System.Text;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.Monitoring
+namespace Ustas.RimAI.Communication.Memory.Monitoring
 {
     /// <summary>
     /// 性能监控系统

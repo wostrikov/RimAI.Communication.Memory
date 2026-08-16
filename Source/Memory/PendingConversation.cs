@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 单条对话行（用于异步线程安全传递）

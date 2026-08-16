@@ -1,13 +1,13 @@
-﻿using RimTalk.Memory.Capture;
-using RimTalk.Memory.UI;
-using RimTalk.MemoryPatch;
+﻿using Ustas.RimAI.Communication.Memory.Capture;
+using Ustas.RimAI.Communication.Memory.UI;
+using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 四层记忆系统核心组件

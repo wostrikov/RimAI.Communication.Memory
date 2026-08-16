@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using RimTalk.Service;
+using Ustas.RimAI.Communication.Service;
 using Verse;
 
-namespace RimTalk.Memory.Patches.Capture
+namespace Ustas.RimAI.Communication.Memory.Patches.Capture
 {
 
     // 捕获玩家发言

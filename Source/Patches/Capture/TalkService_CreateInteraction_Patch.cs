@@ -1,11 +1,11 @@
 using HarmonyLib;
-using RimTalk.Data;
-using RimTalk.MemoryPatch;
-using RimTalk.Service;
-using RimTalk.Source.Data;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Service;
+using Ustas.RimAI.Communication.Data;
 using System.Text.RegularExpressions;
 
-namespace RimTalk.Memory.Patches.Capture
+namespace Ustas.RimAI.Communication.Memory.Patches.Capture
 {
 
     // 用于流式捕获发言，转换成原版数据结构传给 RoundMemoryManager

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
 
-namespace RimTalk.Memory.AI
+namespace Ustas.RimAI.Communication.Memory.AI
 {
     // DTO 类已提取到独立文件：
     // - DTO/OpenAITypes.cs (OpenAIRequest, OpenAIMessage, CacheControl)
@@ -286,10 +286,10 @@ namespace RimTalk.Memory.AI
         {
             try
             {
-                Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault((Assembly a) => a.GetName().Name == "RimTalk");
+                Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault((Assembly a) => a.GetName().Name == "Ustas.RimAI.Communication");
                 if (assembly == null) return false;
                 
-                Type type = assembly.GetType("RimTalk.Settings");
+                Type type = assembly.GetType("Ustas.RimAI.Communication.Settings");
                 if (type == null) return false;
                 
                 MethodInfo method = type.GetMethod("Get", BindingFlags.Static | BindingFlags.Public);
@@ -708,13 +708,13 @@ namespace RimTalk.Memory.AI
         {
             if (useRimTalkAdapter)
             {
-                var client = await global::RimTalk.Client.AIClientFactory.GetAIClientAsync();
+                var client = await global::Ustas.RimAI.Communication.Client.AIClientFactory.GetAIClientAsync();
                 if (client == null) return null;
                 var payload = await client.GetChatCompletionAsync(
-                    new List<(global::RimTalk.Data.Role role, string message)>(),
-                    new List<(global::RimTalk.Data.Role role, string message)>
+                    new List<(global::Ustas.RimAI.Communication.Data.Role role, string message)>(),
+                    new List<(global::Ustas.RimAI.Communication.Data.Role role, string message)>
                     {
-                        (global::RimTalk.Data.Role.User, prompt)
+                        (global::Ustas.RimAI.Communication.Data.Role.User, prompt)
                     });
                 return payload?.Response;
             }

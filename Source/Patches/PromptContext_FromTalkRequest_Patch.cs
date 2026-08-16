@@ -1,10 +1,10 @@
 using HarmonyLib;
-using RimTalk.Data;
-using RimTalk.Prompt;
+using Ustas.RimAI.Communication.Data;
+using Ustas.RimAI.Communication.Prompt;
 using System.Collections.Generic;
 using Verse;
 
-namespace RimTalk.Memory.Patches
+namespace Ustas.RimAI.Communication.Memory.Patches
 {
 
     // 填充 Participants

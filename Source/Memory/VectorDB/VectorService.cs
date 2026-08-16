@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 using Verse;
 using RimWorld;
 
-namespace RimTalk.Memory.VectorDB
+namespace Ustas.RimAI.Communication.Memory.VectorDB
 {
     /// <summary>
     /// 向量检索引擎 - 云端版
@@ -57,15 +57,15 @@ namespace RimTalk.Memory.VectorDB
         {
             try
             {
-                Log.Message("[RimTalk-ExpandMemory] VectorService: Initializing Cloud Embedding Service...");
+                Log.Message("[RimAI.Memory] VectorService: Initializing Cloud Embedding Service...");
                 _httpClient = new HttpClient();
                 _httpClient.Timeout = TimeSpan.FromSeconds(30);
                 _isInitialized = true;
-                Log.Message("[RimTalk-ExpandMemory] VectorService: Cloud Service Initialized.");
+                Log.Message("[RimAI.Memory] VectorService: Cloud Service Initialized.");
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Initialization failed: {ex}");
+                Log.Error($"[RimAI.Memory] VectorService: Initialization failed: {ex}");
                 _isInitialized = false;
             }
         }
@@ -81,7 +81,7 @@ namespace RimTalk.Memory.VectorDB
             {
                 if (!_isInitialized)
                 {
-                    Log.Warning("[RimTalk-ExpandMemory] VectorService: Service not initialized.");
+                    Log.Warning("[RimAI.Memory] VectorService: Service not initialized.");
                     return results;
                 }
 
@@ -120,7 +120,7 @@ namespace RimTalk.Memory.VectorDB
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Error in FindBestLoreIdsAsync: {ex}");
+                Log.Error($"[RimAI.Memory] VectorService: Error in FindBestLoreIdsAsync: {ex}");
                 return results;
             }
         }
@@ -180,7 +180,7 @@ namespace RimTalk.Memory.VectorDB
 
                     if (entriesToUpdate.Count == 0 && entriesToRemove.Count == 0)
                     {
-                        Log.Message("[RimTalk-ExpandMemory] VectorService: No changes detected, skipping sync.");
+                        Log.Message("[RimAI.Memory] VectorService: No changes detected, skipping sync.");
                         _isSyncing = false;
                         return;
                     }
@@ -191,7 +191,7 @@ namespace RimTalk.Memory.VectorDB
                         Messages.Message($"Оновлення векторної бази… ({entriesToUpdate.Count} нових/змінених, {entriesToRemove.Count} видалених)", MessageTypeDefOf.NeutralEvent, false);
                     });
 
-                    Log.Message($"[RimTalk-ExpandMemory] VectorService: Syncing {entriesToUpdate.Count} updated entries, removing {entriesToRemove.Count} entries...");
+                    Log.Message($"[RimAI.Memory] VectorService: Syncing {entriesToUpdate.Count} updated entries, removing {entriesToRemove.Count} entries...");
 
                     // 删除过期条目
                     lock (_loreVectors)
@@ -231,7 +231,7 @@ namespace RimTalk.Memory.VectorDB
                         await Task.Delay(200).ConfigureAwait(false);
                     }
 
-                    Log.Message($"[RimTalk-ExpandMemory] VectorService: Sync complete! {syncedCount}/{entriesToUpdate.Count} entries vectorized.");
+                    Log.Message($"[RimAI.Memory] VectorService: Sync complete! {syncedCount}/{entriesToUpdate.Count} entries vectorized.");
                     
                     // 显示完成消息
                     LongEventHandler.ExecuteWhenFinished(() =>
@@ -241,7 +241,7 @@ namespace RimTalk.Memory.VectorDB
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"[RimTalk-ExpandMemory] VectorService: Error syncing library: {ex}");
+                    Log.Error($"[RimAI.Memory] VectorService: Error syncing library: {ex}");
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         Messages.Message($"Не вдалося оновити векторну базу: {ex.Message}", MessageTypeDefOf.RejectInput, false);
@@ -281,12 +281,12 @@ namespace RimTalk.Memory.VectorDB
                             _loreVectors[id] = vector;
                             _contentHashes[id] = currentHash;
                         }
-                        Log.Message($"[RimTalk-ExpandMemory] VectorService: Updated vector for entry {id}");
+                        Log.Message($"[RimAI.Memory] VectorService: Updated vector for entry {id}");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"[RimTalk-ExpandMemory] VectorService: Error updating vector: {ex}");
+                    Log.Error($"[RimAI.Memory] VectorService: Error updating vector: {ex}");
                 }
             });
         }
@@ -301,13 +301,13 @@ namespace RimTalk.Memory.VectorDB
                     {
                         _loreVectors.Remove(id);
                         _contentHashes.Remove(id);
-                        Log.Message($"[RimTalk-ExpandMemory] VectorService: Removed vector for entry {id}");
+                        Log.Message($"[RimAI.Memory] VectorService: Removed vector for entry {id}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Error removing vector: {ex}");
+                Log.Error($"[RimAI.Memory] VectorService: Error removing vector: {ex}");
             }
         }
 
@@ -331,7 +331,7 @@ namespace RimTalk.Memory.VectorDB
                     hashes.Add(_contentHashes.ContainsKey(id) ? _contentHashes[id] : "");
                 }
                 
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Exported {ids.Count} vectors for save");
+                Log.Message($"[RimAI.Memory] VectorService: Exported {ids.Count} vectors for save");
             }
         }
 
@@ -345,7 +345,7 @@ namespace RimTalk.Memory.VectorDB
         {
             if (ids == null || vectors == null || hashes == null)
             {
-                Log.Warning("[RimTalk-ExpandMemory] VectorService: Cannot import null vector data");
+                Log.Warning("[RimAI.Memory] VectorService: Cannot import null vector data");
                 return;
             }
                 
@@ -364,7 +364,7 @@ namespace RimTalk.Memory.VectorDB
                     }
                 }
                 
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Imported {_loreVectors.Count} vectors from save");
+                Log.Message($"[RimAI.Memory] VectorService: Imported {_loreVectors.Count} vectors from save");
             }
         }
 
@@ -411,7 +411,7 @@ namespace RimTalk.Memory.VectorDB
 
                 if (string.IsNullOrEmpty(apiKey))
                 {
-                    Log.Warning("[RimTalk-ExpandMemory] VectorService: API Key is missing. Please configure either Embedding API Key or Independent API Key.");
+                    Log.Warning("[RimAI.Memory] VectorService: API Key is missing. Please configure either Embedding API Key or Independent API Key.");
                     return null;
                 }
 
@@ -425,10 +425,10 @@ namespace RimTalk.Memory.VectorDB
                 string jsonBody = JsonConvert.SerializeObject(requestBody);
                 
                 // 详细日志：记录请求信息
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Sending request to {apiUrl}");
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Model: {model}");
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Input count: {texts.Count}");
-                Log.Message($"[RimTalk-ExpandMemory] VectorService: Request body: {jsonBody}");
+                Log.Message($"[RimAI.Memory] VectorService: Sending request to {apiUrl}");
+                Log.Message($"[RimAI.Memory] VectorService: Model: {model}");
+                Log.Message($"[RimAI.Memory] VectorService: Input count: {texts.Count}");
+                Log.Message($"[RimAI.Memory] VectorService: Request body: {jsonBody}");
 
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
@@ -440,25 +440,25 @@ namespace RimTalk.Memory.VectorDB
                     var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
                     
                     // 详细日志：记录响应状态
-                    Log.Message($"[RimTalk-ExpandMemory] VectorService: Response status: {(int)response.StatusCode} {response.StatusCode}");
+                    Log.Message($"[RimAI.Memory] VectorService: Response status: {(int)response.StatusCode} {response.StatusCode}");
                     
                     if (!response.IsSuccessStatusCode)
                     {
                         string errorBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        Log.Error($"[RimTalk-ExpandMemory] VectorService: API request failed: {(int)response.StatusCode} ({response.StatusCode})");
-                        Log.Error($"[RimTalk-ExpandMemory] VectorService: Error response: {errorBody}");
+                        Log.Error($"[RimAI.Memory] VectorService: API request failed: {(int)response.StatusCode} ({response.StatusCode})");
+                        Log.Error($"[RimAI.Memory] VectorService: Error response: {errorBody}");
                         return null;
                     }
 
                     string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    Log.Message($"[RimTalk-ExpandMemory] VectorService: Response received, length: {responseString.Length}");
+                    Log.Message($"[RimAI.Memory] VectorService: Response received, length: {responseString.Length}");
                     
                     JObject jsonResponse = JObject.Parse(responseString);
                     
                     var dataArray = jsonResponse["data"] as JArray;
                     if (dataArray == null)
                     {
-                        Log.Error($"[RimTalk-ExpandMemory] VectorService: No 'data' field in response: {responseString}");
+                        Log.Error($"[RimAI.Memory] VectorService: No 'data' field in response: {responseString}");
                         return null;
                     }
 
@@ -472,20 +472,20 @@ namespace RimTalk.Memory.VectorDB
                         }
                     }
 
-                    Log.Message($"[RimTalk-ExpandMemory] VectorService: Successfully parsed {embeddings.Count} embeddings");
+                    Log.Message($"[RimAI.Memory] VectorService: Successfully parsed {embeddings.Count} embeddings");
                     return embeddings;
                 }
             }
             catch (HttpRequestException ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: HTTP request failed: {ex.Message}");
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Stack trace: {ex.StackTrace}");
+                Log.Error($"[RimAI.Memory] VectorService: HTTP request failed: {ex.Message}");
+                Log.Error($"[RimAI.Memory] VectorService: Stack trace: {ex.StackTrace}");
                 return null;
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Unexpected error: {ex.Message}");
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Stack trace: {ex.StackTrace}");
+                Log.Error($"[RimAI.Memory] VectorService: Unexpected error: {ex.Message}");
+                Log.Error($"[RimAI.Memory] VectorService: Stack trace: {ex.StackTrace}");
                 return null;
             }
         }
@@ -511,11 +511,11 @@ namespace RimTalk.Memory.VectorDB
                 _httpClient?.Dispose();
                 _httpClient = null;
                 _isInitialized = false;
-                Log.Message("[RimTalk-ExpandMemory] VectorService: Disposed.");
+                Log.Message("[RimAI.Memory] VectorService: Disposed.");
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimTalk-ExpandMemory] VectorService: Error during disposal: {ex}");
+                Log.Error($"[RimAI.Memory] VectorService: Error during disposal: {ex}");
             }
         }
     }

@@ -2,7 +2,7 @@ using System;
 using Verse;
 using RimWorld.Planet;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 向后兼容性修复 - 确保WorldComponent类型在游戏启动时注册

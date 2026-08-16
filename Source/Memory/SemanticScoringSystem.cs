@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 语义增强评分系统 v3.1.0

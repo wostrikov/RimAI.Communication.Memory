@@ -1,6 +1,6 @@
 using System;
 
-namespace RimTalk.Memory.UI
+namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
     /// 常识库翻译键常量 - 集中管理所有UI文本的翻译键

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimWorld;
-using RimTalk.MemoryPatch;
+using Ustas.RimAI.Communication.Memory;
 
-namespace RimTalk.Memory
+namespace Ustas.RimAI.Communication.Memory
 {
     /// <summary>
     /// 事件记录常识生成器 (PlayLog扫描 - 补充监听)
