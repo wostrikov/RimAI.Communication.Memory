@@ -2,6 +2,7 @@
 using UnityEngine;
 using HarmonyLib;
 using Ustas.RimAI.Communication.Memory.API;
+using Ustas.RimAI.Communication.Memory.Integration;
 using Ustas.RimAI.Core.Memory;
 using Ustas.RimAI.Core.Modules;
 
@@ -23,6 +24,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             var harmony = new Harmony("ustas.rimai.communication.memory");
             harmony.PatchAll();
+            TalkLifecycleBridge.Register();
             RimAIModuleRegistry.Current.Register(new RimAIModuleDescriptor(
                 "memory",
                 "RimAI.Communication.Memory",
