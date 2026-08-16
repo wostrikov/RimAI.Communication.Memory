@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Ustas.RimAI.Communication.Memory.Debug
     /// 1. 常识部分: 匹配源选择、Scriban解析、被匹配常识显示
     /// 2. 记忆部分: 保持现状
     /// 
-    /// ⭐ 匹配源与 RimTalkSettings.knowledgeMatchingSources 同步
+    /// ⭐ 匹配源与 CommunicationSettings.knowledgeMatchingSources 同步
     /// </summary>
     public class Dialog_InjectionPreview : Window
     {
