@@ -4,7 +4,7 @@
   <MainButtonDef>
     <defName>RimTalk_Memory</defName>
     <!-- label 和 description 由 Languages/*/DefInjected/MainButtonDef/RimTalk_Memory.xml 提供 -->
-    <tabWindowClass>RimTalk.Memory.UI.MainTabWindow_Memory, RimTalkMemoryPatch</tabWindowClass>
+    <tabWindowClass>Ustas.RimAI.Communication.Memory.UI.MainTabWindow_Memory</tabWindowClass>
     <order>35</order>
   </MainButtonDef>
 </Defs>
