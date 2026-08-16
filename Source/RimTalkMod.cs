@@ -36,7 +36,7 @@ namespace RimTalk.MemoryPatch
 
         public override string SettingsCategory()
         {
-            return Content?.Name ?? "RimTalk - Expand Memory";
+            return Content?.Name ?? "RimAI.Memory";
         }
 
         public override void WriteSettings()

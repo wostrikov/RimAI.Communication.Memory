@@ -564,7 +564,7 @@ namespace RimTalk.MemoryPatch
             listing.Label("RimTalk_Settings_APIKey".Translate() + ":");
             if (independentProvider == "OpenAI")
             {
-                listing.Label("OPENAI_RIMTALK ✓");
+                listing.Label("OPENAI_RIMAI ✓");
                 independentApiKey = "";
             }
             else

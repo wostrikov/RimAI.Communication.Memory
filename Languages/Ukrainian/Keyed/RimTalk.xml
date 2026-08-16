@@ -244,7 +244,7 @@
   <RimTalk_Settings_ArchiveInterval>Інтервал архівування: кожні {0} днів</RimTalk_Settings_ArchiveInterval>
   <!-- AI API Configuration -->
   <RimTalk_Settings_AIConfigTitle>Налаштування API ШІ</RimTalk_Settings_AIConfigTitle>
-  <RimTalk_Settings_PreferRimTalkAI>Надавати перевагу налаштуванням ШІ RimTalk</RimTalk_Settings_PreferRimTalkAI>
+  <RimTalk_Settings_PreferRimTalkAI>Використовувати спільну конфігурацію текстового ШІ RimAI</RimTalk_Settings_PreferRimTalkAI>
   <RimTalk_Settings_WillUseRimTalkConfig>Буде зроблено спробу прочитати налаштування API моду RimTalk</RimTalk_Settings_WillUseRimTalkConfig>
   <RimTalk_Settings_FallbackToIndependent>Якщо RimTalk не встановлено або не налаштовано, буде використано наведені нижче незалежні налаштування</RimTalk_Settings_FallbackToIndependent>
   <RimTalk_Settings_UseIndependentConfig>Буде використано наведені нижче незалежні від RimTalk налаштування</RimTalk_Settings_UseIndependentConfig>

@@ -265,7 +265,7 @@
     
     <!-- AI API Configuration -->
     <RimTalk_Settings_AIConfigTitle>AI API Configuration</RimTalk_Settings_AIConfigTitle>
-    <RimTalk_Settings_PreferRimTalkAI>Prefer RimTalk's AI Configuration</RimTalk_Settings_PreferRimTalkAI>
+    <RimTalk_Settings_PreferRimTalkAI>Use shared RimAI text AI configuration</RimTalk_Settings_PreferRimTalkAI>
     <RimTalk_Settings_WillUseRimTalkConfig>Will attempt to read RimTalk Mod's API configuration</RimTalk_Settings_WillUseRimTalkConfig>
     <RimTalk_Settings_FallbackToIndependent>If RimTalk is not installed or configured, will use the independent configuration below</RimTalk_Settings_FallbackToIndependent>
     <RimTalk_Settings_UseIndependentConfig>Will use the independent configuration below, independent of RimTalk</RimTalk_Settings_UseIndependentConfig>

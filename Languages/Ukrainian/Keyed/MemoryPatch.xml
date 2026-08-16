@@ -269,8 +269,8 @@
   <RimTalk_Settings_EnableAutoArchive>Увімкнути автоматичне архівування</RimTalk_Settings_EnableAutoArchive>
   <!-- AI Configuration -->
   <RimTalk_Settings_AIConfigSection>Конфігурація ШІ</RimTalk_Settings_AIConfigSection>
-  <RimTalk_Settings_PreferRimTalkAI>Надавати перевагу конфігурації RimTalk</RimTalk_Settings_PreferRimTalkAI>
-  <RimTalk_Settings_WillFollowRimTalkConfig>Автоматично використовуватиме конфігурацію ШІ мода RimTalk</RimTalk_Settings_WillFollowRimTalkConfig>
+  <RimTalk_Settings_PreferRimTalkAI>Використовувати спільну конфігурацію текстового ШІ RimAI</RimTalk_Settings_PreferRimTalkAI>
+  <RimTalk_Settings_WillFollowRimTalkConfig>Автоматично використовуватиме спільну конфігурацію текстового ШІ RimAI</RimTalk_Settings_WillFollowRimTalkConfig>
   <RimTalk_Settings_APIKey>Ключ API</RimTalk_Settings_APIKey>
   <RimTalk_Settings_APIURL>URL API</RimTalk_Settings_APIURL>
   <RimTalk_Settings_ModelName>Модель</RimTalk_Settings_ModelName>

@@ -291,8 +291,8 @@
   
   <!-- AI Configuration -->
   <RimTalk_Settings_AIConfigSection>AI Configuration</RimTalk_Settings_AIConfigSection>
-  <RimTalk_Settings_PreferRimTalkAI>Prefer RimTalk Configuration</RimTalk_Settings_PreferRimTalkAI>
-  <RimTalk_Settings_WillFollowRimTalkConfig>Will automatically follow RimTalk Mod's AI configuration</RimTalk_Settings_WillFollowRimTalkConfig>
+  <RimTalk_Settings_PreferRimTalkAI>Use shared RimAI text AI configuration</RimTalk_Settings_PreferRimTalkAI>
+  <RimTalk_Settings_WillFollowRimTalkConfig>Will automatically follow the shared RimAI text AI configuration</RimTalk_Settings_WillFollowRimTalkConfig>
   <RimTalk_Settings_APIKey>API Key</RimTalk_Settings_APIKey>
   <RimTalk_Settings_APIURL>API URL</RimTalk_Settings_APIURL>
   <RimTalk_Settings_ModelName>Model</RimTalk_Settings_ModelName>
