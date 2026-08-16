@@ -1,30 +1,30 @@
-# TTS ����ɾ��ָ��
+# Посібник із видалення функціоналу TTS
 
-## ? �����
+## ? Завершено
 
-1. ? ɾ�� TTS ���ķ����ļ�
+1. ? Видалити основні файли служби TTS
    - `Source/Memory/TTS/AzureTTSService.cs`
    - `Source/Memory/TTS/ITTSService.cs`
    - `Source/Memory/TTS/TTSAudioPlayer.cs`
    - `Source/Memory/TTS/TTSHelper.cs`
    - `Source/Memory/TTS/TTSManager.cs`
 
-2. ? ɾ�� TTS Patch �ļ�
+2. ? Видалити файли Patch TTS
    - `Source/Patches/TTSAutoPlayPatcher.cs`
 
-3. ? ɾ�� TTS �ĵ�
+3. ? Видалити документацію TTS
    - `Docs/TTS_*.md`
    - `Docs/KNOWLEDGE_TEXTAREA_FIX.md`
 
-## ? ��Ҫ�ֶ����
+## ? Потрібно виконати вручну
 
-### 1. �༭ `Source/RimTalkSettings.cs`
+### 1. Відредагувати `Source/RimTalkSettings.cs`
 
-**��Ҫɾ���Ĳ��֣�**
+**Потрібно видалити:**
 
-#### A. �ֶζ��壨�� 51-58 �и�����
+#### A. Визначення полів (приблизно рядки 51–58)
 ```csharp
-// TTS ������������
+// TTS 语音服务配置
 public bool enableTTS = false;
 public string ttsProvider = "Azure";
 public string azureSpeechKey = "";
@@ -35,12 +35,12 @@ public float ttsVolume = 1.0f;
 public bool ttsAutoPlay = false;
 ```
 
-#### B. UI �۵�״̬���� 97 �и�����
+#### B. Стан згортання UI (приблизно рядок 97)
 ```csharp
 private static bool expandTTSSettings = false;
 ```
 
-#### C. ExposeData ���л����� 130-138 �и�����
+#### C. Серіалізація ExposeData (приблизно рядки 130–138)
 ```csharp
 Scribe_Values.Look(ref enableTTS, "tts_enableTTS", false);
 Scribe_Values.Look(ref ttsProvider, "tts_provider", "Azure");
@@ -52,46 +52,46 @@ Scribe_Values.Look(ref ttsVolume, "tts_volume", 1.0f);
 Scribe_Values.Look(ref ttsAutoPlay, "tts_autoPlay", false);
 ```
 
-#### D. DoSettingsWindowContents �������� 236 �и�����
-ɾ�����У�
+#### D. Метод DoSettingsWindowContents (приблизно рядок 236)
+Видаліть цей рядок:
 ```csharp
-DrawCollapsibleSection(listingStandard, "?? TTS ��������", ref expandTTSSettings, () => DrawTTSSettings(listingStandard));
+DrawCollapsibleSection(listingStandard, "?? TTS 语音服务", ref expandTTSSettings, () => DrawTTSSettings(listingStandard));
 ```
 
-#### E. DrawTTSSettings ����������������Լ 60-100 �У�
+#### E. Метод DrawTTSSettings (увесь метод, приблизно 60–100 рядків)
 ```csharp
 private void DrawTTSSettings(Listing_Standard listing)
 {
-    // ... ɾ���������� ...
+    // ... 删除整个方法 ...
 }
 ```
 
-#### F. TestTTS ����������������Լ 20-30 �У�
+#### F. Метод TestTTS (увесь метод, приблизно 20–30 рядків)
 ```csharp
 private void TestTTS()
 {
-    // ... ɾ���������� ...
+    // ... 删除整个方法 ...
 }
 ```
 
-### 2. ��֤����
+### 2. Перевірити компіляцію
 
-ɾ��������������У�
+Після видалення наведеного вище коду виконайте:
 ```powershell
 msbuild RimTalk-ExpandMemory.csproj /p:Configuration=Release
 ```
 
-Ӧ�ñ���ɹ���
+Компіляція має завершитися успішно.
 
-### 3. ���� About.xml����ѡ��
+### 3. Оновити About.xml (необов’язково)
 
-��� `About/About.xml` ���ᵽ�� TTS ���ܣ�Ҳ����ɾ�����������
+Якщо в `About/About.xml` згадується функція TTS, відповідний опис також можна видалити.
 
 ---
 
-## ?? ���ٲ��ҷ���
+## ?? Метод швидкого пошуку
 
-�� `Source/RimTalkSettings.cs` ���������¹ؼ��ʣ�
+У `Source/RimTalkSettings.cs` знайдіть такі ключові слова:
 - `TTS`
 - `enableTTS`
 - `ttsProvider`
@@ -99,20 +99,20 @@ msbuild RimTalk-ExpandMemory.csproj /p:Configuration=Release
 - `DrawTTSSettings`
 - `TestTTS`
 
-ɾ�����а�����Щ�ؼ��ʵĴ���顣
+Видаліть усі блоки коду, що містять ці ключові слова.
 
 ---
 
-## ? ��֤�嵥
+## ? Контрольний список перевірки
 
-- [ ] ɾ�� TTS �ֶζ���
-- [ ] ɾ�� TTS UI �۵�״̬
-- [ ] ɾ�� TTS ���л�����
-- [ ] ɾ�� DrawTTSSettings ����
-- [ ] ɾ�� DrawTTSSettings ����
-- [ ] ɾ�� TestTTS ����
-- [ ] ����ɹ�
+- [ ] Видалити визначення поля TTS
+- [ ] Видалити стан згортання TTS UI
+- [ ] Видалити код серіалізації TTS
+- [ ] Видалити виклик DrawTTSSettings
+- [ ] Видалити метод DrawTTSSettings
+- [ ] Видалити метод TestTTS
+- [ ] Компіляція успішна
 
 ---
 
-**��ɺ�TTS ���ܽ���ȫ����Ŀ���Ƴ���**
+**Після завершення функцію TTS буде повністю вилучено з проєкту.**

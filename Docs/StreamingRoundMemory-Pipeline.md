@@ -1,10 +1,10 @@
-# 流式 RoundMemory 捕获管线
+# Конвеєр потокового захоплення RoundMemory
 
-## 概述
+## Огляд
 
-在现有批量 RoundMemory 管线（`TalkHistory_AddMessageHistory_Patch` → `AddResponsesToHistory` Postfix）之外，**新增**一条独立的流式捕获管线。核心思想：pawn 每**说出口**一句话，立刻追加到当前会话的 RoundMemory 中，而非等到整轮对话结束后批量构建。
+Окрім наявного пакетного конвеєра RoundMemory (`TalkHistory_AddMessageHistory_Patch` → Postfix `AddResponsesToHistory`), **додано** окремий конвеєр потокового захоплення. Основна ідея: щойно pawn **вимовляє** репліку, її негайно додають до RoundMemory поточної сесії, а не пакетно формують після завершення всього раунду діалогу.
 
-## 架构
+## Архітектура
 
 ```
                      PromptContext_FromTalkRequest_Patch (Prefix)
@@ -23,13 +23,13 @@ GenerateTalk → pawns列表 → LLM流式 → responses入队
                      RoundMemoryManager.StreamingBuildRoundMemory(...)
 ```
 
-## Hook 点
+## Точки підключення
 
-**主 Hook**: `TalkService.CreateInteraction(Pawn pawn, TalkResponse talk)` — 在对话气泡**实际显示**时触发。所有被忽略/跳过/未通过 Display gate 的 response 均不触发。
+**Основний Hook**: `TalkService.CreateInteraction(Pawn pawn, TalkResponse talk)` — спрацьовує, коли бульбашка діалогу **фактично відображається**. Жодна відповідь, проігнорована/пропущена/така, що не пройшла Display gate, не викликає його.
 
-**辅助 Hook**: `PromptContext.FromTalkRequest(TalkRequest, List<Pawn>)` — 在 prompt 构建阶段将 `{{pawns}}` 的原始 pawn 集合写入 `talkRequest.Participants`，使流式管线能获取到 LLM 实际感知的参与者列表。
+**Допоміжний Hook**: `PromptContext.FromTalkRequest(TalkRequest, List<Pawn>)` — на етапі формування prompt записує початковий набір pawn з `{{pawns}}` у `talkRequest.Participants`, щоб потоковий конвеєр міг отримати список учасників, яких фактично сприймає LLM.
 
-### 为什么是 CreateInteraction
+### Чому саме CreateInteraction
 
 ```
 DisplayTalk (每0.5s)
@@ -39,15 +39,15 @@ DisplayTalk (每0.5s)
   └─ 全部通过 → CreateInteraction ★ 只有这里才"说出"
 ```
 
-## 会话隔离
+## Ізоляція сесій
 
-`ConditionalWeakTable<object, RoundMemory>` 以 `TalkRequest` 引用作为弱引用 key。key 声明为泛型 `<T> where T : class` 是为了让 `RoundMemoryManager` 不直接依赖 RimTalk 类型。
+`ConditionalWeakTable<object, RoundMemory>` використовує посилання `TalkRequest` як ключ слабкого посилання. Ключ оголошено як узагальнений `<T> where T : class`, щоб `RoundMemoryManager` не залежав безпосередньо від типу RimTalk.
 
-同一轮 `GenerateTalk` 的所有 response 通过 `ApiHistory.GetApiLog(talk.Id)?.TalkRequest` 解析到同一个引用，天然隔离不同轮次/并发会话。
+Усі відповіді одного раунду `GenerateTalk` через `ApiHistory.GetApiLog(talk.Id)?.TalkRequest` розпізнаються як такі, що посилаються на один об’єкт, природно ізолюючи різні раунди/паралельні сеанси.
 
-**弱引用的优势**：当 `TalkRequest` 被 GC 回收（所有 response 消费完毕后无其他强引用），对应的 `RoundMemory` 条目自动移除，无需手动清理。
+**Перевага слабких посилань**: коли `TalkRequest` буде зібрано збирачем сміття через GC (після споживання всіх response не залишиться інших сильних посилань), відповідний запис `RoundMemory` буде автоматично видалено, тому ручне очищення не потрібне.
 
-## 状态机
+## Машина станів
 
 ```
 CreateInteraction → patch Postfix:
@@ -73,53 +73,53 @@ CreateInteraction → patch Postfix:
   │   └─ roundMemory.AppendLine(content)  // 追加 "$name: $text"
 ```
 
-## 玩家发言注入
+## Ін’єкція реплік гравця
 
-玩家自己输入的发言不经过 `CreateInteraction`（由 `CustomDialogueService.ExecuteDialogue` 直接发 overlay），因此通过 `CapturePlayerDialogue` Postfix 捕获到 `_playerDialogue`，在流式管线创建新 RoundMemory 时作为构造器的 initial content 注入。
+Власноруч введена гравцем репліка не проходить через `CreateInteraction` (`CustomDialogueService.ExecuteDialogue` безпосередньо надсилає overlay), тому через Postfix `CapturePlayerDialogue` перехоплюється `_playerDialogue` і під час створення нового RoundMemory у потоковому конвеєрі ін’єктується як initial content конструктора.
 
-`isUserInitiate` 通过 `talkRequest.Recipient.IsPlayer()` 判断，精确区分"玩家本人发起"和"用户指挥 colonist 代发"两种场景，避免后者的消息重复。
+`isUserInitiate` визначає це через `talkRequest.Recipient.IsPlayer()`, точно розрізняючи сценарії «ініційовано самим гравцем» і «користувач наказав colonist сказати репліку», щоб уникнути дублювання повідомлень у другому випадку.
 
-## 对象释放
+## Вивільнення об’єктів
 
-| 对象 | 释放策略 |
+| Об’єкт | Стратегія вивільнення |
 |------|----------|
-| `TalkRequest`（dict key） | `ConditionalWeakTable` 弱引用：GC 自动移除，无需手动清理 |
-| `RoundMemory` | 不释放，由 `_roundMemories` 环形缓冲 + pawn ABM 共同持有 |
-| `ApiLog` | 仅瞬态查询，不持有 |
+| `TalkRequest` (ключ dict) | Слабке посилання `ConditionalWeakTable`: GC видаляється автоматично, ручне очищення не потрібне |
+| `RoundMemory` | Не вивільняється, спільно утримується кільцевим буфером `_roundMemories` і ABM pawn |
+| `ApiLog` | Лише тимчасовий запит, посилання не утримує |
 
-兜底：`FinalizeInit()` 读档时可重建 `_dictToRoundMemory`。
+Резервний варіант: під час завантаження збереження `FinalizeInit()` може відновити `_dictToRoundMemory`.
 
-## 线程安全
+## Потокобезпечність
 
-`CreateInteraction` 在 `DisplayTalk()` → 主线程 game tick 链路上触发。`_dictToRoundMemory` 的读写均在主线程，无锁。`ConditionalWeakTable` 内部保证线程安全。
+`CreateInteraction` спрацьовує в ланцюжку `DisplayTalk()` → ігровий tick головного потоку. Читання й запис `_dictToRoundMemory` виконуються в головному потоці без блокувань. `ConditionalWeakTable` внутрішньо забезпечує потокобезпечність.
 
-## 与 RimTalk 的解耦
+## Розв’язання залежності від RimTalk
 
-`RoundMemoryManager` 零引用 RimTalk 类型。所有 RimTalk API 调用集中在两个 patch 中：
+`RoundMemoryManager` не має жодних посилань на тип RimTalk. Усі виклики RimTalk API зосереджені у двох patch:
 
-| 层 | 文件 | RimTalk 依赖 |
+| Рівень | Файл | Залежність від RimTalk |
 |----|------|-------------|
-| 核心 | `RoundMemoryManager.cs` | **零** |
-| 桥接 | `CreateInteraction_StreamingRoundMemory_Patch.cs` | `ApiHistory`, `TalkResponse`, `RimTalkMemoryPatchMod` |
-| 桥接 | `PromptContext_FromTalkRequest_Patch.cs` | `PromptContext`, `TalkRequest` |
+| Ядро | `RoundMemoryManager.cs` | **Нуль** |
+| Міст | `CreateInteraction_StreamingRoundMemory_Patch.cs` | `ApiHistory`, `TalkResponse`, `RimTalkMemoryPatchMod` |
+| Міст | `PromptContext_FromTalkRequest_Patch.cs` | `PromptContext`, `TalkRequest` |
 
-## 文件清单
+## Перелік файлів
 
-| 文件 | 职责 |
+| Файл | Призначення |
 |------|------|
-| `Source/Memory/RoundMemory/RoundMemory.cs` | 新增 `AppendLine()`、构造器支持 null content；移除 `MaxContentLength` 截断；`GetParticipants()` 更名 `GetParticipantsRoster()` |
-| `Source/Memory/RoundMemory/RoundMemoryManager.cs` | 新增 `_dictToRoundMemory`（`ConditionalWeakTable`）、`StreamingBuildRoundMemory<T>()`、`AddRoundMemory()`、`GetPlayerDialogue()`；移除 `_playerPawn`、`MaxContentLength`；`BuildRoundMemory` 简化签名 |
-| `Source/Patches/CreateInteraction_StreamingRoundMemory_Patch.cs` | Harmony Postfix：清洗文本 → `talkRequest.Recipient.IsPlayer()` 判断用户发起 → 委托 `StreamingBuildRoundMemory` |
-| `Source/Patches/PromptContext_FromTalkRequest_Patch.cs` | Harmony Prefix：填充 `talkRequest.Participants` |
-| `Source/Patches/TalkHistory_AddMessageHistory_Patch.cs` | 旧批处理管线（已注释） |
+| `Source/Memory/RoundMemory/RoundMemory.cs` | Додано `AppendLine()`, конструктор підтримує null content; вилучено обрізання `MaxContentLength`; `GetParticipants()` перейменовано на `GetParticipantsRoster()` |
+| `Source/Memory/RoundMemory/RoundMemoryManager.cs` | Додано `_dictToRoundMemory` (`ConditionalWeakTable`), `StreamingBuildRoundMemory<T>()`, `AddRoundMemory()`, `GetPlayerDialogue()`; вилучено `_playerPawn`, `MaxContentLength`; спрощено сигнатуру `BuildRoundMemory` |
+| `Source/Patches/CreateInteraction_StreamingRoundMemory_Patch.cs` | Harmony Postfix: очищення тексту → `talkRequest.Recipient.IsPlayer()` визначає, чи ініційовано користувачем → делегування `StreamingBuildRoundMemory` |
+| `Source/Patches/PromptContext_FromTalkRequest_Patch.cs` | Harmony Prefix: заповнення `talkRequest.Participants` |
+| `Source/Patches/TalkHistory_AddMessageHistory_Patch.cs` | Старий конвеєр пакетної обробки (закоментовано) |
 
-## 关键外部 API 引用
+## Посилання на ключові зовнішні API
 
-| API | 位置 | 用途 |
+| API | Розташування | Призначення |
 |-----|------|------|
 | `ApiHistory.GetApiLog(Guid)` → `ApiLog` | `RimTalk.Data` | TalkResponse.Id → TalkRequest |
-| `ApiLog.TalkRequest` | `RimTalk.Data` | Session key |
-| `TalkRequest.Participants` | `RimTalk.Data` | 初始参与者集合（由 Prefix 填充） |
-| `TalkRequest.Recipient.IsPlayer()` | RimWorld | 判断是否玩家本人发起 |
-| `TalkService.CreateInteraction` | `RimTalk.Service` | 主 Hook 目标 |
-| `PromptContext.FromTalkRequest` | `RimTalk.Prompt` | 辅助 Hook 目标 |
+| `ApiLog.TalkRequest` | `RimTalk.Data` | Ключ сесії |
+| `TalkRequest.Participants` | `RimTalk.Data` | Початковий набір учасників (заповнюється Prefix) |
+| `TalkRequest.Recipient.IsPlayer()` | RimWorld | Визначає, чи ініціатором є сам гравець |
+| `TalkService.CreateInteraction` | `RimTalk.Service` | Основна ціль Hook |
+| `PromptContext.FromTalkRequest` | `RimTalk.Prompt` | Допоміжна ціль Hook |

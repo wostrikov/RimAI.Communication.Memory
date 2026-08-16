@@ -1,19 +1,19 @@
-# Content Sniffing Implementation Plan
+# План реалізації аналізу вмісту
 
-## Background
-Currently, the `RimTalk-ExpandMemory` mod automatically injects a default `PromptEntry` containing memory and knowledge context into the active RimTalk preset. 
-However, when users switch to highly customized or advanced presets that already incorporate memory/knowledge variables (e.g., `{{pawn.memory}}` or `{{knowledge}}`), the automatic injection becomes redundant, leading to wasted tokens and potential AI confusion.
+## Передумови
+Наразі модифікація `RimTalk-ExpandMemory` автоматично вставляє типовий `PromptEntry`, що містить контекст пам’яті та знань, в активний пресет RimTalk. 
+Однак коли користувачі перемикаються на сильно налаштовані або розширені пресети, які вже містять пам’ять/knowledge variables (e.g., `{{pawn.memory}}` або `{{knowledge}}`), автоматична вставка стає зайвою, спричиняючи марне витрачання токенів і потенційну плутанину з AI.
 
-## Objective
-Implement a "Content Heuristic Sniffing" mechanism. Before injecting the default entry, the mod will scan existing entries in the active preset. If it detects that the preset already uses memory or knowledge variables, it will safely abort the auto-injection process.
+## Мета
+Реалізувати механізм «евристичного аналізу вмісту». Перед вставкою типового запису модифікація просканує наявні записи в активному пресеті. Якщо буде виявлено, що пресет уже використовує змінні пам’яті або знань, процес автоматичної вставки буде безпечно перервано.
 
-## Target File
+## Цільовий файл
 `Source/API/RimTalkAPIIntegration.cs`
 
-## Implementation Details
+## Деталі реалізації
 
-### 1. Define Sniffing Keywords
-We will define an array of critical substrings that indicate the preset is already handling memory/knowledge.
+### 1. Визначення ключових слів для аналізу
+Ми визначимо масив критичних підрядків, які вказують, що пресет уже обробляє пам’ять/knowledge.
 ```csharp
 private static readonly string[] SniffingKeywords = new string[]
 {
@@ -28,27 +28,27 @@ private static readonly string[] SniffingKeywords = new string[]
 };
 ```
 
-### 2. Modify `RegisterPromptEntry` Logic
-In the `RegisterPromptEntry` method, we will add a step to retrieve all entries from the `ActivePreset` and perform the sniffing scan.
+### 2. Зміна логіки `RegisterPromptEntry`
+У методі `RegisterPromptEntry` ми додамо крок для отримання всіх записів із `ActivePreset` і виконання сканування вмісту.
 
-**Current Logic:**
-1. Get ActivePreset.
-2. Try to find the existing mod entry by deterministic ID.
-3. If found, update its content and return.
-4. If not found, create and insert the new entry.
+**Поточна логіка:**
+1. Отримати ActivePreset.
+2. Спробувати знайти наявний запис моду за детермінованим ID.
+3. Якщо запис знайдено, оновити його вміст і повернути результат.
+4. Якщо запис не знайдено, створити та вставити новий запис.
 
-**New Logic:**
-1. Get ActivePreset.
-2. Try to find the existing mod entry by deterministic ID.
-3. If found, update its content and return.
-4. **[NEW]** If not found, retrieve the list of all existing entries (`Entries` property/field) from the ActivePreset.
-5. **[NEW]** Iterate through each entry's `Content` (ignoring null or empty strings).
-6. **[NEW]** Check if the `Content` contains any of the `SniffingKeywords`.
-7. **[NEW]** If a keyword is found, output a message (e.g., `"[MemoryPatch] Detected custom memory variables in active preset. Skipping auto-injection."`) and `return` to abort injection.
-8. If no keywords are found, proceed with creating and inserting the new entry as usual.
+**Нова логіка:**
+1. Отримати ActivePreset.
+2. Спробувати знайти наявний запис моду за детермінованим ID.
+3. Якщо запис знайдено, оновити його вміст і повернути результат.
+4. **[NEW]** Якщо запис не знайдено, отримати список усіх наявних entries (`Entries` властивість /field) з ActivePreset.
+5. **[NEW]** Перебрати `Content` кожного запису (ігноруючи нульові або порожні рядки).
+6. **[NEW]** Перевірити, чи містить `Content` будь-яке з `SniffingKeywords`.
+7. **[NEW]** Якщо ключове слово знайдено, вивести message (e.g., `"[MemoryPatch] Detected custom memory variables in active preset. Skipping auto-injection."`) і `return`, щоб перервати вставлення.
+8. Якщо ключових слів не знайдено, продовжити створення та вставлення нового запису як зазвичай.
 
-### 3. Reflection Implementation for Compatibility
-Since RimTalk types are resolved via reflection (`_promptAPIType`, `_promptPresetType`, etc.), the sniffing logic must also use reflection to access the `Entries` list and the `Content` of each entry.
+### 3. Реалізація рефлексії для сумісності
+Оскільки типи RimTalk визначаються через reflection (`_promptAPIType`, `_promptPresetType` тощо), логіка розпізнавання також має використовувати рефлексію для доступу до списку `Entries` і `Content` кожного елемента.
 
 ```csharp
 // Example conceptual code for sniffing via reflection:
@@ -80,7 +80,7 @@ if (entriesField != null)
 }
 ```
 
-## Benefits
-- **Zero Configuration:** Players do not need to manually toggle settings when switching between basic and advanced presets.
-- **High Compatibility:** Operates purely on string checking, agnostic to the specific structure or naming conventions of custom presets.
-- **Non-Destructive:** If the user removes the custom entries containing the variables, the mod will detect their absence upon the next restart and automatically provide the fallback default entry.
+## Переваги
+- **Нульове налаштування:** Гравцям не потрібно вручну перемикати параметри під час переходу між базовими та розширеними пресетами.
+- **Висока сумісність:** Працює лише на основі перевірки рядків, не залежачи від конкретної структури чи правил іменування користувацьких пресетів.
+- **Без руйнівних змін:** Якщо користувач видалить користувацькі записи, що містять змінні, мод виявить їхню відсутність після наступного перезапуску й автоматично додасть резервний запис за замовчуванням.

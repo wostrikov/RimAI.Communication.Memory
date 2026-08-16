@@ -1,17 +1,17 @@
-# 记忆系统重构设计 - 最终版 v5
+# Проєкт реорганізації системи пам’яті — фінальна версія v5
 
-## 1. 目标
+## 1. Мета
 
-1. **删除 SCM 逐条记录**：不再在每条消息产生时创建 SCM
-2. **ABM 记录完整对话**：一轮对话作为一个整体存入 ABM
-3. **所有参与者获得记忆**：包括在场但未说话的 pawn
-4. **精确检测对话完成**：在 AI 流式传输完成的确切时刻处理
+1. **Видалити SCM записи по одному**: більше не створювати SCM під час надходження кожного повідомлення
+2. **ABM записувати весь діалог**: зберігати один раунд діалогу як єдине ціле в ABM
+3. **Усі учасники отримують спогад**: зокрема pawn, які були присутні, але не говорили
+4. **Точне виявлення завершення діалогу**: обробляти в точний момент завершення потокової передачі AI
 
-## 2. RimTalk TalkHistory 分析
+## 2. Аналіз RimTalk TalkHistory
 
-### 异步处理方式
+### Спосіб асинхронної обробки
 
-RimTalk 的 `TalkHistory` 确实在异步线程中直接处理：
+RimTalk справді безпосередньо обробляє `TalkHistory` в асинхронному потоці:
 
 ```csharp
 // TalkHistory.cs:37-46
@@ -27,19 +27,19 @@ public static void AddMessageHistory(Pawn pawn, string request, string response)
 }
 ```
 
-**它可以这样做的原因**：
-- 只访问 `pawn.thingIDNumber`（int 值，不可变）
-- 只操作自己的静态集合（ConcurrentDictionary）
+**Причина, чому це можливо**:
+- Звертається лише до `pawn.thingIDNumber` (незмінне значення int)
+- Працює лише з власною статичною колекцією (ConcurrentDictionary)
 
-**我们不能直接这样做的原因**：
-- 需要访问 `FourLayerMemoryComp`（Unity/RimWorld 组件，需要主线程）
-- 需要调用 `AddActiveMemory`（可能触发 UI 更新等主线程操作）
+**Причина, чому ми не можемо зробити так безпосередньо**:
+- Потрібен доступ до `FourLayerMemoryComp` (компонента /RimWorld Unity, потрібен головний потік)
+- Потрібно викликати `AddActiveMemory` (може спричинити оновлення UI та інші операції головного потоку)
 
-**结论**：保持队列模式，异步入队，主线程处理。
+**Висновок**: зберігаємо режим черги: асинхронно додаємо до черги, обробляємо в головному потоці.
 
-## 3. 核心设计
+## 3. Основна структура
 
-### 数据流
+### Потік даних
 
 ```mermaid
 flowchart TB
@@ -62,7 +62,7 @@ flowchart TB
     E --> F
 ```
 
-### 对话存储格式
+### Формат зберігання діалогу
 
 ```
 [对话参与者：张三、李四、王五]
@@ -70,11 +70,11 @@ flowchart TB
 李四: "是啊，适合出去打猎。"
 ```
 
-**说明**：王五虽然没说话，但他在场，所以出现在参与者列表中。
+**Примітка**: Ван У хоча й не сказав жодного слова, але був присутній, тому його включено до списку учасників.
 
-## 4. 数据结构
+## 4. Структури даних
 
-### DialogueLine（对话行）
+### DialogueLine (рядок діалогу)
 
 ```csharp
 /// <summary>
@@ -93,7 +93,7 @@ public readonly struct DialogueLine
 }
 ```
 
-### PendingConversation（待处理对话）
+### PendingConversation (діалог в очікуванні обробки)
 
 ```csharp
 /// <summary>
@@ -123,11 +123,11 @@ public class PendingConversation
 }
 ```
 
-## 5. Hook 实现
+## 5. Реалізація Hook
 
-### 5.1 Hook 1: 捕获参与者（主线程）
+### 5.1 Hook 1: перехоплення учасників (головний потік)
 
-**文件**: `Source/Patches/Patch_PromptManagerBuildMessages.cs`
+**Файл**: `Source/Patches/Patch_PromptManagerBuildMessages.cs`
 
 ```csharp
 [HarmonyPatch]
@@ -166,9 +166,9 @@ public static class Patch_PromptManagerBuildMessages
 }
 ```
 
-### 5.2 Hook 2: 捕获对话（异步）
+### 5.2 Hook 2: перехоплення діалогу (асинхронно)
 
-**文件**: `Source/Patches/Patch_AddResponsesToHistory.cs`
+**Файл**: `Source/Patches/Patch_AddResponsesToHistory.cs`
 
 ```csharp
 [HarmonyPatch]
@@ -224,9 +224,9 @@ public static class Patch_AddResponsesToHistory
 }
 ```
 
-### 5.3 主线程处理（格式化 + 存储）
+### 5.3 Обробка в головному потоці (форматування + збереження)
 
-**文件**: `Source/Memory/MemoryManager.cs`
+**Файл**: `Source/Memory/MemoryManager.cs`
 
 ```csharp
 private void ProcessConversationQueue()
@@ -269,43 +269,43 @@ private string FormatConversation(PendingConversation record)
 }
 ```
 
-## 6. 实施清单
+## 6. Контрольний список реалізації
 
-### Phase 1: 创建数据结构
-- [ ] 创建 `Source/Memory/PendingConversation.cs`（包含 DialogueLine）
+### Фаза 1: створення структур даних
+- [ ] Створити `Source/Memory/PendingConversation.cs` (містить DialogueLine)
 
-### Phase 2: 实现 Hooks
-- [ ] 创建 `Source/Patches/Patch_PromptManagerBuildMessages.cs`
-- [ ] 创建 `Source/Patches/Patch_AddResponsesToHistory.cs`
+### Фаза 2: реалізація Hooks
+- [ ] Створити `Source/Patches/Patch_PromptManagerBuildMessages.cs`
+- [ ] Створити `Source/Patches/Patch_AddResponsesToHistory.cs`
 
-### Phase 3: 集成主线程处理
-- [ ] 修改 `Source/Memory/MemoryManager.cs` 添加队列处理
+### Фаза 3: Інтеграція обробки в головний потік
+- [ ] Змінити `Source/Memory/MemoryManager.cs`, додавши обробку черги
 
-### Phase 4: 清理旧代码
-- [ ] 禁用 `Source/Patches/RimTalkConversationCapturePatch.cs` 中的逐条记录逻辑
+### Фаза 4: Очищення старого коду
+- [ ] Вимкнути логіку поетапного запису в `Source/Patches/RimTalkConversationCapturePatch.cs`
 
-### Phase 5: 测试
-- [ ] 测试单人独白
-- [ ] 测试双人对话
-- [ ] 测试多人对话（3+人）
-- [ ] 验证未说话参与者也能获得记忆
+### Фаза 5: Тестування
+- [ ] Протестувати монолог одного персонажа
+- [ ] Протестувати діалог двох персонажів
+- [ ] Протестувати діалог кількох персонажів (3+ персонажів)
+- [ ] Перевірити, що учасники, які не говорили, також отримують спогади
 
-## 7. 文件清单
+## 7. Перелік файлів
 
-| 文件 | 操作 | 说明 |
+| Файл | Операція | Опис |
 |------|------|------|
-| `Source/Memory/PendingConversation.cs` | 新建 | 数据结构 |
-| `Source/Patches/Patch_PromptManagerBuildMessages.cs` | 新建 | Hook: 缓存参与者 |
-| `Source/Patches/Patch_AddResponsesToHistory.cs` | 新建 | Hook: 提取对话并入队 |
-| `Source/Memory/MemoryManager.cs` | 修改 | 添加队列处理和格式化 |
-| `Source/Patches/RimTalkConversationCapturePatch.cs` | 修改 | 禁用旧逻辑 |
+| `Source/Memory/PendingConversation.cs` | Створити | Структура даних |
+| `Source/Patches/Patch_PromptManagerBuildMessages.cs` | Створити | Hook: кешування учасників |
+| `Source/Patches/Patch_AddResponsesToHistory.cs` | Створено | Hook: отримання діалогу та додавання в чергу |
+| `Source/Memory/MemoryManager.cs` | Змінено | Додано обробку та форматування черги |
+| `Source/Patches/RimTalkConversationCapturePatch.cs` | Змінено | Вимкнено стару логіку |
 
-## 8. 方案优势
+## 8. Переваги рішення
 
-| 特性 | 说明 |
+| Властивість | Опис |
 |------|------|
-| **精确检测** | 在 AI 流式传输完成的确切时刻触发 |
-| **主线程格式化** | 格式化在主线程完成，可以安全访问所有数据 |
-| **线程安全** | 异步只提取不可变数据，主线程处理 Pawn 组件 |
-| **完整覆盖** | 所有参与者（包括未说话的）都能获得记忆 |
-| **格式直观** | 包含参与者列表，方便理解对话上下文 |
+| **Точне виявлення** | Спрацьовує в точний момент завершення потокової передачі AI |
+| **Форматування в головному потоці** | Форматування виконується в головному потоці, тому всі дані можна безпечно отримати |
+| **Потокобезпечність** | Асинхронно отримуються лише незмінні дані, а компоненти піша обробляються в головному потоці |
+| **Повне охоплення** | Усі учасники, зокрема ті, хто не говорив, отримують спогади |
+| **Зрозумілий формат** | Містить список учасників, що полегшує розуміння контексту діалогу |

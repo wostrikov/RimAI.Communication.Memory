@@ -1,10 +1,10 @@
-# Prompt Caching ʵ�ֲ���
+# Патч реалізації Prompt Caching
 
-## ��ʵ�֣������޸�BuildJsonRequest������
+## Спрощена реалізація (потрібно змінити лише метод BuildJsonRequest)
 
-�ҵ��ļ���`Source/Memory/AI/IndependentAISummarizer.cs`
+Знайдіть файл: `Source/Memory/AI/IndependentAISummarizer.cs`
 
-�ҵ�`BuildJsonRequest`������Լ��477�У����滻Ϊ���´��룺
+Знайдіть метод `BuildJsonRequest` (приблизно рядок 477) і замініть його наведеним нижче кодом:
 
 ```csharp
 private static string BuildJsonRequest(string prompt)
@@ -14,7 +14,7 @@ private static string BuildJsonRequest(string prompt)
     
     if (isGoogle)
     {
-        // Google Gemini: ����ԭ�и�ʽ
+        // Google Gemini: 保持原有格式
         string str = prompt.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "").Replace("\t", "\\t");
         
         stringBuilder.Append("{");
@@ -37,23 +37,23 @@ private static string BuildJsonRequest(string prompt)
     }
     else
     {
-        // ? v3.3.4: OpenAI/DeepSeek - ʵ��Prompt Caching
+        // ? v3.3.4: OpenAI/DeepSeek - 实现Prompt Caching
         var settings = RimTalk.MemoryPatch.RimTalkMemoryPatchMod.Settings;
         bool enableCaching = settings != null && settings.enablePromptCaching;
         
-        // �̶���ϵͳָ��ɻ��棩
-        string systemPrompt = "����һ��RimWorldֳ��صļ����ܽ����֡�\\n" +
-                            "���ü���������ܽ�������ݡ�\\n" +
-                            "ֻ����ܽ����֣���Ҫ������ʽ��";
+        // 固定的系统指令（可缓存）
+        string systemPrompt = "你是一个RimWorld殖民地的记忆总结助手。\\n" +
+                            "请用极简的语言总结记忆内容。\\n" +
+                            "只输出总结文字，不要其他格式。";
         
-        // �û����ݣ������б���
+        // 用户数据（记忆列表）
         string userPrompt = prompt.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "").Replace("\t", "\\t");
         
         stringBuilder.Append("{");
         stringBuilder.Append("\"model\":\"" + model + "\",");
         stringBuilder.Append("\"messages\":[");
         
-        // system��Ϣ����������ƣ�
+        // system消息（带缓存控制）
         stringBuilder.Append("{\"role\":\"system\",");
         stringBuilder.Append("\"content\":\"" + systemPrompt + "\"");
         
@@ -66,14 +66,14 @@ private static string BuildJsonRequest(string prompt)
             }
             else if (provider == "DeepSeek")
             {
-                // DeepSeek�������
+                // DeepSeek缓存控制
                 stringBuilder.Append(",\"cache\":true");
             }
         }
         
         stringBuilder.Append("},");
         
-        // user��Ϣ���仯�����ݣ�
+        // user消息（变化的内容）
         stringBuilder.Append("{\"role\":\"user\",");
         stringBuilder.Append("\"content\":\"" + userPrompt + "\"");
         stringBuilder.Append("}],");
@@ -93,17 +93,17 @@ private static string BuildJsonRequest(string prompt)
 }
 ```
 
-## Ч��
+## Результат
 
-- ? �Զ����̶�ָ����Ϊ�ɻ���
-- ? OpenAI/DeepSeek API�Զ�����Prompt Caching
-- ? �״ε��������Ʒѣ�����5-10�����ڻ������н���50%����
-- ? �û���ͨ��Mod�����е�`enablePromptCaching`���ؿ���
+- ? Автоматично позначає фіксовані інструкції як придатні для кешування
+- ? OpenAI/DeepSeek API автоматично вмикає Prompt Caching
+- ? Перший виклик оплачується за звичайним тарифом, а влучання в кеш протягом наступних 5–10 хвилин зменшує вартість на 50%
+- ? Користувач може керувати цим перемикачем у налаштуваннях моду: `enablePromptCaching`
 
-## ����
+## Тестування
 
-1. ����Mod
-2. ��DevMode�鿴JSON�����ʽ
-3. �۲�API��Ӧ�еĻ���ͳ�ƣ�����ṩ��֧�֣�
+1. Скомпілюйте мод
+2. Перегляньте формат запитів JSON у DevMode
+3. Перевірте статистику кешування у відповіді API (якщо провайдер її надає)
 
-��ɣ�
+Готово!

@@ -1,14 +1,14 @@
-# RimTalk ��ʶ�⹫�� API �ĵ�
+# RimTalk Загальнодоступна документація API бази знань
 
-## ?? ����
+## ?? Огляд
 
-`CommonKnowledgeAPI` �ṩ�������ĳ�ʶ������ӿڣ��������� Mod ����ע�롢���º͹�����ʶ��
+`CommonKnowledgeAPI` надає повний інтерфейс для роботи з базою здорового глузду, дозволяючи іншим модифікаціям легко додавати, оновлювати й керувати такими даними.
 
-## ?? ���ٿ�ʼ
+## ?? Швидкий початок роботи
 
-### 1. ��������
+### 1. Додайте залежність
 
-������ Mod �� `.csproj` �ļ����������ã�
+Додайте посилання у файлі `.csproj` вашої модифікації:
 
 ```xml
 <Reference Include="RimTalkMemoryPatch">
@@ -17,141 +17,141 @@
 </Reference>
 ```
 
-### 2. ���������ռ�
+### 2. Підключіть простір імен
 
 ```csharp
 using RimTalk.Memory;
 ```
 
-## ?? API �ο�
+## ?? Довідка API
 
-### ���ӳ�ʶ
+### Додати загальні знання
 
-#### ������
+#### Просте додавання
 
 ```csharp
-// ����һ���򵥵ĳ�ʶ
+// 添加一条简单的常识
 string id = CommonKnowledgeAPI.AddKnowledge(
-    tag: "�����,��Ե����",
-    content: "����һ���Ƽ����˵�ʱ������������ɢ������ϵ����",
-    importance: 0.7f  // ��Ҫ�� 0-1��Ĭ�� 0.5
+    tag: "世界观,边缘世界",
+    content: "这是一个科技倒退的时代，人类文明散落在星系各处",
+    importance: 0.7f  // 重要性 0-1，默认 0.5
 );
 ```
 
-#### �߼�����
+#### Розширене додавання
 
 ```csharp
-// ����һ�������������ĳ�ʶ
+// 添加一条带完整参数的常识
 string id = CommonKnowledgeAPI.AddKnowledgeEx(
-    tag: "����,�Ի�",
-    content: "����������Ļظ������ֽ�ɫ����",
+    tag: "规则,对话",
+    content: "你必须用中文回复，保持角色扮演",
     importance: 0.9f,
-    matchMode: KeywordMatchMode.All,  // All=���б�ǩ����ƥ�䣬Any=����һ������
-    targetPawnId: -1,  // -1=ȫ�֣�����=�����ض�Pawn��Ч
-    canBeExtracted: true,  // �Ƿ���Ա���ȡ�����ڳ�ʶ����
-    canBeMatched: true     // �Ƿ���Ա�ƥ�䣨���ڳ�ʶ����
+    matchMode: KeywordMatchMode.All,  // All=所有标签必须匹配，Any=任意一个即可
+    targetPawnId: -1,  // -1=全局，其他=仅对特定Pawn有效
+    canBeExtracted: true,  // 是否可以被提取（用于常识链）
+    canBeMatched: true     // 是否可以被匹配（用于常识链）
 );
 ```
 
-#### ��������
+#### Масове додавання
 
 ```csharp
 var knowledgeList = new List<(string tag, string content)>
 {
-    ("�����,�Ƽ�", "���������Ѿ�ʧ��"),
-    ("�����,���", "��е������๲��"),
-    ("����,����", "ʹ����Ĭ������")
+    ("世界观,科技", "光速引擎已经失传"),
+    ("世界观,社会", "机械体和人类共存"),
+    ("规则,语气", "使用幽默的语气")
 };
 
 int count = CommonKnowledgeAPI.AddKnowledgeBatch(knowledgeList, importance: 0.6f);
-Log.Message($"�ɹ����� {count} ����ʶ");
+Log.Message($"成功添加 {count} 条常识");
 ```
 
-### ���³�ʶ
+### Оновити загальні знання
 
 ```csharp
-// ��������
-bool success = CommonKnowledgeAPI.UpdateKnowledge(id, "�µ�����");
+// 更新内容
+bool success = CommonKnowledgeAPI.UpdateKnowledge(id, "新的内容");
 
-// ���±�ǩ
-bool success = CommonKnowledgeAPI.UpdateKnowledgeTag(id, "�±�ǩ");
+// 更新标签
+bool success = CommonKnowledgeAPI.UpdateKnowledgeTag(id, "新标签");
 
-// ������Ҫ��
+// 更新重要性
 bool success = CommonKnowledgeAPI.UpdateKnowledgeImportance(id, 0.8f);
 
-// ����/����
+// 启用/禁用
 bool success = CommonKnowledgeAPI.SetKnowledgeEnabled(id, false);
 ```
 
-### ��ѯ��ʶ
+### Запит загальних знань
 
 ```csharp
-// ����ID����
+// 根据ID查找
 CommonKnowledgeEntry entry = CommonKnowledgeAPI.FindKnowledgeById("ck-abc123");
 
-// ���ݱ�ǩ���ң�֧�ֲ���ƥ�䣩
-List<CommonKnowledgeEntry> entries = CommonKnowledgeAPI.FindKnowledge("�����");
+// 根据标签查找（支持部分匹配）
+List<CommonKnowledgeEntry> entries = CommonKnowledgeAPI.FindKnowledge("世界观");
 
-// �������ݲ���
-List<CommonKnowledgeEntry> entries = CommonKnowledgeAPI.FindKnowledgeByContent("����");
+// 根据内容查找
+List<CommonKnowledgeEntry> entries = CommonKnowledgeAPI.FindKnowledgeByContent("光速");
 
-// ��ȡ���г�ʶ
+// 获取所有常识
 List<CommonKnowledgeEntry> allEntries = CommonKnowledgeAPI.GetAllKnowledge();
 
-// ��ȡ��ʶ����
+// 获取常识数量
 int count = CommonKnowledgeAPI.GetKnowledgeCount();
 ```
 
-### ɾ����ʶ
+### Видалити загальні знання
 
 ```csharp
-// ����IDɾ��
+// 根据ID删除
 bool success = CommonKnowledgeAPI.RemoveKnowledge(id);
 
-// ���ݱ�ǩɾ������ƥ���
-int count = CommonKnowledgeAPI.RemoveKnowledgeByTag("�ɱ�ǩ");
+// 根据标签删除所有匹配的
+int count = CommonKnowledgeAPI.RemoveKnowledgeByTag("旧标签");
 
-// ������г�ʶ��Σ�ղ�������
+// 清空所有常识（危险操作！）
 bool success = CommonKnowledgeAPI.ClearAllKnowledge();
 ```
 
-### ����/����
+### Імпортувати / Експортувати
 
 ```csharp
-// ����Ϊ�ı�
+// 导出为文本
 string text = CommonKnowledgeAPI.ExportToText();
 
-// ���ı�����
+// 从文本导入
 int count = CommonKnowledgeAPI.ImportFromText(text, clearExisting: false);
 ```
 
-### ͳ����Ϣ
+### Статистика
 
 ```csharp
 KnowledgeStats stats = CommonKnowledgeAPI.GetStats();
-Log.Message($"����: {stats.TotalCount}");
-Log.Message($"����: {stats.EnabledCount}");
-Log.Message($"����: {stats.DisabledCount}");
-Log.Message($"�û��༭: {stats.UserEditedCount}");
-Log.Message($"ȫ�ֳ�ʶ: {stats.GlobalCount}");
-Log.Message($"Pawnר��: {stats.PawnSpecificCount}");
+Log.Message($"总数: {stats.TotalCount}");
+Log.Message($"启用: {stats.EnabledCount}");
+Log.Message($"禁用: {stats.DisabledCount}");
+Log.Message($"用户编辑: {stats.UserEditedCount}");
+Log.Message($"全局常识: {stats.GlobalCount}");
+Log.Message($"Pawn专属: {stats.PawnSpecificCount}");
 ```
 
-## ?? ʹ�ó���
+## ?? Варіанти використання
 
-### ����1: ���� Mod ר������
+### Варіант 1: додавання правил для конкретного мода
 
 ```csharp
 public class MyModInitializer : Mod
 {
     public MyModInitializer(ModContentPack content) : base(content)
     {
-        // �� Mod ����ʱ���ӹ���
+        // 在 Mod 加载时添加规则
         LongEventHandler.QueueLongEvent(() =>
         {
             CommonKnowledgeAPI.AddKnowledge(
-                tag: "����,MyMod",
-                content: "����һ��ħ������Ľ�ɫ������ʹ��ħ������",
+                tag: "规则,MyMod",
+                content: "你是一个魔法世界的角色，可以使用魔法技能",
                 importance: 0.9f
             );
         }, "InitializingMyMod", false, null);
@@ -159,7 +159,7 @@ public class MyModInitializer : Mod
 }
 ```
 
-### ����2: ��̬�����¼�
+### Варіант 2: динамічне оновлення подій
 
 ```csharp
 public class MyEventHandler
@@ -168,17 +168,17 @@ public class MyEventHandler
 
     public void OnEventStart()
     {
-        // �¼���ʼʱ���ӳ�ʶ
+        // 事件开始时添加常识
         knowledgeId = CommonKnowledgeAPI.AddKnowledge(
-            tag: "�¼�,��Ծ,MyEvent",
-            content: "��ǰ���ڽ���ħ����ʽ����Ҫ���ְ���",
+            tag: "事件,活跃,MyEvent",
+            content: "当前正在进行魔法仪式，需要保持安静",
             importance: 0.8f
         );
     }
 
     public void OnEventEnd()
     {
-        // �¼�����ʱɾ����ʶ
+        // 事件结束时删除常识
         if (!string.IsNullOrEmpty(knowledgeId))
         {
             CommonKnowledgeAPI.RemoveKnowledge(knowledgeId);
@@ -187,129 +187,129 @@ public class MyEventHandler
 }
 ```
 
-### ����3: Pawn ר����ʶ
+### Варіант 3: загальні знання для пішака
 
 ```csharp
 public void AddPawnSpecificKnowledge(Pawn pawn)
 {
-    // Ϊ�ض� Pawn ����ר����ʶ
+    // 为特定 Pawn 添加专属常识
     CommonKnowledgeAPI.AddKnowledgeEx(
-        tag: $"��ɫ����,{pawn.Name.ToStringShort}",
-        content: $"{pawn.Name.ToStringShort} ������һ�����淨ʦ",
+        tag: $"角色背景,{pawn.Name.ToStringShort}",
+        content: $"{pawn.Name.ToStringShort} 曾经是一名传奇法师",
         importance: 0.7f,
-        targetPawnId: pawn.thingIDNumber  // ֻ����� Pawn ��Ч
+        targetPawnId: pawn.thingIDNumber  // 只对这个 Pawn 有效
     );
 }
 ```
 
-### ����4: ��������
+### Варіант 4: масове керування
 
 ```csharp
 public void InitializeQuestKnowledge()
 {
-    // ���Ҳ�ɾ���ɵ�����ʶ
-    int removed = CommonKnowledgeAPI.RemoveKnowledgeByTag("����,��");
+    // 查找并删除旧的任务常识
+    int removed = CommonKnowledgeAPI.RemoveKnowledgeByTag("任务,旧");
     
-    // �����µ�����ʶ
+    // 添加新的任务常识
     var questKnowledge = new List<(string, string)>
     {
-        ("����,��Ծ", "��Ҫ�ռ�10��ħ��ˮ��"),
-        ("����,��Ծ", "������ҹ�����"),
-        ("����,��Ծ", "������ׯ���ܹ��﹥��")
+        ("任务,活跃", "需要收集10个魔法水晶"),
+        ("任务,活跃", "避免在夜晚外出"),
+        ("任务,活跃", "保护村庄免受怪物攻击")
     };
     
     int added = CommonKnowledgeAPI.AddKnowledgeBatch(questKnowledge, 0.8f);
-    Log.Message($"����ʶ�Ѹ���: ɾ�� {removed} �������� {added} ��");
+    Log.Message($"任务常识已更新: 删除 {removed} 条，添加 {added} 条");
 }
 ```
 
-## ?? ע������
+## ?? Примітки
 
-### 1. ���ܿ���
+### 1. Міркування щодо продуктивності
 
-- ������ÿһ֡���ò�ѯ����
-- �����������ڵ�������
-- �����ѯ���
+- Уникайте виклику операцій запиту на кожному кадрі
+- Пакетні операції кращі за одиничні
+- Кешуйте результати запитів
 
 ```csharp
-// ? ���õ�����
+// ? 不好的做法
 public override void Tick()
 {
-    var entries = CommonKnowledgeAPI.FindKnowledge("�����"); // ÿ֡��ѯ
+    var entries = CommonKnowledgeAPI.FindKnowledge("世界观"); // 每帧查询
 }
 
-// ? �õ�����
+// ? 好的做法
 private List<CommonKnowledgeEntry> cachedEntries;
 private int lastUpdateTick = 0;
 
 public override void Tick()
 {
-    if (Find.TickManager.TicksGame - lastUpdateTick > 2500) // ÿСʱ����һ��
+    if (Find.TickManager.TicksGame - lastUpdateTick > 2500) // 每小时更新一次
     {
-        cachedEntries = CommonKnowledgeAPI.FindKnowledge("�����");
+        cachedEntries = CommonKnowledgeAPI.FindKnowledge("世界观");
         lastUpdateTick = Find.TickManager.TicksGame;
     }
 }
 ```
 
-### 2. ��ǩ��������
+### 2. Рекомендації щодо іменування тегів
 
-**�Ƽ���ʽ**��ʹ�ö��ŷָ�����
-- ? `"����,�Ի�"` - �������
-- ? `"�����,�Ƽ�,����"` - ���ǩ
-- ? `"MyMod,����,ħ��"` - �������ռ�
+**Рекомендований формат** (із розділенням комами):
+- ? `"规则,对话"` - Чітко й стисло
+- ? `"世界观,科技,光速"` - Кілька тегів
+- ? `"MyMod,规则,魔法"` - Із простором імен
 
-**����ʹ�õĸ�ʽ**��
-- ? `"����-�����"` - ��Ȼ֧�֣������Ƽ�
-- ? `"rule1"` - ������ı�ǩ��
+**Формати, яких слід уникати**:
+- ? `"规则-世界观"` - Хоча підтримується, не рекомендується
+- ? `"rule1"` - Беззмістовна назва тегу
 
-**��ǩ����ԭ��**��
-1. **ʹ��������ı�ǩ** - �������������
-2. **ʹ�ö��ŷָ�** - ��׼�ָ�������������
-3. **���������ռ�** - ����������Mod��ͻ���� `"MyMod,����"`��
-4. **���ּ��** - ��ǩ���˹���
+**Принципи іменування тегів**:
+1. **Використовуйте змістовні теги** - для полегшення розуміння та пошуку
+2. **Використовуйте розділення комами** - стандартний роздільник, чітко й зрозуміло
+3. **Додайте простір імен** — щоб уникнути конфліктів з іншими модами (наприклад, `"MyMod,规则"`) 
+4. **Будьте лаконічними** — мітки не мають бути надто довгими
 
-**�����ǩ����**��
-| ��; | �Ƽ���ʽ | ʾ�� |
+**Рекомендовані категорії міток**:
+| Призначення | Рекомендований формат | Приклад |
 |------|----------|------|
-| **����** | `����,�ӷ���` | `����,�Ի�` `����,��Ϊ` |
-| **�����** | `�����,����` | `�����,�Ƽ�` `�����,��ʷ` |
-| **��ɫ** | `��ɫ����,����` | `��ɫ����,����` |
-| **�¼�** | `�¼�,��Ծ` �� `�¼�,��ʷ` | `�¼�,��Ծ,Ϯ��` |
-| **״̬** | `״̬,����` | `״̬,����` `״̬,����` |
+| **Правила** | `规则,子分类` | `规则,对话` `规则,行为` |
+| **Світобудова** | `世界观,方面` | `世界观,科技` `世界观,历史` |
+| **Персонажі** | `角色背景,名字` | `角色背景,张三` |
+| **Події** | `事件,活跃` або `事件,历史` | `事件,活跃,袭击` |
+| **Стани** | `状态,分类` | `状态,健康` `状态,情绪` |
 
-### 3. ��Ҫ������
+### 3. Налаштування важливості
 
-| ��Ҫ�� | ˵�� | ʾ�� |
+| Важливість | Опис | Приклад |
 |--------|------|------|
-| 0.9-1.0 | ���Ĺ��򣬱������� | ��Ϸ���򡢽�ɫ����Ҫ�� |
-| 0.7-0.8 | ��Ҫ��Ϣ | ������趨����Ծ�¼� |
-| 0.5-0.6 | һ����Ϣ | �������¡��ο����� |
-| 0.3-0.4 | ��ѡ��Ϣ | ϸ���������ʵ� |
-| 0.1-0.2 | �����ȼ� | ����Ҫ����ʾ |
+| 0.9-1.0 | Ключові правила, яких необхідно дотримуватися | Правила гри, вимоги до рольової гри |
+| 0.7-0.8 | Важлива інформація | Налаштування світу, активні події |
+| 0.5-0.6 | Загальна інформація | Передісторія, довідкові матеріали |
+| 0.3-0.4 | Необов’язкова інформація | Деталі опису, великодки |
+| 0.1-0.2 | Низький пріоритет | Неважливі підказки |
 
-### 4. ��ʶ������
+### 4. Функція ланцюжка загальних знань
 
-��������ó�ʶ֧����ʽƥ�䣨һ����ʶ������һ����ʶ����
+Якщо ви хочете, щоб загальні знання підтримували ланцюжкове зіставлення (одне загальне знання запускає інше):
 
 ```csharp
 CommonKnowledgeAPI.AddKnowledgeEx(
-    tag: "ħ��,��ϵ",
-    content: "��ϵħ������ǿ������ʧ��",
+    tag: "魔法,火系",
+    content: "火系魔法威力强大但容易失控",
     importance: 0.7f,
-    canBeExtracted: true,  // ? ������ȡ��������ʶ�����ݿ������ڴ���������ʶ
-    canBeMatched: true     // ? ����ƥ�䣺������ʶ�����ݿ��Դ���������ʶ
+    canBeExtracted: true,  // ? 允许提取：这条常识的内容可以用于触发其他常识
+    canBeMatched: true     // ? 允许匹配：其他常识的内容可以触发这条常识
 );
 ```
 
-## ?? �����ų�
+## ?? Усунення несправностей
 
-### 1. ��ʶδ��Ч
+### 1. Загальні знання не застосовуються
 
-��飺
-- ��ʶ�Ƿ����ã�`isEnabled = true`��
-- ��ǩ�Ƿ���ȷƥ��
-- ��Ҫ���Ƿ����
+Перевірте:
+- Чи ввімкнено загальні знання (`isEnabled = true`)?
+- Чи правильно зіставлено теги
+- Чи не надто низька важливість
 
 ```csharp
 var entry = CommonKnowledgeAPI.FindKnowledgeById(id);
@@ -321,10 +321,10 @@ if (entry != null)
 }
 ```
 
-### 2. �Ҳ�����ʶ
+### 2. Не вдається знайти загальні знання
 
 ```csharp
-// ��鳣ʶ�Ƿ����
+// 检查常识是否存在
 bool exists = CommonKnowledgeAPI.ExistsKnowledge(id);
 if (!exists)
 {
@@ -332,24 +332,24 @@ if (!exists)
 }
 ```
 
-### 3. API ���� null
+### 3. API повертає null
 
 ```csharp
-// �����Ϸ״̬
+// 检查游戏状态
 if (Current.Game == null)
 {
     Log.Warning("Game not loaded yet!");
     return;
 }
 
-// ȷ�������̵߳���
+// 确保在主线程调用
 LongEventHandler.QueueLongEvent(() =>
 {
     var id = CommonKnowledgeAPI.AddKnowledge("test", "test content");
 }, "AddingKnowledge", false, null);
 ```
 
-## ?? ����ʾ��
+## ?? Повний приклад
 
 ```csharp
 using RimTalk.Memory;
@@ -363,35 +363,35 @@ namespace MyMod
 
         public void Initialize()
         {
-            // ���ӻ�������
+            // 添加基础规则
             string ruleId = CommonKnowledgeAPI.AddKnowledgeEx(
-                tag: "����,MyMod",
-                content: "����һ��ħ������Ľ�ɫ",
+                tag: "规则,MyMod",
+                content: "你是一个魔法世界的角色",
                 importance: 0.9f,
                 canBeExtracted: false,
                 canBeMatched: false
             );
             knowledgeIds["rule"] = ruleId;
 
-            // ���������
+            // 添加世界观
             var worldKnowledge = new List<(string, string)>
             {
-                ("�����,ħ��", "ħ�����������¹�"),
-                ("�����,����", "�������ó�����ħ��"),
-                ("�����,��ʷ", "�Ŵ������Ѿ���ʧ")
+                ("世界观,魔法", "魔法能量来自月光"),
+                ("世界观,种族", "精灵族擅长治疗魔法"),
+                ("世界观,历史", "古代文明已经消失")
             };
             CommonKnowledgeAPI.AddKnowledgeBatch(worldKnowledge, 0.7f);
 
-            // ���ͳ��
+            // 输出统计
             var stats = CommonKnowledgeAPI.GetStats();
             Log.Message($"[MyMod] Initialized {stats.TotalCount} knowledge entries");
         }
 
         public void OnEventStart(string eventName, string description)
         {
-            // �����¼���ʶ
+            // 添加事件常识
             string eventId = CommonKnowledgeAPI.AddKnowledge(
-                tag: $"�¼�,��Ծ,{eventName}",
+                tag: $"事件,活跃,{eventName}",
                 content: description,
                 importance: 0.8f
             );
@@ -400,7 +400,7 @@ namespace MyMod
 
         public void OnEventEnd(string eventName)
         {
-            // ɾ���¼���ʶ
+            // 删除事件常识
             if (knowledgeIds.TryGetValue(eventName, out string eventId))
             {
                 CommonKnowledgeAPI.RemoveKnowledge(eventId);
@@ -410,7 +410,7 @@ namespace MyMod
 
         public void Cleanup()
         {
-            // �������� MyMod ��صĳ�ʶ
+            // 清理所有 MyMod 相关的常识
             int removed = CommonKnowledgeAPI.RemoveKnowledgeByTag("MyMod");
             Log.Message($"[MyMod] Removed {removed} knowledge entries");
         }
@@ -418,65 +418,65 @@ namespace MyMod
 }
 ```
 
-## ?? �������
+## ?? Пов’язані посилання
 
 - [RimTalk GitHub](https://github.com/sanguodxj-byte/RimTalk-ExpandMemory)
-- [��ʶ�����˵��](#��ʶ�����ϵͳ)
-- [API ������־](../CHANGELOG.md)
+- [Опис категорій бази загальних знань](#常识库分类系统)
+- [API журнал змін](../CHANGELOG.md)
 
-## ?? ��ʶ�����ϵͳ
+## ?? Система категоризації бази загальних знань
 
-### �Զ��������
+### Правила автоматичної категоризації
 
-��ʶ�����ݱ�ǩ�Զ����ൽ��ͬ�ķ�ҳ�У�ֻҪ��ǩ��**����**�����ǩ���ɣ�
+База загальних знань автоматично розподіляє записи по різних вкладках відповідно до тегів: достатньо, щоб тег **містив** тег категорії:
 
-| ���� | ƥ���ǩ | ���ȼ� |
+| Категорія | Теги для збігу | Пріоритет |
 |------|----------|--------|
-| **����/ָ��** | `����` `instructions` `instruction` `rule` | 1����ߣ�|
-| **ֳ����״̬** | `ֳ����״̬` `pawnstatus` `colonist` `״̬` | 2 |
-| **��ʷ** | `��ʷ` `history` `past` `��¼` | 3 |
-| **�����** | `�����` `lore` `background` `����` `�趨` | 4 |
-| **����** | ������������ǩ | 5��Ĭ�ϣ�|
+| **Правила/Інструкції** | `规则` `instructions` `instruction` `rule` | 1 (найвищий)|
+| **Стан колоністів** | `殖民者状态` `pawnstatus` `colonist` `状态` | 2 |
+| **Історія** | `历史` `history` `past` `记录` | 3 |
+| **Світогляд** | `世界观` `lore` `background` `背景` `设定` | 4 |
+| **Інше** | Не містить жодного з наведених тегів | 5 (за замовчуванням)|
 
-### ����ʾ��
+### Приклади категоризації
 
-���±�ǩ������ȷ���ࣺ
-
-```csharp
-// �����ࣨ���ȼ���ߣ�
-"����"              �� �������
-"����,�Ի�"         �� �������
-"��ʶ����"          �� ������ࣨ����"����"��
-"Instructions"      �� �������
-
-// �������
-"�����"            �� ����۷���
-"�����,�Ƽ�"       �� ����۷���
-"�����趨"          �� ����۷��ࣨ����"����"��
-
-// ״̬��
-"ֳ����״̬"        �� ״̬����
-"״̬,����"         �� ״̬����
-"PawnStatus"        �� ״̬����
-
-// ��ʷ��
-"��ʷ"              �� ��ʷ����
-"��ʷ��¼"          �� ��ʷ����
-"History"           �� ��ʷ����
-```
-
-### ���ȼ�˵��
-
-��һ����ǩͬʱ������������ǩʱ���ᰴ���ȼ����ࣺ
+Усі наведені нижче теги буде правильно категоризовано:
 
 ```csharp
-"����,�����"       �� ������ࣨ�������ȼ�1����������ȼ�4��
-"�����,��ʷ"       �� ��ʷ���ࣨ��ʷ���ȼ�3����������ȼ�4��
-"״̬,��ʷ"         �� ״̬���ࣨ״̬���ȼ�2����ʷ���ȼ�3��
+// 规则类（优先级最高）
+"规则"              → 规则分类
+"规则,对话"         → 规则分类
+"常识规则"          → 规则分类（包含"规则"）
+"Instructions"      → 规则分类
+
+// 世界观类
+"世界观"            → 世界观分类
+"世界观,科技"       → 世界观分类
+"背景设定"          → 世界观分类（包含"背景"）
+
+// 状态类
+"殖民者状态"        → 状态分类
+"状态,健康"         → 状态分类
+"PawnStatus"        → 状态分类
+
+// 历史类
+"历史"              → 历史分类
+"历史记录"          → 历史分类
+"History"           → 历史分类
 ```
 
-**����**�����ϣ����ʶ�����ض����࣬�ڱ�ǩ�а�����Ӧ�ķ����ǩ���ɡ�
+### Пояснення пріоритетів
 
-## ?? ����֤
+Якщо один тег одночасно містить кілька тегів категорій, категорію буде визначено за пріоритетом:
 
-�� API ��ѭ RimTalk ������֤���
+```csharp
+"规则,世界观"       → 规则分类（规则优先级1，世界观优先级4）
+"世界观,历史"       → 历史分类（历史优先级3，世界观优先级4）
+"状态,历史"         → 状态分类（状态优先级2，历史优先级3）
+```
+
+**Рекомендація**: якщо потрібно віднести загальне знання до певної категорії, просто додайте до тегу відповідний тег категорії.
+
+## ?? Ліцензія
+
+Цей API дотримується умов ліцензії RimTalk.
