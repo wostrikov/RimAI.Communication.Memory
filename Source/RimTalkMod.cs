@@ -1,6 +1,7 @@
 ﻿using Verse;
 using UnityEngine;
 using HarmonyLib;
+using Ustas.RimAI.Core.Modules;
 
 namespace RimTalk.MemoryPatch
 {
@@ -20,6 +21,12 @@ namespace RimTalk.MemoryPatch
             
             var harmony = new Harmony("cj.rimtalk.expandmemory");
             harmony.PatchAll();
+            RimAIModuleRegistry.Current.Register(new RimAIModuleDescriptor(
+                "memory",
+                "RimAI.Communication.Memory",
+                "RimAI.Communication.Memory",
+                "Communication",
+                "RimAI.Communication"));
             Log.Message("[RimTalk-Expand Memory] Loaded successfully");
             
             if (Prefs.DevMode)
@@ -30,13 +37,14 @@ namespace RimTalk.MemoryPatch
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
+            RimAISettingsNavigation.Open("communication", "memory");
             Settings.DoSettingsWindowContents(inRect);
             base.DoSettingsWindowContents(inRect);
         }
 
         public override string SettingsCategory()
         {
-            return Content?.Name ?? "RimAI.Memory";
+            return Content?.Name ?? "RimAI.Communication.Memory";
         }
 
         public override void WriteSettings()

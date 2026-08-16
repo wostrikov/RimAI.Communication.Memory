@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
 using RimWorld;
-using RimTalk.MemoryPatch;  // ? v3.3.6: 添加 RimWorld 命名空间
+using RimTalk.MemoryPatch;
+using Ustas.RimAI.Core.Configuration;
 
 namespace RimTalk.Memory.AI
 {
@@ -156,7 +157,7 @@ namespace RimTalk.Memory.AI
                 
                 // 使用独立配置
                 apiKey = settings.independentProvider == "OpenAI"
-                    ? Environment.GetEnvironmentVariable("OPENAI_RIMTALK")
+                    ? AiCredentialResolver.Resolve().Value
                     : settings.independentApiKey;
                 apiUrl = settings.independentApiUrl;
                 model = settings.independentModel;
@@ -215,7 +216,7 @@ namespace RimTalk.Memory.AI
                 }
                 
                 Log.Message($"[AI] ? Initialized with independent config ({provider}/{model})");
-                Log.Message($"[AI]    Credential source: {(provider == "OpenAI" ? "OPENAI_RIMTALK" : "provider-specific setting")}");
+                Log.Message($"[AI]    Credential source: {(provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
                 Log.Message($"[AI]    API URL: {apiUrl}");
                 isInitialized = true;
             }
@@ -755,7 +756,7 @@ namespace RimTalk.Memory.AI
                         Log.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
                         Log.Message($"[AI Summarizer]   Provider: {provider}");
                         Log.Message($"[AI Summarizer]   Model: {model}");
-                        Log.Message($"[AI Summarizer]   Credential source: {(provider == "OpenAI" ? "OPENAI_RIMTALK" : "provider-specific setting")}");
+                        Log.Message($"[AI Summarizer]   Credential source: {(provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
                     }
 
                     var request = (HttpWebRequest)WebRequest.Create(actualUrl);

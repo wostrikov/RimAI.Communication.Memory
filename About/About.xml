@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 	<packageId>cj.rimtalk.expandmemory</packageId>
-	<name>RimAI.Memory</name>
+	<name>RimAI.Communication.Memory</name>
 	<author>SANGUO</author>
 	<supportedVersions>
 		<li>1.5</li>
@@ -10,9 +10,9 @@
 	<modVersion>3.4.0</modVersion>
 	<url>https://github.com/sanguodxj-byte/RimTalk-ExpandMemory</url>
 	
-	<description>[h1]RimTalk - Expand Memory v3.4.0[/h1]
+	<description>[h1]RimAI.Communication.Memory v3.4.0[/h1]
 
-RimTalk 的记忆扩展模组。给殖民者加了一套分层记忆系统，让 AI 对话时能记住更多、说得更像真人。
+RimAI Communication memory module. Adds a layered memory system so colonists remember more and speak more consistently.
 
 [hr][/hr]
 
@@ -32,7 +32,7 @@ RimTalk 的记忆扩展模组。给殖民者加了一套分层记忆系统，让
 
 [h1]其他[/h1]
 
-支持 OpenAI、DeepSeek、Gemini 等多个平台，可以独立配置，不依赖 RimTalk 本体的设置。
+Gameplay text AI uses the shared RimAI configuration. Embedding/vector settings stay module-specific.
 
 提示词有规范化处理，可以自定义文本替换规则，支持正则，实时生效。
 
@@ -42,7 +42,7 @@ RimTalk 的记忆扩展模组。给殖民者加了一套分层记忆系统，让
 
 [h1]安装[/h1]
 
-需要 Harmony 和 RimTalk。加载顺序：Core → Harmony → RimTalk → 本 Mod。
+Requires Harmony and RimAI.Communication. Load order: Harmony → RimAI.Communication → this mod.
 
 [hr][/hr]
 
@@ -61,7 +61,7 @@ GitHub: https://github.com/sanguodxj-byte/RimTalk-ExpandMemory
 		</li>
 		<li>
 			<packageId>cj.rimtalk</packageId>
-			<displayName>RimTalk</displayName>
+			<displayName>RimAI.Communication</displayName>
 			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3381946324</steamWorkshopUrl>
 			<downloadUrl>https://github.com/CET-Chengdu/RimTalk</downloadUrl>
 		</li>

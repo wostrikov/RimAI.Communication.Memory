@@ -55,6 +55,7 @@
 		<Reference Include="System.Net.Http">
 			<Private>False</Private>
 		</Reference>
+		<ProjectReference Include="..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj" />
 
 		<!-- 排除文件 -->
 		<Compile Remove="..\RimTalk\**" />
