@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<!-- 配置变量 -->
@@ -8,8 +8,8 @@
 		<RimWorldDir Condition=" '$(RimWorldDir)' == '' ">$(RIMWORLD_DIR)</RimWorldDir>
 		<RimWorldWorkshopDir Condition=" '$(RimWorldWorkshopDir)' == '' ">$(RIMWORLD_WORKSHOP_DIR)</RimWorldWorkshopDir>
 		<RimTalkDir Condition=" '$(RimTalkDir)' == '' "></RimTalkDir>
-		<BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\bin\</BaseOutputPath>
-		<BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\obj\</BaseIntermediateOutputPath>
+		<BaseOutputPath Condition=" '$(BaseOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\bin\</BaseOutputPath>
+		<BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\obj\</BaseIntermediateOutputPath>
 
 		<ModFolderName>RimAI.Communication.Memory</ModFolderName>
 
@@ -51,7 +51,7 @@
 		<Reference Include="System.Net.Http">
 			<Private>False</Private>
 		</Reference>
-		<ProjectReference Include="..\RimAI.Communication\RimTalk.csproj">
+		<ProjectReference Include="..\RimAI.Communication\RimAI.Communication.csproj">
 			<Private>False</Private>
 		</ProjectReference>
 		<ProjectReference Include="..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">

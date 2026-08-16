@@ -6,26 +6,14 @@ using System.Text;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
-using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.UI;
 using Ustas.RimAI.Core.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
-    /// 为 {{knowledge}} 变量提供内容
-    ///
-    /// 特性：
-    /// 1. 支持动态匹配源选择（用户可选择用哪些变量进行匹配）
-    /// 2. 关键词匹配（同步执行，无网络依赖）
-    /// 3. 从 PromptContext 获取完整上下文
-    ///
-    /// ⭐ v4.1: 向量增强已移至 Patch_GenerateAndProcessTalkAsync
-    /// 原因：Scriban API 是同步调用，向量搜索需要网络请求会阻塞主线程
-    ///
-    /// ⭐ v5.0: 适配 RimTalk 新版 Scriban 模板系统
-    /// - MustacheContext → PromptContext
-    /// - MustacheParser → ScribanParser
+    /// Supplies {{knowledge}} template values for Communication Scriban rendering.
+    /// Keyword matching is synchronous; vector enhancement runs off the talk-generation path.
     /// </summary>
     public static class KnowledgeVariableProvider
     {

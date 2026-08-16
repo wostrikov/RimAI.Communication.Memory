@@ -1,5 +1,5 @@
 <Project>
-  <PropertyGroup><BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\bin\</BaseOutputPath><BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimTalk-ExpandMemory\obj\</BaseIntermediateOutputPath></PropertyGroup>
+  <PropertyGroup><BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\bin\</BaseOutputPath><BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\obj\</BaseIntermediateOutputPath></PropertyGroup>
 	<PropertyGroup>
 		<MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
 	</PropertyGroup>
