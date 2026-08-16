@@ -9,6 +9,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.API;
+using Ustas.RimAI.Communication.Prompt;
 
 namespace Ustas.RimAI.Communication.Memory.Debug
 {
@@ -577,14 +578,6 @@ namespace Ustas.RimAI.Communication.Memory.Debug
 
         #region 数据加载和刷新
         
-        // ⭐ 缓存 RimTalk 类型以避免重复反射
-        private static Type _scribanParserType;
-        private static Type _promptContextType;
-        private static Type _promptManagerType;
-        private static MethodInfo _renderMethod;
-        private static PropertyInfo _lastContextProperty;
-        private static bool _rimTalkTypesResolved = false;
-        
         private void LoadAvailableMatchingSources()
         {
             availableMatchingSources = MustacheVariableHelper.GetMatchingPropertyCategories();
@@ -604,46 +597,6 @@ namespace Ustas.RimAI.Communication.Memory.Debug
                     ("skills", "Skills", true),
                     ("relations", "Relations", true),
                 };
-            }
-            
-            // 初始化 RimTalk 类型
-            ResolveRimTalkTypes();
-        }
-        
-        /// <summary>
-        /// 解析 RimTalk 类型（只需做一次）
-        /// </summary>
-        private void ResolveRimTalkTypes()
-        {
-            if (_rimTalkTypesResolved) return;
-            _rimTalkTypesResolved = true;
-            
-            try
-            {
-                var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
-                
-                if (rimTalkAssembly == null) return;
-                
-                _scribanParserType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser");
-                _promptContextType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptContext");
-                _promptManagerType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.PromptManager");
-                
-                if (_scribanParserType != null)
-                {
-                    // ScribanParser.Render(string templateText, PromptContext context, bool logErrors = true)
-                    _renderMethod = _scribanParserType.GetMethod("Render", BindingFlags.Public | BindingFlags.Static);
-                }
-                
-                if (_promptManagerType != null)
-                {
-                    // PromptManager.LastContext - 存储上次对话的完整上下文
-                    _lastContextProperty = _promptManagerType.GetProperty("LastContext", BindingFlags.Public | BindingFlags.Static);
-                }
-            }
-            catch
-            {
-                // 静默处理
             }
         }
         
@@ -741,67 +694,24 @@ namespace Ustas.RimAI.Communication.Memory.Debug
         /// </summary>
         private string RenderWithScriban(string template, Pawn pawn, Pawn recipient, bool isPawnProperty = true)
         {
-            if (_scribanParserType == null || _renderMethod == null)
-                return template;
-            
             try
             {
-                object ctx;
-                
+                PromptContext ctx;
                 if (isPawnProperty)
                 {
-                    // Pawn 属性变量：创建新的 PromptContext
-                    if (_promptContextType == null)
-                        return template;
-                    
-                    ctx = Activator.CreateInstance(_promptContextType, new object[] { pawn, null });
-                    
-                    if (ctx == null)
-                        return template;
-                    
-                    // 设置 AllPawns 列表（用于 recipient 访问）
+                    ctx = new PromptContext(pawn) { IsPreview = true };
                     if (recipient != null)
-                    {
-                        var allPawnsProperty = _promptContextType.GetProperty("AllPawns");
-                        if (allPawnsProperty != null)
-                        {
-                            var pawnsList = new List<Pawn> { pawn, recipient };
-                            allPawnsProperty.SetValue(ctx, pawnsList);
-                        }
-                    }
-                    
-                    // 设置 IsPreview = true 以获得预览模式的行为
-                    var isPreviewProperty = _promptContextType.GetProperty("IsPreview");
-                    if (isPreviewProperty != null)
-                    {
-                        isPreviewProperty.SetValue(ctx, true);
-                    }
+                        ctx.AllPawns = new List<Pawn> { pawn, recipient };
                 }
                 else
                 {
-                    // 上下文变量（如 prompt）：使用 PromptManager.LastContext
-                    if (_lastContextProperty == null)
-                        return template;
-                    
-                    ctx = _lastContextProperty.GetValue(null);
-                    
+                    ctx = PromptManager.LastContext;
                     if (ctx == null)
-                    {
-                        // 没有上次对话的上下文，返回提示信息
                         return "RimTalk_Preview_NoContext".Translate();
-                    }
-                    
-                    // 设置 IsPreview = true
-                    var isPreviewProperty = _promptContextType?.GetProperty("IsPreview");
-                    if (isPreviewProperty != null)
-                    {
-                        isPreviewProperty.SetValue(ctx, true);
-                    }
+                    ctx.IsPreview = true;
                 }
-                
-                // 调用 ScribanParser.Render(template, ctx, logErrors: false)
-                object result = _renderMethod.Invoke(null, new object[] { template, ctx, false });
-                return result as string ?? template;
+
+                return ScribanParser.Render(template, ctx, false) ?? template;
             }
             catch
             {

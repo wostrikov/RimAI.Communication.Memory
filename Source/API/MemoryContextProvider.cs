@@ -13,6 +13,9 @@ namespace Ustas.RimAI.Communication.Memory.API
     {
         public MemoryContextResult GetContext(MemoryContextRequest request)
         {
+            if (request?.LayeredPawnMemories == true)
+                return GetLayeredPawnMemories(request);
+
             var pawn = ResolvePawn(request);
             var settings = RimTalkMemoryPatchMod.Settings;
             int maxABMRounds = settings?.maxABMInjectionRounds ?? 3;
@@ -68,9 +71,10 @@ namespace Ustas.RimAI.Communication.Memory.API
 
             var pawn = ResolvePawn(request);
             var scores = new List<KnowledgeScore>();
+            int maxEntries = request.MaxEntries > 0 ? request.MaxEntries : settings?.maxInjectedKnowledge ?? 10;
             string text = library.InjectKnowledgeWithDetails(
                 query,
-                settings?.maxInjectedKnowledge ?? 10,
+                maxEntries,
                 out scores,
                 pawn,
                 null);
@@ -99,6 +103,8 @@ namespace Ustas.RimAI.Communication.Memory.API
 
         static Pawn ResolvePawn(MemoryContextRequest request)
         {
+            if (request?.Pawn is Pawn direct)
+                return direct;
             var id = request?.PawnId;
             if (string.IsNullOrEmpty(id))
                 id = request?.PawnIds?.FirstOrDefault();
@@ -115,6 +121,58 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
 
             return null;
+        }
+
+        MemoryContextResult GetLayeredPawnMemories(MemoryContextRequest request)
+        {
+            var pawn = ResolvePawn(request);
+            if (pawn == null)
+                return new MemoryContextResult { Source = "typed" };
+            var comp = pawn.TryGetComp<FourLayerMemoryComp>();
+            if (comp == null)
+                return new MemoryContextResult { Source = "typed" };
+
+            int sinceTick = request.SinceTick;
+            int limit = request.PerLayerLimit > 0 ? request.PerLayerLimit : 5;
+            var memories = new List<MemoryContextEntry>();
+            AppendLayer(memories, comp.ArchiveMemories, "Archive", limit, sinceTick);
+            AppendLayer(memories, comp.EventLogMemories, "EventLog", limit, sinceTick);
+            AppendLayer(memories, comp.SituationalMemories, "Situational", limit, sinceTick);
+            return new MemoryContextResult
+            {
+                Memories = memories,
+                Source = "typed"
+            };
+        }
+
+        static void AppendLayer(
+            List<MemoryContextEntry> target,
+            IEnumerable<MemoryEntry> source,
+            string kind,
+            int limit,
+            int sinceTick)
+        {
+            if (source == null)
+                return;
+            int added = 0;
+            foreach (var entry in source)
+            {
+                if (entry == null || added >= limit)
+                    break;
+                if (sinceTick > 0 && entry.GameTick <= sinceTick)
+                    break;
+                var text = entry.DisplayContent ?? entry.Content;
+                if (string.IsNullOrEmpty(text))
+                    continue;
+                target.Add(new MemoryContextEntry(
+                    entry.Id ?? string.Empty,
+                    kind,
+                    text,
+                    entry.Importance,
+                    entry.GameTick,
+                    entry.Type.ToString()));
+                added++;
+            }
         }
     }
 }

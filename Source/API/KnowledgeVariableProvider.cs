@@ -7,6 +7,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.UI;
+using Ustas.RimAI.Communication.Prompt;
 using Ustas.RimAI.Core.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.API
@@ -533,51 +534,13 @@ namespace Ustas.RimAI.Communication.Memory.API
         {
             try
             {
-                // 查找 RimTalk 程序集
-                var rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
-                
-                if (rimTalkAssembly == null) return null;
-                
-                // ⭐ v5.0: 优先使用 ScribanParser
-                var parserType = rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser")
-                    ?? rimTalkAssembly.GetType("Ustas.RimAI.Communication.Prompt.MustacheParser");
-                    
-                if (parserType == null) return null;
-                
-                // 尝试调用 Render/Parse 方法，解析单个变量
-                // Scriban 使用 {{variableName}} 语法
+                if (ctx is not PromptContext promptContext)
+                    return null;
+
                 string template = "{{" + variableName + "}}";
-                
-                // ScribanParser 使用 Render 方法，MustacheParser 使用 Parse 方法
-                var renderMethod = parserType.GetMethod("Render", BindingFlags.Public | BindingFlags.Static)
-                    ?? parserType.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static);
-                
-                if (renderMethod != null)
-                {
-                    // Render(string template, PromptContext context, bool logErrors = true)
-                    // 或 Parse(string template, MustacheContext context)
-                    object[] args;
-                    var parameters = renderMethod.GetParameters();
-                    if (parameters.Length >= 3)
-                    {
-                        args = new object[] { template, ctx, false }; // logErrors = false
-                    }
-                    else
-                    {
-                        args = new object[] { template, ctx };
-                    }
-                    
-                    var result = renderMethod.Invoke(null, args);
-                    
-                    // 如果解析成功且结果不是原模板，返回结果
-                    string parsed = result as string;
-                    if (!string.IsNullOrEmpty(parsed) && parsed != template)
-                    {
-                        return parsed;
-                    }
-                }
-                
+                string parsed = ScribanParser.Render(template, promptContext, false);
+                if (!string.IsNullOrEmpty(parsed) && parsed != template)
+                    return parsed;
                 return null;
             }
             catch (Exception ex)

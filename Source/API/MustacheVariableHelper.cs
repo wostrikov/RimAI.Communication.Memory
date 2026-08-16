@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Verse;
 using RimWorld;
+using Ustas.RimAI.Communication.API;
+using Ustas.RimAI.Communication.Prompt;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
@@ -17,24 +18,13 @@ namespace Ustas.RimAI.Communication.Memory.API
         
         private static Dictionary<string, List<(string name, string description)>> _cachedVariables;
         private static HashSet<string> _cachedPawnProperties;
-        private static Assembly _rimTalkAssembly;
         
         #endregion
         
         #region 初始化
         
-        private static Assembly GetRimTalkAssembly()
-        {
-            if (_rimTalkAssembly == null)
-            {
-                _rimTalkAssembly = AppDomain.CurrentDomain.GetAssemblies()
-                    .FirstOrDefault(a => a.GetName().Name == "Ustas.RimAI.Communication");
-            }
-            return _rimTalkAssembly;
-        }
-        
         #endregion
-        
+
         #region 公共 API
         
         /// <summary>
@@ -44,31 +34,17 @@ namespace Ustas.RimAI.Communication.Memory.API
         public static Dictionary<string, List<(string name, string description)>> GetBuiltinVariables()
         {
             if (_cachedVariables != null) return _cachedVariables;
-            
-            var assembly = GetRimTalkAssembly();
-            if (assembly == null)
-            {
-                _cachedVariables = GetFallbackVariables();
-                return _cachedVariables;
-            }
-            
             try
             {
-                var variableDefsType = assembly.GetType("Ustas.RimAI.Communication.Prompt.VariableDefinitions");
-                var getMethod = variableDefsType?.GetMethod("GetScribanVariables", BindingFlags.Public | BindingFlags.Static);
-                
-                if (getMethod != null)
-                {
-                    var result = getMethod.Invoke(null, null);
-                    _cachedVariables = ConvertDictionaryResult(result);
-                    if (_cachedVariables.Count > 0) return _cachedVariables;
-                }
+                _cachedVariables = VariableDefinitions.GetScribanVariables();
+                if (_cachedVariables != null && _cachedVariables.Count > 0)
+                    return _cachedVariables;
             }
             catch (Exception ex)
             {
                 Log.Warning($"[MemoryPatch] Failed to get builtin variables: {ex.Message}");
             }
-            
+
             _cachedVariables = GetFallbackVariables();
             return _cachedVariables;
         }
@@ -148,49 +124,20 @@ namespace Ustas.RimAI.Communication.Memory.API
             value = null;
             if (pawn == null || string.IsNullOrEmpty(propertyName)) return false;
             
-            var assembly = GetRimTalkAssembly();
-            if (assembly == null) return false;
-            
             try
             {
-                // 先尝试 ContextHookRegistry.TryGetPawnVariable
-                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
-                if (hookType != null)
+                if (ContextHookRegistry.TryGetPawnVariable(propertyName, pawn, out value) && !string.IsNullOrEmpty(value))
+                    return true;
+
+                var ctx = new PromptContext(pawn);
+                string template = "{{pawn." + propertyName + "}}";
+                string parsed = ScribanParser.Render(template, ctx, false);
+                if (!string.IsNullOrEmpty(parsed) && parsed != template)
                 {
-                    var tryGetMethod = hookType.GetMethod("TryGetPawnVariable", BindingFlags.Public | BindingFlags.Static);
-                    if (tryGetMethod != null)
-                    {
-                        var parameters = new object[] { propertyName, pawn, null };
-                        if ((bool)tryGetMethod.Invoke(null, parameters))
-                        {
-                            value = parameters[2] as string;
-                            if (!string.IsNullOrEmpty(value)) return true;
-                        }
-                    }
+                    value = parsed;
+                    return true;
                 }
-                
-                // 使用 ScribanParser 渲染
-                var parserType = assembly.GetType("Ustas.RimAI.Communication.Prompt.ScribanParser");
-                var contextType = assembly.GetType("Ustas.RimAI.Communication.Prompt.PromptContext");
-                
-                if (parserType != null && contextType != null)
-                {
-                    var ctx = Activator.CreateInstance(contextType, new object[] { pawn, null });
-                    string template = "{{pawn." + propertyName + "}}";
-                    
-                    var renderMethod = parserType.GetMethod("Render", BindingFlags.Public | BindingFlags.Static);
-                    if (renderMethod != null)
-                    {
-                        var result = renderMethod.Invoke(null, new object[] { template, ctx, false });
-                        string parsed = result as string;
-                        if (!string.IsNullOrEmpty(parsed) && parsed != template)
-                        {
-                            value = parsed;
-                            return true;
-                        }
-                    }
-                }
-                
+
                 return false;
             }
             catch (Exception ex)
@@ -210,7 +157,6 @@ namespace Ustas.RimAI.Communication.Memory.API
         {
             _cachedVariables = null;
             _cachedPawnProperties = null;
-            _rimTalkAssembly = null;
         }
         
         #endregion
@@ -351,74 +297,36 @@ namespace Ustas.RimAI.Communication.Memory.API
         public static List<(string name, string description)> GetExtensionPawnVariables()
         {
             var result = new List<(string, string)>();
-            var assembly = GetRimTalkAssembly();
-            if (assembly == null) return result;
-            
             try
             {
-                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
-                var getAllMethod = hookType?.GetMethod("GetAllCustomVariables", BindingFlags.Public | BindingFlags.Static);
-                
-                if (getAllMethod != null)
+                foreach (var item in ContextHookRegistry.GetAllCustomVariables())
                 {
-                    var customVars = getAllMethod.Invoke(null, null);
-                    if (customVars is System.Collections.IEnumerable enumerable)
-                    {
-                        foreach (var item in enumerable)
-                        {
-                            var itemType = item.GetType();
-                            string name = itemType.GetField("Item1")?.GetValue(item)?.ToString() ?? "";
-                            string type = itemType.GetField("Item4")?.GetValue(item)?.ToString() ?? "";
-                            string desc = itemType.GetField("Item3")?.GetValue(item)?.ToString() ?? "";
-                            
-                            if (type == "Pawn" && !string.IsNullOrEmpty(name))
-                            {
-                                if (name.StartsWith("pawn.", StringComparison.OrdinalIgnoreCase))
-                                    name = name.Substring(5);
-                                result.Add((name, desc));
-                            }
-                        }
-                    }
+                    if (item.Type != "Pawn" || string.IsNullOrEmpty(item.Name))
+                        continue;
+                    string name = item.Name;
+                    if (name.StartsWith("pawn.", StringComparison.OrdinalIgnoreCase))
+                        name = name.Substring(5);
+                    result.Add((name, item.Description));
                 }
             }
             catch { }
-            
+
             return result;
         }
-        
+
         public static List<(string name, string description)> GetExtensionContextVariables()
         {
             var result = new List<(string, string)>();
-            var assembly = GetRimTalkAssembly();
-            if (assembly == null) return result;
-            
             try
             {
-                var hookType = assembly.GetType("Ustas.RimAI.Communication.API.ContextHookRegistry");
-                var getAllMethod = hookType?.GetMethod("GetAllCustomVariables", BindingFlags.Public | BindingFlags.Static);
-                
-                if (getAllMethod != null)
+                foreach (var item in ContextHookRegistry.GetAllCustomVariables())
                 {
-                    var customVars = getAllMethod.Invoke(null, null);
-                    if (customVars is System.Collections.IEnumerable enumerable)
-                    {
-                        foreach (var item in enumerable)
-                        {
-                            var itemType = item.GetType();
-                            string name = itemType.GetField("Item1")?.GetValue(item)?.ToString() ?? "";
-                            string type = itemType.GetField("Item4")?.GetValue(item)?.ToString() ?? "";
-                            string desc = itemType.GetField("Item3")?.GetValue(item)?.ToString() ?? "";
-                            
-                            if (type == "Context" && !string.IsNullOrEmpty(name))
-                            {
-                                result.Add((name, desc));
-                            }
-                        }
-                    }
+                    if (item.Type == "Context" && !string.IsNullOrEmpty(item.Name))
+                        result.Add((item.Name, item.Description));
                 }
             }
             catch { }
-            
+
             return result;
         }
         

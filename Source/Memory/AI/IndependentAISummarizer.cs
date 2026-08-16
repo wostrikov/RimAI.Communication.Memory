@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Verse;
 using UnityEngine;
 using RimWorld;
+using Ustas.RimAI.Communication;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
@@ -286,104 +287,62 @@ namespace Ustas.RimAI.Communication.Memory.AI
         {
             try
             {
-                Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault((Assembly a) => a.GetName().Name == "Ustas.RimAI.Communication");
-                if (assembly == null) return false;
-                
-                Type type = assembly.GetType("Ustas.RimAI.Communication.Settings");
-                if (type == null) return false;
-                
-                MethodInfo method = type.GetMethod("Get", BindingFlags.Static | BindingFlags.Public);
-                if (method == null) return false;
-                
-                object obj = method.Invoke(null, null);
-                if (obj == null) return false;
-                
-                Type type2 = obj.GetType();
-                MethodInfo method2 = type2.GetMethod("GetActiveConfig");
-                if (method2 == null) return false;
-                
-                object obj2 = method2.Invoke(obj, null);
-                if (obj2 == null) return false;
-                
-                Type type3 = obj2.GetType();
-                
+                var snapshot = SharedTextAiAccess.Current;
+                string snapshotProvider = snapshot?.Provider;
+                string snapshotModel = snapshot?.Model;
+                string snapshotUrl = snapshot?.BaseUrl;
+                if (snapshot is { HasActive: true } && !string.IsNullOrEmpty(snapshotModel))
+                {
+                    apiKey = null;
+                    provider = snapshotProvider ?? "";
+                    apiUrl = snapshotUrl ?? "";
+                    model = snapshotModel;
+                    if (string.Equals(model, "Custom", StringComparison.OrdinalIgnoreCase))
+                        model = snapshot.CustomModel;
+                    ApplyDefaultUrlIfMissing();
+                    if (!string.IsNullOrEmpty(model))
+                    {
+                        useRimTalkAdapter = true;
+                        isInitialized = true;
+                        Log.Message($"[AI] Loaded from shared text AI ({provider}/{model})");
+                        return true;
+                    }
+                }
+
+                var config = Settings.Get()?.GetActiveConfig();
+                if (config == null) return false;
                 apiKey = null;
-                
-                FieldInfo field2 = type3.GetField("BaseUrl");
-                if (field2 != null)
-                {
-                    apiUrl = (field2.GetValue(obj2) as string);
-                }
-                
-                // ⭐ v3.4.0: 修复 - 始终读取 Provider 字段（无论 apiUrl 是否为空）
-                // 这确保了使用自定义 BaseUrl（第三方中转）时也能正确识别 Provider
-                FieldInfo fieldProvider = type3.GetField("Provider");
-                if (fieldProvider != null)
-                {
-                    object value = fieldProvider.GetValue(obj2);
-                    provider = value?.ToString() ?? "";
-                }
-                
-                // 如果 URL 为空，根据 Provider 设置默认值
-                if (string.IsNullOrEmpty(apiUrl))
-                {
-                    if (provider == "OpenAI")
-                    {
-                        apiUrl = "https://api.openai.com/v1/chat/completions";
-                    }
-                    else if (provider == "DeepSeek")
-                    {
-                        apiUrl = "https://api.deepseek.com/v1/chat/completions";
-                    }
-                    else if (provider == "Google")
-                    {
-                        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
-                    }
-                    else if (provider == "Player2")
-                    {
-                        apiUrl = "https://api.player2.live/v1/chat/completions";
-                    }
-                }
-                
-                FieldInfo field4 = type3.GetField("SelectedModel");
-                if (field4 != null)
-                {
-                    model = (field4.GetValue(obj2) as string);
-                }
-                else
-                {
-                    FieldInfo field5 = type3.GetField("CustomModelName");
-                    if (field5 != null)
-                    {
-                        model = (field5.GetValue(obj2) as string);
-                    }
-                }
-                
+                apiUrl = config.BaseUrl;
+                provider = config.Provider.ToString();
+                model = config.SelectedModel;
                 if (model == "Custom")
-                {
-                    FieldInfo customModel = type3.GetField("CustomModelName");
-                    model = customModel?.GetValue(obj2) as string;
-                }
-                
-                if (!string.IsNullOrEmpty(model))
-                {
-                    useRimTalkAdapter = true;
-                    Log.Message($"[AI] Loaded from RimTalk ({provider}/{model})");
-                    isInitialized = true;
-                    return true;
-                }
-                
-                return false;
+                    model = config.CustomModelName;
+                ApplyDefaultUrlIfMissing();
+                if (string.IsNullOrEmpty(model)) return false;
+                useRimTalkAdapter = true;
+                isInitialized = true;
+                Log.Message($"[AI] Loaded from Communication ({provider}/{model})");
+                return true;
             }
             catch (Exception ex)
             {
-                // 调试日志：帮助排查 RimTalk 配置加载失败的原因
                 if (Prefs.DevMode)
-                {
                     Log.Warning($"[AI Summarizer] TryLoadFromRimTalk failed: {ex.Message}");
-                }
                 return false;
             }
+        }
+
+        private static void ApplyDefaultUrlIfMissing()
+        {
+            if (!string.IsNullOrEmpty(apiUrl)) return;
+            if (provider == "OpenAI")
+                apiUrl = "https://api.openai.com/v1/chat/completions";
+            else if (provider == "DeepSeek")
+                apiUrl = "https://api.deepseek.com/v1/chat/completions";
+            else if (provider == "Google")
+                apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
+            else if (provider == "Player2")
+                apiUrl = "https://api.player2.live/v1/chat/completions";
         }
 
         public static bool IsAvailable()
