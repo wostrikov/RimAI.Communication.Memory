@@ -13,6 +13,7 @@ using Ustas.RimAI.Communication;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
+using Ustas.RimAI.Core.Player2;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -31,11 +32,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
         private static readonly Regex OpenAIResponseRegex = new Regex(
             @"""content""\s*:\s*""(.*?)""",
             RegexOptions.Compiled | RegexOptions.Singleline
-        );
-        
-        private static readonly Regex Player2KeyRegex = new Regex(
-            @"""p2Key""\s*:\s*""([^""]+)""",
-            RegexOptions.Compiled
         );
         
         private static bool isInitialized = false;
@@ -168,23 +164,22 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 // ? v3.3.6: Player2 特殊处理 - 优先使用本地应用
                 if (provider == "Player2")
                 {
-                    if (isPlayer2Local && !string.IsNullOrEmpty(player2LocalKey))
+                    var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
                     {
-                        // 使用本地 Player2 应用
-                        apiKey = player2LocalKey;
-                        apiUrl = $"{Player2LocalUrl}/chat/completions";
-                        Log.Message("[AI] ?? Using Player2 local app connection");
-                    }
-                    else if (!string.IsNullOrEmpty(apiKey))
+                        FallbackApiKey = apiKey,
+                        RequestGameKey = Player2GameKeys.Memory
+                    });
+                    if (session.Succeeded)
                     {
-                        // 使用手动输入的 Key + 远程 API
-                        apiUrl = $"{Player2RemoteUrl}/chat/completions";
-                        Log.Message("[AI] ?? Using Player2 remote API with manual key");
+                        apiKey = session.ApiKey;
+                        apiUrl = Player2Endpoints.ChatCompletions(session.BaseUrl);
+                        Log.Message(session.IsLocal
+                            ? "[AI] Using Player2 local app connection"
+                            : "[AI] Using Player2 remote API with manual key");
                     }
                     else
                     {
-                        // 尝试检测本地应用
-                        Log.Message("[AI] ?? Player2 selected but no key, trying to detect local app...");
+                        Log.Message("[AI] Player2 selected but no key, trying to detect local app...");
                         TryDetectPlayer2LocalApp();
                     }
                 }
@@ -206,7 +201,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     }
                     else if (provider == "Player2")
                     {
-                        apiUrl = $"{Player2RemoteUrl}/chat/completions";
+                        apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
                     }
                 }
                 
@@ -343,7 +338,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
 
             if (!useRimTalkAdapter && provider == "Player2")
             {
-                apiUrl = "https://api.player2.live/v1/chat/completions";
+                apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
                 return;
             }
 
@@ -748,7 +743,15 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     // ? v3.3.3: Google API不使用Bearer token（Key在URL中）
                     if (provider != "Google")
                     {
-                        request.Headers["Authorization"] = $"Bearer {apiKey}";
+                        if (provider == "Player2")
+                        {
+                            foreach (var header in Player2Session.Current.AuthHeaders(Player2GameKeys.Memory))
+                                request.Headers[header.Key] = header.Value;
+                        }
+                        else
+                        {
+                            request.Headers["Authorization"] = $"Bearer {apiKey}";
+                        }
                     }
                     
                     // ? 增加超时时间到120秒（2分钟）
@@ -981,60 +984,27 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        // ? v3.3.6: Player2 本地应用支持
-        private const string Player2LocalUrl = "http://localhost:4315/v1";
-        private const string Player2RemoteUrl = "https://api.player2.game/v1";
-        private const string Player2GameClientId = "rimtalk-expand-memory";
-        private static bool isPlayer2Local = false;
-        private static string player2LocalKey = null;
-        
-        /// <summary>
-        /// ? v3.3.6: 尝试检测并连接本地 Player2 桌面应用
-        /// </summary>
         public static void TryDetectPlayer2LocalApp()
         {
-            Task.Run(async () =>
+            Task.Run(() =>
             {
                 try
                 {
-                    Log.Message("[AI] ?? Checking for local Player2 app...");
-                    
-                    // 1. 健康检查
-                    var healthRequest = (HttpWebRequest)WebRequest.Create($"{Player2LocalUrl}/health");
-                    healthRequest.Method = "GET";
-                    healthRequest.Timeout = 2000; // 2秒超时
-                    
-                    try
+                    Log.Message("[AI] Checking for local Player2 app...");
+                    var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
                     {
-                        using (var response = (HttpWebResponse)await healthRequest.GetResponseAsync())
+                        RequestGameKey = Player2GameKeys.Memory
+                    });
+                    if (session.Succeeded && session.IsLocal)
+                    {
+                        LongEventHandler.ExecuteWhenFinished(() =>
                         {
-                            if (response.StatusCode == HttpStatusCode.OK)
-                            {
-                                Log.Message("[AI] ? Player2 local app detected!");
-                                
-                                // 2. 获取本地Key
-                                await TryGetPlayer2LocalKey();
-                                
-                                if (!string.IsNullOrEmpty(player2LocalKey))
-                                {
-                                    isPlayer2Local = true;
-                                    LongEventHandler.ExecuteWhenFinished(() =>
-                                    {
-                                        Messages.Message("RimTalk_Settings_Player2Detected".Translate(), MessageTypeDefOf.PositiveEvent, false);
-                                    });
-                                    return;
-                                }
-                            }
-                        }
+                            Messages.Message("RimTalk_Settings_Player2Detected".Translate(), MessageTypeDefOf.PositiveEvent, false);
+                        });
+                        return;
                     }
-                    catch (WebException)
-                    {
-                        // 本地应用未运行
-                    }
-                    
-                    isPlayer2Local = false;
-                    player2LocalKey = null;
-                    Log.Message("[AI] ?? Player2 local app not found, will use remote API");
+
+                    Log.Message("[AI] Player2 local app not found, will use remote API");
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         Messages.Message("RimTalk_Settings_Player2NotFound".Translate(), MessageTypeDefOf.NeutralEvent, false);
@@ -1043,53 +1013,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 catch (Exception ex)
                 {
                     Log.Warning($"[AI] Player2 detection error: {ex.Message}");
-                    isPlayer2Local = false;
-                    player2LocalKey = null;
                 }
             });
-        }
-        
-        /// <summary>
-        /// ? v3.3.6: 从本地 Player2 应用获取 API Key
-        /// </summary>
-        private static async Task TryGetPlayer2LocalKey()
-        {
-            try
-            {
-                string loginUrl = $"{Player2LocalUrl}/login/web/{Player2GameClientId}";
-                
-                var request = (HttpWebRequest)WebRequest.Create(loginUrl);
-                request.Method = "POST";
-                request.ContentType = "application/json";
-                request.Timeout = 3000;
-                
-                byte[] bodyRaw = Encoding.UTF8.GetBytes("{}");
-                request.ContentLength = bodyRaw.Length;
-                
-                using (var stream = await request.GetRequestStreamAsync())
-                {
-                    await stream.WriteAsync(bodyRaw, 0, bodyRaw.Length);
-                }
-                
-                using (var response = (HttpWebResponse)await request.GetResponseAsync())
-                using (var reader = new System.IO.StreamReader(response.GetResponseStream()))
-                {
-                    string responseText = await reader.ReadToEndAsync();
-                    
-                    // ? 使用预编译的正则表达式
-                    var match = Player2KeyRegex.Match(responseText);
-                    if (match.Success)
-                    {
-                        player2LocalKey = match.Groups[1].Value;
-                        Log.Message("[AI] Player2 local credential acquired");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Warning($"[AI] Failed to get Player2 local key: {ex.Message}");
-                player2LocalKey = null;
-            }
         }
     }
 }

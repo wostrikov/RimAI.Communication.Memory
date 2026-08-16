@@ -3,6 +3,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.API;
+using Ustas.RimAI.Core.Player2;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -41,7 +42,7 @@ namespace Ustas.RimAI.Communication.Memory
                 new Color(0.5f, 0.7f, 1f));
             
             DrawProviderButton(new Rect(providerButtonRect1.x + 2 * (buttonWidth + 10f), providerButtonRect1.y, buttonWidth, 30f),
-                "Player2", settings, "Player2", "", "https://api.player2.game/v1/chat/completions",
+                "Player2", settings, "Player2", "", Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame),
                 new Color(1f, 0.8f, 0.5f));
             
             // 第二行：Google, Custom
