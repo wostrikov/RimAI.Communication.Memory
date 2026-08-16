@@ -691,7 +691,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     Model = model,
                     ApiShape = TextAiApiShape.Responses,
                     UseSharedGameplayCredential = true,
-                    Caller = "memory-summarizer"
+                    Caller = "memory-summarizer",
+                    Arbitration = AiRequestMetadata.FromCaller("memory-summarizer")
                 }));
                 return shared.Succeeded ? shared.Text : null;
             }
@@ -707,7 +708,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     UseSharedGameplayCredential = false,
                     ApiShape = TextAiApiShape.ChatCompletions,
                     PrebuiltJson = BuildJsonRequest(prompt),
-                    Caller = "memory-summarizer"
+                    Caller = "memory-summarizer",
+                    Arbitration = AiRequestMetadata.FromCaller("memory-summarizer")
                 }));
                 if (!shared.Succeeded)
                     return null;
