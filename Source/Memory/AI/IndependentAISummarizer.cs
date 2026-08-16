@@ -335,14 +335,19 @@ namespace Ustas.RimAI.Communication.Memory.AI
         private static void ApplyDefaultUrlIfMissing()
         {
             if (!string.IsNullOrEmpty(apiUrl)) return;
-            if (provider == "OpenAI")
-                apiUrl = "https://api.openai.com/v1/chat/completions";
-            else if (provider == "DeepSeek")
-                apiUrl = "https://api.deepseek.com/v1/chat/completions";
-            else if (provider == "Google")
+            if (!useRimTalkAdapter && provider == "Google")
+            {
                 apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
-            else if (provider == "Player2")
+                return;
+            }
+
+            if (!useRimTalkAdapter && provider == "Player2")
+            {
                 apiUrl = "https://api.player2.live/v1/chat/completions";
+                return;
+            }
+
+            apiUrl = GameplayTextAiProviderCatalog.ChatEndpoint(provider);
         }
 
         public static bool IsAvailable()
