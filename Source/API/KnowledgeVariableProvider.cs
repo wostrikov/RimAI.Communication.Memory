@@ -8,6 +8,7 @@ using RimWorld;
 using RimTalk.MemoryPatch;
 using RimTalk.Memory;
 using RimTalk.Memory.UI;
+using Ustas.RimAI.Core.Memory;
 
 namespace RimTalk.Memory.API
 {
@@ -96,6 +97,30 @@ namespace RimTalk.Memory.API
                 
                 // 1. 根据用户选择的匹配源，构建匹配文本
                 string matchText = BuildMatchText(promptContext, settings);
+                var typedKnowledge = MemoryContextAccess.Knowledge;
+                if (typedKnowledge != null && !string.IsNullOrEmpty(matchText))
+                {
+                    var typed = typedKnowledge.GetKnowledge(new MemoryContextRequest
+                    {
+                        Query = matchText,
+                        PawnId = GetPropertyValue<Pawn>(promptContext, "CurrentPawn")?.ThingID
+                    });
+                    if (!string.IsNullOrEmpty(typed.Projection))
+                    {
+                        lock (_contextLock)
+                        {
+                            _lastContext = new KnowledgeInjectionContext
+                            {
+                                MatchText = matchText,
+                                DialogueType = GetVariableValue(promptContext, "dialogue.type"),
+                                KeywordKnowledge = typed.Projection,
+                                Speaker = GetPropertyValue<Pawn>(promptContext, "CurrentPawn"),
+                                Tick = Find.TickManager?.TicksGame ?? 0
+                            };
+                        }
+                        return PromptNormalizer.Normalize(typed.Projection);
+                    }
+                }
                 
                 if (string.IsNullOrEmpty(matchText))
                 {

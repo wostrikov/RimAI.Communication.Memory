@@ -6,6 +6,7 @@ using Verse;
 using RimTalk.MemoryPatch;
 using RimTalk.Memory;
 using RimTalk.Memory.Injection;
+using Ustas.RimAI.Core.Memory;
 
 namespace RimTalk.Memory.API
 {
@@ -28,6 +29,13 @@ namespace RimTalk.Memory.API
             if (pawn == null)
             {
                 return "";
+            }
+
+            var typed = MemoryContextAccess.Current;
+            if (typed != null)
+            {
+                var result = typed.GetContext(new MemoryContextRequest { PawnId = pawn.ThingID });
+                return result?.Projection ?? string.Empty;
             }
 
             try

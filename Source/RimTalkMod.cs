@@ -1,6 +1,8 @@
 ﻿using Verse;
 using UnityEngine;
 using HarmonyLib;
+using RimTalk.Memory.API;
+using Ustas.RimAI.Core.Memory;
 using Ustas.RimAI.Core.Modules;
 
 namespace RimTalk.MemoryPatch
@@ -27,6 +29,9 @@ namespace RimTalk.MemoryPatch
                 "RimAI.Communication.Memory",
                 "Communication",
                 "RimAI.Communication"));
+            var memoryContext = new MemoryContextProvider();
+            MemoryContextAccess.Register(memoryContext);
+            MemoryContextAccess.RegisterKnowledge(memoryContext);
             Log.Message("[RimTalk-Expand Memory] Loaded successfully");
             
             if (Prefs.DevMode)

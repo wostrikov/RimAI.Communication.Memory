@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimTalk.MemoryPatch;
+using Ustas.RimAI.Core.Memory;
 
 namespace RimTalk.Memory.Injection
 {
@@ -32,6 +33,16 @@ namespace RimTalk.Memory.Injection
         {
             if (pawn == null)
                 return string.Empty;
+
+            var typed = MemoryContextAccess.Current;
+            if (typed != null)
+            {
+                return typed.GetContext(new MemoryContextRequest
+                {
+                    PawnId = pawn.ThingID,
+                    Query = dialogueContext
+                }).Projection ?? string.Empty;
+            }
             
             var settings = RimTalkMemoryPatchMod.Settings;
             int maxABMRounds = settings?.maxABMInjectionRounds ?? 3;

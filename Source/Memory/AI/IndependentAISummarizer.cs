@@ -10,6 +10,7 @@ using Verse;
 using UnityEngine;
 using RimWorld;
 using RimTalk.MemoryPatch;
+using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
 
 namespace RimTalk.Memory.AI
@@ -720,18 +721,33 @@ namespace RimTalk.Memory.AI
 
             if (provider == "OpenAI")
             {
-                var client = new global::RimTalk.Client.OpenAI.OpenAIClient(
-                    global::RimTalk.Client.OpenAI.OpenAIProviderAdapter.ResponsesEndpoint,
-                    model,
-                    global::RimTalk.Client.OpenAI.OpenAIProviderAdapter.ResolveCredential(),
-                    officialOpenAI: true);
-                var payload = await client.GetChatCompletionAsync(
-                    new List<(global::RimTalk.Data.Role role, string message)>(),
-                    new List<(global::RimTalk.Data.Role role, string message)>
-                    {
-                        (global::RimTalk.Data.Role.User, prompt)
-                    });
-                return payload?.Response;
+                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                {
+                    Messages = new[] { new TextAiMessage("user", prompt) },
+                    Model = model,
+                    ApiShape = TextAiApiShape.Responses,
+                    UseSharedGameplayCredential = true,
+                    Caller = "memory-summarizer"
+                }));
+                return shared.Succeeded ? shared.Text : null;
+            }
+
+            if (provider != "Google")
+            {
+                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                {
+                    Messages = new[] { new TextAiMessage("user", prompt) },
+                    Model = model,
+                    BaseUrl = apiUrl,
+                    ApiKey = apiKey,
+                    UseSharedGameplayCredential = false,
+                    ApiShape = TextAiApiShape.ChatCompletions,
+                    PrebuiltJson = BuildJsonRequest(prompt),
+                    Caller = "memory-summarizer"
+                }));
+                if (!shared.Succeeded)
+                    return null;
+                return ParseResponse(shared.RawPayload) ?? shared.Text;
             }
 
             const int MAX_RETRIES = 3;
