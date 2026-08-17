@@ -1,6 +1,7 @@
 using System;
 using Verse;
 using RimWorld.Planet;
+using Ustas.RimAI.Core.Handshake;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -14,6 +15,11 @@ namespace Ustas.RimAI.Communication.Memory
     {
         static BackCompatibilityFix()
         {
+            if (!RimAiHandshake.IsApproved(RimAiModuleIds.Memory))
+            {
+                return;
+            }
+
             ForceInitialize();
         }
         

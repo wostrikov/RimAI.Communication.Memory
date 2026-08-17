@@ -2,6 +2,7 @@ using Ustas.RimAI.Communication.API;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Prompt;
 using System;
+using Ustas.RimAI.Core.Handshake;
 using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.API
@@ -49,6 +50,10 @@ namespace Ustas.RimAI.Communication.Memory.API
         {
             if (_initialized) return;
             _initialized = true;
+            if (!RimAiHandshake.IsApproved(RimAiModuleIds.Memory))
+            {
+                return;
+            }
 
             try
             {
