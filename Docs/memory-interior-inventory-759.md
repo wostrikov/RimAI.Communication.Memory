@@ -36,23 +36,29 @@ TokenBudget:
   set on Attach request but unread by MemoryContextProvider
 ```
 
-### After (OPTION A closing gate)
+### After (OPTION A closing gate + Knowledge/budget follow-up)
 
 ```text
 AttachTypedMemoryContext:
+  conversationEntryBudget = DefaultTokenBudget / 80   # 25 entries shared
+  perPawnTokenBudget = (budget / N) * 80
   for each talk pawn:
-    GetContext({ PawnId, PawnIds, Query=talkRequest.Prompt,
-                 TokenBudget=MemoryContextDefaults.DefaultTokenBudget })
-    → store Projection in PromptContext.TypedMemoryProjections[PawnId]
+    GetContext({ PawnId, Query, TokenBudget=perPawn, IncludeKnowledge=false })
+    → TypedMemoryProjections[PawnId]
+  once:
+    GetKnowledge({ Query, PawnId=initiator, TokenBudget=Default })
+    → TypedKnowledgeProjection
 Scriban {{p.memory}}:
-  MemoryVariableProvider reads PromptManager.LastContext precomputed Projection
-  → NO GetContext on normal Talk path
-Talk path:
-  N GetContext (one per talk pawn) — not 1+N
+  presents TypedMemoryProjections (no GetContext)
+Scriban {{knowledge}}:
+  presents TypedKnowledgeProjection (no second GetKnowledge on Talk path)
+Talk path retrievals:
+  N GetContext (IncludeKnowledge=false) + 1 GetKnowledge
+  — not N nested knowledge matches, not 1+N memory, not N×full budget
+PawnIds:
+  not set on Talk Attach requests (resolver uses PawnId only)
 TokenBudget:
-  owned by MemoryContextDefaults.DefaultTokenBudget (2000)
-  MemoryContextProvider caps entry quota via TokenBudget / TokensPerMemoryEntry (80)
-  (Relations convention; default 2000 → 25, so typical maxInjectedMemories=10 unchanged)
+  shared conversation ceiling; equal split across talk pawns
 ```
 
 ### UnifiedMemoryInjector disposition
@@ -108,8 +114,8 @@ Bare catch removed from `MemoryVariableProvider.GetCurrentDialogueContext`.
 
 | Bucket | Before (Wave A) | After (Waves B–D) |
 | --- | ---: | ---: |
-| logging TEMPORARY (Memory Verse `Log.*` call sites) | ~324 | **302** |
-| catch TEMPORARY (Memory exception-file entries) | 35 | **32** |
+| logging TEMPORARY (Memory Verse `Log.*` call sites) | ~324 | **301** (baseline recommitted) |
+| catch TEMPORARY (Memory exception-file / by_module) | 35 / 107 | **32** / **103** (baseline recommitted) |
 | DOMAIN catch TEMPORARY | 17 | **16** |
 | composition TEMPORARY (Memory ambient `by_module`) | 3 | **3** (RoundMemoryManager + residual; VectorService ROOT_OWNED) |
 | oversized TEMPORARY | 4 | **4** (untouched) |

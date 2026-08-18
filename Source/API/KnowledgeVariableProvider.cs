@@ -82,6 +82,30 @@ namespace Ustas.RimAI.Communication.Memory.API
             
             try
             {
+                // OPTION A knowledge path: present Attach's one conversation Projection.
+                if (promptContext is PromptContext typedCtx
+                    && typedCtx.TryGetTypedKnowledgeProjection(out var precomputedKnowledge)
+                    && precomputedKnowledge != null)
+                {
+                    if (!string.IsNullOrEmpty(precomputedKnowledge))
+                    {
+                        lock (_contextLock)
+                        {
+                            _lastContext = new KnowledgeInjectionContext
+                            {
+                                MatchText = typedCtx.DialoguePrompt ?? typedCtx.DialogueType,
+                                DialogueType = typedCtx.DialogueType,
+                                KeywordKnowledge = precomputedKnowledge,
+                                Speaker = typedCtx.CurrentPawn,
+                                Tick = Find.TickManager?.TicksGame ?? 0
+                            };
+                        }
+                        return PromptNormalizer.Normalize(precomputedKnowledge);
+                    }
+
+                    return "";
+                }
+
                 var settings = RimTalkMemoryPatchMod.Settings;
                 
                 // 1. 根据用户选择的匹配源，构建匹配文本

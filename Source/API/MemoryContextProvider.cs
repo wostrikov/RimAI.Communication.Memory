@@ -46,7 +46,9 @@ namespace Ustas.RimAI.Communication.Memory.API
                     entry.Importance));
             }
 
-            var knowledge = GetKnowledge(request);
+            var knowledge = request?.IncludeKnowledge == false
+                ? new MemoryContextResult { Source = "typed" }
+                : GetKnowledge(request);
             var projection = allEntries.Count == 0
                 ? string.Empty
                 : MemoryFormatter.Format(allEntries, startIndex: 1);
