@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Core.Storage;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
@@ -34,9 +35,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 string fileName = $"{Owner.selectedPawn.Name.ToStringShort}_Memories_{Find.TickManager.TicksGame}.xml";
                 string savePath = System.IO.Path.Combine(GenFilePaths.SaveDataFolderPath, "MemoryExports");
                 
-                if (!System.IO.Directory.Exists(savePath))
+                if (!LocalStorage.Current.DirectoryExists(savePath))
                 {
-                    System.IO.Directory.CreateDirectory(savePath);
+                    LocalStorage.Current.CreateDirectory(savePath);
                 }
                 
                 string fullPath = System.IO.Path.Combine(savePath, fileName);
@@ -96,13 +97,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             string savePath = System.IO.Path.Combine(GenFilePaths.SaveDataFolderPath, "MemoryExports");
             
-            if (!System.IO.Directory.Exists(savePath))
+            if (!LocalStorage.Current.DirectoryExists(savePath))
             {
                 Messages.Message("RimTalk_Memory_ImportNoFolder".Translate(), MessageTypeDefOf.RejectInput, false);
                 return;
             }
             
-            var files = System.IO.Directory.GetFiles(savePath, "*.xml");
+            var files = LocalStorage.Current.GetFiles(savePath, "*.xml");
             
             if (files.Length == 0)
             {
@@ -122,7 +123,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // 分隔线（用空选项实现）
             options.Add(new FloatMenuOption("─────────────────────", null));
             
-            foreach (var file in files.OrderByDescending(f => System.IO.File.GetLastWriteTime(f)))
+            foreach (var file in files.OrderByDescending(f => LocalStorage.Current.GetLastWriteTime(f)))
             {
                 string fileName = System.IO.Path.GetFileName(file);
                 var fileInfo = new System.IO.FileInfo(file);

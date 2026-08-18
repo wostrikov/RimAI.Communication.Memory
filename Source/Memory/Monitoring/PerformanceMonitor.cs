@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
+using Ustas.RimAI.Core.Storage;
 
 namespace Ustas.RimAI.Communication.Memory.Monitoring
 {
@@ -256,7 +257,7 @@ namespace Ustas.RimAI.Communication.Memory.Monitoring
                 }
                 
                 string report = GetFullReport();
-                System.IO.File.WriteAllText(filePath, report);
+                LocalStorage.Current.WriteAllText(filePath, report);
                 
                 Messages.Message($"Звіт продуктивності експортовано: {filePath}", MessageTypeDefOf.PositiveEvent);
                 Log.Message($"[Performance Monitor] Report exported to: {filePath}");

@@ -1,3 +1,4 @@
+using Ustas.RimAI.Core.Storage;
 // using System;
 // using System.Collections.Generic;
 // using System.Linq;
@@ -247,13 +248,13 @@
 //         {
 //             try
 //             {
-//                 if (!System.IO.File.Exists(filePath))
+//                 if (!LocalStorage.Current.FileExists(filePath))
 //                 {
 //                     Log.Message("[SiliconFlow] No cache file found");
 //                     return;
 //                 }
                 
-//                 var lines = System.IO.File.ReadAllLines(filePath);
+//                 var lines = LocalStorage.Current.ReadAllLines(filePath);
 //                 int loaded = 0;
                 
 //                 foreach (var line in lines)
