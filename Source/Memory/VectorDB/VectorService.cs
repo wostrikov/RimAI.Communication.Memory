@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Core.Diagnostics;
 using Verse;
 using RimWorld;
 
@@ -18,54 +19,69 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
     /// </summary>
     public class VectorService
     {
-        private static VectorService _instance;
-        private static readonly object _instanceLock = new object();
-        
-        private Dictionary<string, float[]> _loreVectors = new Dictionary<string, float[]>();
-        private Dictionary<string, string> _contentHashes = new Dictionary<string, string>(); // 内容哈希值缓存
-        private HttpClient _httpClient;
-        private bool _isInitialized = false;
-        private bool _isSyncing = false; // 是否正在同步
+    // RimAI.composition: ROOT_OWNED_SINGLETON — constructed and bound by MemoryComposition.Start.
+    private static VectorService _instance;
+    private static readonly object _instanceLock = new object();
+    
+    private Dictionary<string, float[]> _loreVectors = new Dictionary<string, float[]>();
+    private Dictionary<string, string> _contentHashes = new Dictionary<string, string>(); // 内容哈希值缓存
+    private HttpClient _httpClient;
+    private bool _isInitialized = false;
+    private bool _isSyncing = false; // 是否正在同步
 
-        /// <summary>
-        /// 获取单例实例
-        /// </summary>
-        public static VectorService Instance
+    /// <summary>
+    /// Process-lifetime instance. Prefer access after <see cref="MemoryComposition.Start"/>.
+    /// Lazy create remains only as a Scribe safety net if ExposeData runs before Start.
+    /// </summary>
+    public static VectorService Instance
+    {
+        get
         {
-            get
+            if (_instance == null)
             {
-                if (_instance == null)
+                lock (_instanceLock)
                 {
-                    lock (_instanceLock)
+                    if (_instance == null)
                     {
-                        if (_instance == null)
-                        {
-                            _instance = new VectorService();
-                        }
+                        _instance = new VectorService();
                     }
                 }
-                return _instance;
             }
+            return _instance;
         }
+    }
 
-        private VectorService()
+    /// <summary>Binds the root-owned instance from <see cref="MemoryComposition"/>.</summary>
+    internal static VectorService BindRootOwned(VectorService service)
+    {
+        if (service == null)
+            throw new ArgumentNullException(nameof(service));
+        lock (_instanceLock)
         {
-            Initialize();
+            _instance = service;
         }
+        return service;
+    }
+
+    internal VectorService()
+    {
+        Initialize();
+    }
 
         private void Initialize()
         {
             try
             {
-                Log.Message("[RimAI.Memory] VectorService: Initializing Cloud Embedding Service...");
+                RimAiLog.Info(RimAiLogCategory.Memory, "[RimAI.Memory] VectorService: Initializing Cloud Embedding Service...");
                 _httpClient = new HttpClient();
                 _httpClient.Timeout = TimeSpan.FromSeconds(30);
                 _isInitialized = true;
-                Log.Message("[RimAI.Memory] VectorService: Cloud Service Initialized.");
+                RimAiLog.Info(RimAiLogCategory.Memory, "[RimAI.Memory] VectorService: Cloud Service Initialized.");
             }
             catch (Exception ex)
             {
-                Log.Error($"[RimAI.Memory] VectorService: Initialization failed: {ex}");
+                // RimAI.exception: TEMPORARY_EXPLICIT_EXCEPTION — VectorService init remains a residual ASYNC/host boundary.
+                RimAiLog.Error(RimAiLogCategory.Memory, "[RimAI.Memory] VectorService: Initialization failed.", exception: ex);
                 _isInitialized = false;
             }
         }

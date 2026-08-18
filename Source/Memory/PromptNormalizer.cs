@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -53,9 +53,9 @@ namespace Ustas.RimAI.Communication.Memory
                     var regex = new Regex(rule.pattern, RegexOptions.IgnoreCase | RegexOptions.Compiled);
                     newCache[rule.pattern] = regex;
                 }
-                catch (Exception ex)
+                catch (ArgumentException ex)
                 {
-                    Log.Warning($"[PromptNormalizer] Invalid regex pattern '{rule.pattern}': {ex.Message}");
+                    RimAiLog.Warning(RimAiLogCategory.Memory, $"[PromptNormalizer] Invalid regex pattern '{rule.pattern}'.", exception: ex);
                 }
             }
 
@@ -88,9 +88,13 @@ namespace Ustas.RimAI.Communication.Memory
                         result = regex.Replace(result, rule.replacement);
                     }
                 }
-                catch (Exception ex)
+                catch (RegexMatchTimeoutException ex)
                 {
-                    Log.Warning($"[PromptNormalizer] Error applying rule '{rule.pattern}': {ex.Message}");
+                    RimAiLog.Warning(RimAiLogCategory.Memory, $"[PromptNormalizer] Error applying rule '{rule.pattern}'.", exception: ex);
+                }
+                catch (ArgumentException ex)
+                {
+                    RimAiLog.Warning(RimAiLogCategory.Memory, $"[PromptNormalizer] Error applying rule '{rule.pattern}'.", exception: ex);
                 }
             }
             return result;

@@ -16,7 +16,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             if (request?.LayeredPawnMemories == true)
                 return GetLayeredPawnMemories(request);
 
-            var pawn = ResolvePawn(request);
+            var pawn = MemoryPawnResolver.Resolve(request);
             var settings = RimTalkMemoryPatchMod.Settings;
             int maxABMRounds = settings?.maxABMInjectionRounds ?? 3;
             int maxTotal = settings?.maxInjectedMemories ?? 10;
@@ -69,7 +69,7 @@ namespace Ustas.RimAI.Communication.Memory.API
                 return new MemoryContextResult { Source = "typed", Projection = string.Empty };
             }
 
-            var pawn = ResolvePawn(request);
+            var pawn = MemoryPawnResolver.Resolve(request);
             var scores = new List<KnowledgeScore>();
             int maxEntries = request.MaxEntries > 0 ? request.MaxEntries : settings?.maxInjectedKnowledge ?? 10;
             string text = library.InjectKnowledgeWithDetails(
@@ -101,31 +101,9 @@ namespace Ustas.RimAI.Communication.Memory.API
             };
         }
 
-        static Pawn ResolvePawn(MemoryContextRequest request)
-        {
-            if (request?.Pawn is Pawn direct)
-                return direct;
-            var id = request?.PawnId;
-            if (string.IsNullOrEmpty(id))
-                id = request?.PawnIds?.FirstOrDefault();
-            if (string.IsNullOrEmpty(id))
-                return null;
-            var maps = Find.Maps;
-            if (maps == null)
-                return null;
-            foreach (var map in maps)
-            {
-                var pawn = map?.mapPawns?.AllPawns?.FirstOrDefault(p => p != null && p.ThingID == id);
-                if (pawn != null)
-                    return pawn;
-            }
-
-            return null;
-        }
-
         MemoryContextResult GetLayeredPawnMemories(MemoryContextRequest request)
         {
-            var pawn = ResolvePawn(request);
+            var pawn = MemoryPawnResolver.Resolve(request);
             if (pawn == null)
                 return new MemoryContextResult { Source = "typed" };
             var comp = pawn.TryGetComp<FourLayerMemoryComp>();

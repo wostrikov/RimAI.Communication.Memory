@@ -4,8 +4,8 @@ using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
 using Ustas.RimAI.Communication.Memory;
-using Ustas.RimAI.Communication.Memory;
-using Ustas.RimAI.Core.Storage;
+using Ustas.RimAI.Communication.Memory.Persistence;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
@@ -33,11 +33,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
             try
             {
                 string fileName = $"{Owner.selectedPawn.Name.ToStringShort}_Memories_{Find.TickManager.TicksGame}.xml";
-                string savePath = System.IO.Path.Combine(GenFilePaths.SaveDataFolderPath, "MemoryExports");
+                string savePath = MemorySidecarStorage.MemoryExportsDirectory;
                 
-                if (!LocalStorage.Current.DirectoryExists(savePath))
+                if (!MemorySidecarStorage.DirectoryExists(savePath))
                 {
-                    LocalStorage.Current.CreateDirectory(savePath);
+                    MemorySidecarStorage.CreateDirectory(savePath);
                 }
                 
                 string fullPath = System.IO.Path.Combine(savePath, fileName);
@@ -63,7 +63,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 Messages.Message("RimTalk_Memory_ExportSuccess".Translate(allMemories.Count, fileName), 
                     MessageTypeDefOf.PositiveEvent, false);
                 
-                Log.Message($"[RimAI.Communication] Exported {allMemories.Count} memories to: {fullPath}");
+                RimAiLog.Info(RimAiLogCategory.Memory, $"[RimAI.Memory] Exported {allMemories.Count} memories to: {fullPath}");
                 
                 // ? 导出成功后询问是否打开文件夹
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
@@ -80,7 +80,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             {
                 Messages.Message("RimTalk_Memory_ExportFailed".Translate(ex.Message), 
                     MessageTypeDefOf.RejectInput, false);
-                Log.Error($"[RimAI.Communication] Memory export failed: {ex}");
+                RimAiLog.Error(RimAiLogCategory.Memory, "[RimAI.Memory] Memory export failed.", exception: ex);
             }
         }
         
@@ -95,15 +95,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return;
             }
             
-            string savePath = System.IO.Path.Combine(GenFilePaths.SaveDataFolderPath, "MemoryExports");
+            string savePath = MemorySidecarStorage.MemoryExportsDirectory;
             
-            if (!LocalStorage.Current.DirectoryExists(savePath))
+            if (!MemorySidecarStorage.DirectoryExists(savePath))
             {
                 Messages.Message("RimTalk_Memory_ImportNoFolder".Translate(), MessageTypeDefOf.RejectInput, false);
                 return;
             }
             
-            var files = LocalStorage.Current.GetFiles(savePath, "*.xml");
+            var files = MemorySidecarStorage.GetFiles(savePath, "*.xml");
             
             if (files.Length == 0)
             {
@@ -123,7 +123,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // 分隔线（用空选项实现）
             options.Add(new FloatMenuOption("─────────────────────", null));
             
-            foreach (var file in files.OrderByDescending(f => LocalStorage.Current.GetLastWriteTime(f)))
+            foreach (var file in files.OrderByDescending(f => MemorySidecarStorage.GetLastWriteTime(f)))
             {
                 string fileName = System.IO.Path.GetFileName(file);
                 var fileInfo = new System.IO.FileInfo(file);
@@ -212,7 +212,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         Messages.Message("RimTalk_Memory_ImportSuccess".Translate(imported, importedMemories.Count), 
                             MessageTypeDefOf.PositiveEvent, false);
                         
-                        Log.Message($"[RimAI.Communication] Imported {imported}/{importedMemories.Count} memories from: {filePath}");
+                        RimAiLog.Info(RimAiLogCategory.Memory, $"[RimAI.Memory] Imported {imported}/{importedMemories.Count} memories from: {filePath}");
                     }
                 ));
             }
@@ -220,7 +220,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             {
                 Messages.Message("RimTalk_Memory_ImportFailed".Translate(ex.Message), 
                     MessageTypeDefOf.RejectInput, false);
-                Log.Error($"[RimAI.Communication] Memory import failed: {ex}");
+                RimAiLog.Error(RimAiLogCategory.Memory, "[RimAI.Memory] Memory import failed.", exception: ex);
             }
         }
     }

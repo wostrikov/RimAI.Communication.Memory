@@ -31,6 +31,23 @@ public static class TalkLifecycleBridge
         RelationsDialogueLifecycle.DiplomacySummaryRecorded += OnDiplomacySummaryRecorded;
     }
 
+    /// <summary>
+    /// Unsubscribes Memory-owned handlers only. Does not call TalkLifecycle.Clear()
+    /// (that would wipe Voices/Personas/Relations subscribers).
+    /// </summary>
+    public static void Unregister()
+    {
+        if (!_registered)
+            return;
+        TalkLifecycle.InteractionCreated -= OnInteractionCreated;
+        TalkLifecycle.PlayerDialogueSubmitted -= OnPlayerDialogueSubmitted;
+        TalkLifecycle.TalkRequestEnrichment -= OnTalkRequestEnrichment;
+        TalkLifecycle.PromptBuildStarted -= OnPromptBuildStarted;
+        RelationsDialogueLifecycle.RpgSessionFinalized -= OnRpgSessionFinalized;
+        RelationsDialogueLifecycle.DiplomacySummaryRecorded -= OnDiplomacySummaryRecorded;
+        _registered = false;
+    }
+
     static bool RoundMemoryEnabled => RimTalkMemoryPatchMod.Settings?.IsRoundMemoryActive ?? false;
 
     static void OnInteractionCreated(TalkInteractionCreatedArgs args)

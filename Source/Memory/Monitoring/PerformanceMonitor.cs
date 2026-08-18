@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using Verse;
 using RimWorld;
-using Ustas.RimAI.Core.Storage;
+using Ustas.RimAI.Communication.Memory.Persistence;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Monitoring
 {
@@ -250,21 +251,20 @@ namespace Ustas.RimAI.Communication.Memory.Monitoring
             {
                 if (string.IsNullOrEmpty(filePath))
                 {
-                    filePath = System.IO.Path.Combine(
-                        GenFilePaths.SaveDataFolderPath,
-                        $"RimTalk_Performance_{DateTime.Now:yyyyMMdd_HHmmss}.txt"
-                    );
+                    filePath = MemorySidecarStorage.BuildPerformanceReportPath(
+                        DateTime.Now.ToString("yyyyMMdd_HHmmss"));
                 }
                 
                 string report = GetFullReport();
-                LocalStorage.Current.WriteAllText(filePath, report);
+                MemorySidecarStorage.WriteAllText(filePath, report);
                 
                 Messages.Message($"Звіт продуктивності експортовано: {filePath}", MessageTypeDefOf.PositiveEvent);
-                Log.Message($"[Performance Monitor] Report exported to: {filePath}");
+                RimAiLog.Info(RimAiLogCategory.Memory, $"[Performance Monitor] Report exported to: {filePath}");
             }
             catch (Exception ex)
             {
-                Log.Error($"[Performance Monitor] Failed to export report: {ex.Message}");
+                // RimAI.exception: TEMPORARY_EXPLICIT_EXCEPTION — residual UI/export boundary; keep containment.
+                RimAiLog.Error(RimAiLogCategory.Memory, "[Performance Monitor] Failed to export report.", exception: ex);
             }
         }
         

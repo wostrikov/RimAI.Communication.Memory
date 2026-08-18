@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Core.Diagnostics;
 using Ustas.RimAI.Core.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.Injection
@@ -54,7 +55,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[UnifiedMemoryInjector] ABM collected: {abmList.Count}/{maxABMRounds} for {pawn.LabelShort}");
+                RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] ABM collected: {abmList.Count}/{maxABMRounds} for {pawn.LabelShort}");
             }
             
             // Step 2: 计算剩余配额
@@ -68,7 +69,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
                 
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[UnifiedMemoryInjector] ELS/CLPA collected: {elsList.Count}/{remainingQuota} for {pawn.LabelShort}");
+                    RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] ELS/CLPA collected: {elsList.Count}/{remainingQuota} for {pawn.LabelShort}");
                 }
             }
             
@@ -84,61 +85,10 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[UnifiedMemoryInjector] Total memories: {allMemories.Count}/{maxTotalMemories} for {pawn.LabelShort}");
+                RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] Total memories: {allMemories.Count}/{maxTotalMemories} for {pawn.LabelShort}");
             }
             
             // Step 5: 统一编号格式化
-            return MemoryFormatter.Format(allMemories, startIndex: 1);
-        }
-        
-        /// <summary>
-        /// 注入记忆（带详细信息返回）
-        /// 用于调试和预览
-        /// </summary>
-        public static string InjectWithDetails(
-            Pawn pawn, 
-            string dialogueContext,
-            out int abmCount,
-            out int elsCount,
-            out int totalCount)
-        {
-            abmCount = 0;
-            elsCount = 0;
-            totalCount = 0;
-            
-            if (pawn == null)
-                return string.Empty;
-            
-            var settings = RimTalkMemoryPatchMod.Settings;
-            int maxABMRounds = settings?.maxABMInjectionRounds ?? 3;
-            int maxTotalMemories = settings?.maxInjectedMemories ?? 10;
-            
-            // 采集 ABM
-            var abmList = ABMCollector.Collect(pawn, maxABMRounds);
-            abmCount = abmList.Count;
-            
-            // 计算剩余配额
-            int remainingQuota = maxTotalMemories - abmList.Count;
-            
-            // 采集 ELS/CLPA
-            var elsList = new List<MemoryEntry>();
-            if (remainingQuota > 0)
-            {
-                elsList = ELSCollector.Collect(pawn, dialogueContext, remainingQuota);
-            }
-            elsCount = elsList.Count;
-            
-            // 合并
-            var allMemories = new List<MemoryEntry>();
-            allMemories.AddRange(abmList);
-            allMemories.AddRange(elsList);
-            totalCount = allMemories.Count;
-            
-            if (allMemories.Count == 0)
-            {
-                return string.Empty;
-            }
-            
             return MemoryFormatter.Format(allMemories, startIndex: 1);
         }
         

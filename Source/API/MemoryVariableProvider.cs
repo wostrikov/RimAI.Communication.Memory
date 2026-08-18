@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
-using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Injection;
+using Ustas.RimAI.Core.Diagnostics;
 using Ustas.RimAI.Core.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.API
@@ -62,7 +62,8 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting pawn memory for {pawn?.LabelShort}: {ex.Message}");
+                // RimAI.exception: TEMPORARY_EXPLICIT_EXCEPTION — Scriban fire-and-forget must not fail talk render.
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting pawn memory for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -114,7 +115,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             {
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[Memory] Using cached result for {pawn.LabelShort}");
+                    RimAiLog.Debug(RimAiLogCategory.Memory, $"[Memory] Using cached result for {pawn.LabelShort}");
                 }
                 return cachedResult;
             }
@@ -198,24 +199,17 @@ namespace Ustas.RimAI.Communication.Memory.API
         /// </summary>
         private static string GetCurrentDialogueContext()
         {
-            try
-            {
-                // 从 RimTalkMemoryAPI 获取缓存的上下文
-                var context = Patches.RimTalkMemoryAPI.GetLastRimTalkContext(out _, out int tick);
+            // From RimTalkMemoryAPI cache when the untyped fallback path runs.
+            var context = Patches.RimTalkMemoryAPI.GetLastRimTalkContext(out _, out int tick);
 
-                // 检查缓存是否过期（60 ticks 内有效）
-                int currentTick = Find.TickManager?.TicksGame ?? 0;
-                if (currentTick - tick > 60)
-                {
-                    return "";
-                }
-
-                return context ?? "";
-            }
-            catch
+            // Cache expires after 60 ticks.
+            int currentTick = Find.TickManager?.TicksGame ?? 0;
+            if (currentTick - tick > 60)
             {
                 return "";
             }
+
+            return context ?? "";
         }
 
         // 注意：固定记忆(isPinned)不需要单独处理
@@ -238,7 +232,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting ABM for {pawn?.LabelShort}: {ex.Message}");
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting ABM for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -264,7 +258,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting ELS for {pawn?.LabelShort}: {ex.Message}");
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting ELS for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -290,7 +284,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting CLPA for {pawn?.LabelShort}: {ex.Message}");
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting CLPA for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -359,7 +353,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting matchELS for {pawn?.LabelShort}: {ex.Message}");
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting matchELS for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -404,7 +398,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                Log.Warning($"[MemoryPatch] Error getting matchCLPA for {pawn?.LabelShort}: {ex.Message}");
+                RimAiLog.Warning(RimAiLogCategory.Memory, $"[MemoryPatch] Error getting matchCLPA for {pawn?.LabelShort}.", exception: ex);
                 return "";
             }
         }
@@ -457,3 +451,4 @@ namespace Ustas.RimAI.Communication.Memory.API
         }
     }
 }
+
