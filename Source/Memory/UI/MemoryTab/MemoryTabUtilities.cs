@@ -11,64 +11,66 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - Utilities 辅助方法部分
     /// 包含各种辅助方法和对话框
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabUtilities : MemoryTabCollaborator
     {
+        internal MemoryTabUtilities(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Helper Methods ====================
         
         /// <summary>
         /// ? v3.3.32: Get filtered memories with caching
         /// Returns cached list if available, otherwise rebuilds cache
         /// </summary>
-        private List<MemoryEntry> GetFilteredMemories()
+        internal List<MemoryEntry> GetFilteredMemories()
         {
-            if (filtersDirty || cachedFilteredMemories == null)
+            if (Owner.filtersDirty || Owner.cachedFilteredMemories == null)
             {
                 RebuildFilteredMemories();
-                filtersDirty = false;
+                Owner.filtersDirty = false;
             }
             
-            return cachedFilteredMemories;
+            return Owner.cachedFilteredMemories;
         }
         
         /// <summary>
         /// ? v3.3.32: Rebuild filtered memories cache
         /// This is the original GetFilteredMemories logic
         /// </summary>
-        private void RebuildFilteredMemories()
+        internal void RebuildFilteredMemories()
         {
-            if (currentMemoryComp == null)
+            if (Owner.currentMemoryComp == null)
             {
-                cachedFilteredMemories = new List<MemoryEntry>();
+                Owner.cachedFilteredMemories = new List<MemoryEntry>();
                 return;
             }
             
             var memories = new List<MemoryEntry>();
             
-            if (showABM)
+            if (Owner.showABM)
             {
-                memories.AddRange(currentMemoryComp.ActiveMemories.Where(m => filterType == null || m.Type == filterType.Value));
+                memories.AddRange(Owner.currentMemoryComp.ActiveMemories.Where(m => Owner.filterType == null || m.Type == Owner.filterType.Value));
             }
             
-            if (showSCM)
+            if (Owner.showSCM)
             {
-                memories.AddRange(currentMemoryComp.SituationalMemories.Where(m => filterType == null || m.Type == filterType.Value));
+                memories.AddRange(Owner.currentMemoryComp.SituationalMemories.Where(m => Owner.filterType == null || m.Type == Owner.filterType.Value));
             }
             
-            if (showELS)
+            if (Owner.showELS)
             {
-                memories.AddRange(currentMemoryComp.EventLogMemories.Where(m => filterType == null || m.Type == filterType.Value));
+                memories.AddRange(Owner.currentMemoryComp.EventLogMemories.Where(m => Owner.filterType == null || m.Type == Owner.filterType.Value));
             }
             
-            if (showCLPA)
+            if (Owner.showCLPA)
             {
-                memories.AddRange(currentMemoryComp.ArchiveMemories.Where(m => filterType == null || m.Type == filterType.Value));
+                memories.AddRange(Owner.currentMemoryComp.ArchiveMemories.Where(m => Owner.filterType == null || m.Type == Owner.filterType.Value));
             }
             
             // Sort by timestamp (newest first)
-            cachedFilteredMemories = memories.OrderByDescending(m => m.GameTick).ToList();
+            Owner.cachedFilteredMemories = memories.OrderByDescending(m => m.GameTick).ToList();
         }
         
-        private float GetCardHeight(MemoryLayer layer)
+        internal float GetCardHeight(MemoryLayer layer)
         {
             switch (layer)
             {
@@ -85,7 +87,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private int GetContentMaxLength(MemoryLayer layer)
+        internal int GetContentMaxLength(MemoryLayer layer)
         {
             switch (layer)
             {
@@ -102,7 +104,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private Color GetLayerColor(MemoryLayer layer)
+        internal Color GetLayerColor(MemoryLayer layer)
         {
             switch (layer)
             {
@@ -119,7 +121,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private string GetLayerLabel(MemoryLayer layer)
+        internal string GetLayerLabel(MemoryLayer layer)
         {
             switch (layer)
             {
@@ -136,7 +138,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private void DrawNoPawnSelected(Rect rect)
+        internal void DrawNoPawnSelected(Rect rect)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             Text.Font = GameFont.Medium;
@@ -145,14 +147,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Text.Font = GameFont.Small;
         }
         
-        private void DrawNoMemoryComponent(Rect rect)
+        internal void DrawNoMemoryComponent(Rect rect)
         {
             Text.Anchor = TextAnchor.MiddleCenter;
             Widgets.Label(rect, "RimTalk_NoMemoryComponent".Translate());
             Text.Anchor = TextAnchor.UpperLeft;
         }
         
-        private void OpenCommonKnowledgeDialog()
+        internal void OpenCommonKnowledgeDialog()
         {
             if (Current.Game == null)
             {
@@ -170,7 +172,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Find.WindowStack.Add(new Dialog_CommonKnowledge(memoryManager.CommonKnowledge));
         }
         
-        private void ShowOperationGuide()
+        internal void ShowOperationGuide()
         {
             string guide = "RimTalk_MindStream_GuideContent".Translate();
             

@@ -12,21 +12,23 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - Timeline 时间线绘制部分
     /// 包含时间线、记忆卡片绘制和拖拽选择
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabTimeline : MemoryTabCollaborator
     {
+        internal MemoryTabTimeline(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Timeline ====================
         
-        private void DrawTimeline(Rect rect)
+        internal void DrawTimeline(Rect rect)
         {
-            if (currentMemoryComp == null)
+            if (Owner.currentMemoryComp == null)
                 return;
             
             Widgets.DrawMenuSection(rect);
             Rect innerRect = rect.ContractedBy(5f);
             
             // 使用缓存的数据 (已在 DoWindowContents 中刷新)
-            var memories = cachedMemories;
-            float totalHeight = cachedTotalHeight;
+            var memories = Owner.cachedMemories;
+            float totalHeight = Owner.cachedTotalHeight;
             
             Rect viewRect = new Rect(0f, 0f, innerRect.width - 16f, totalHeight);
             
@@ -34,18 +36,18 @@ namespace Ustas.RimAI.Communication.Memory.UI
             HandleDragSelection(innerRect, viewRect);
             
             // Draw timeline
-            Widgets.BeginScrollView(innerRect, ref timelineScrollPosition, viewRect, true);
+            Widgets.BeginScrollView(innerRect, ref Owner.timelineScrollPosition, viewRect, true);
             
             // ? 高性能虚拟化：二分查找 + 提前退出
             // 添加缓冲区以确保滚动平滑
-            float minVisibleY = timelineScrollPosition.y - 200f;
-            float maxVisibleY = timelineScrollPosition.y + innerRect.height + 200f;
+            float minVisibleY = Owner.timelineScrollPosition.y - 200f;
+            float maxVisibleY = Owner.timelineScrollPosition.y + innerRect.height + 200f;
             
             int startIndex = 0;
-            if (cachedCardYPositions.Count > 0)
+            if (Owner.cachedCardYPositions.Count > 0)
             {
                 // 使用二分查找快速定位第一个可见元素
-                int binaryResult = cachedCardYPositions.BinarySearch(minVisibleY);
+                int binaryResult = Owner.cachedCardYPositions.BinarySearch(minVisibleY);
                 if (binaryResult >= 0)
                 {
                     startIndex = binaryResult;
@@ -60,7 +62,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             for (int i = startIndex; i < memories.Count; i++)
             {
-                float y = cachedCardYPositions[i];
+                float y = Owner.cachedCardYPositions[i];
                 
                 // 优化：一旦超出可见范围，立即停止绘制
                 if (y > maxVisibleY)
@@ -69,14 +71,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 }
                 
                 var memory = memories[i];
-                float height = cachedCardHeights[i];
+                float height = Owner.cachedCardHeights[i];
                 
                 Rect cardRect = new Rect(0f, y, viewRect.width, height);
                 DrawMemoryCard(cardRect, memory);
             }
             
             // ? 修复：在EndScrollView之前绘制选择框，使其在正确的坐标系中
-            if (isDragging)
+            if (Owner.isDragging)
             {
                 DrawSelectionBox();
             }
@@ -84,7 +86,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.EndScrollView();
             
             // Show filter status
-            if (filterType != null || !showABM || !showSCM || !showELS || !showCLPA)
+            if (Owner.filterType != null || !Owner.showABM || !Owner.showSCM || !Owner.showELS || !Owner.showCLPA)
             {
                 Rect statusRect = new Rect(innerRect.x, innerRect.yMax - 25f, innerRect.width, 20f);
                 Text.Font = GameFont.Tiny;
@@ -95,29 +97,29 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private void CheckAndRefreshCache()
+        internal void CheckAndRefreshCache()
         {
-            if (currentMemoryComp == null) return;
+            if (Owner.currentMemoryComp == null) return;
             
             // 获取当前状态
-            int currentCount = currentMemoryComp.ActiveMemories.Count + 
-                             currentMemoryComp.SituationalMemories.Count + 
-                             currentMemoryComp.EventLogMemories.Count + 
-                             currentMemoryComp.ArchiveMemories.Count;
+            int currentCount = Owner.currentMemoryComp.ActiveMemories.Count + 
+                             Owner.currentMemoryComp.SituationalMemories.Count + 
+                             Owner.currentMemoryComp.EventLogMemories.Count + 
+                             Owner.currentMemoryComp.ArchiveMemories.Count;
             
             int currentTick = Find.TickManager.TicksGame;
             
             // 检查是否需要刷新
             bool needRefresh = false;
             
-            if (selectedPawn != lastSelectedPawn) needRefresh = true;
-            else if (currentCount != lastMemoryCount) needRefresh = true;
-            else if (showABM != lastShowABM) needRefresh = true;
-            else if (showSCM != lastShowSCM) needRefresh = true;
-            else if (showELS != lastShowELS) needRefresh = true;
-            else if (showCLPA != lastShowCLPA) needRefresh = true;
-            else if (filterType != lastFilterType) needRefresh = true;
-            else if (currentTick - lastRefreshTick > 60) needRefresh = true; // 每秒强制刷新一次以防内容变化
+            if (Owner.selectedPawn != Owner.lastSelectedPawn) needRefresh = true;
+            else if (currentCount != Owner.lastMemoryCount) needRefresh = true;
+            else if (Owner.showABM != Owner.lastShowABM) needRefresh = true;
+            else if (Owner.showSCM != Owner.lastShowSCM) needRefresh = true;
+            else if (Owner.showELS != Owner.lastShowELS) needRefresh = true;
+            else if (Owner.showCLPA != Owner.lastShowCLPA) needRefresh = true;
+            else if (Owner.filterType != Owner.lastFilterType) needRefresh = true;
+            else if (currentTick - Owner.lastRefreshTick > 60) needRefresh = true; // 每秒强制刷新一次以防内容变化
             
             if (needRefresh)
             {
@@ -125,39 +127,39 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private void RefreshCache(int currentCount, int currentTick)
+        internal void RefreshCache(int currentCount, int currentTick)
         {
             // 更新状态记录
-            lastSelectedPawn = selectedPawn;
-            lastMemoryCount = currentCount;
-            lastShowABM = showABM;
-            lastShowSCM = showSCM;
-            lastShowELS = showELS;
-            lastShowCLPA = showCLPA;
-            lastFilterType = filterType;
-            lastRefreshTick = currentTick;
+            Owner.lastSelectedPawn = Owner.selectedPawn;
+            Owner.lastMemoryCount = currentCount;
+            Owner.lastShowABM = Owner.showABM;
+            Owner.lastShowSCM = Owner.showSCM;
+            Owner.lastShowELS = Owner.showELS;
+            Owner.lastShowCLPA = Owner.showCLPA;
+            Owner.lastFilterType = Owner.filterType;
+            Owner.lastRefreshTick = currentTick;
             
             // 重新获取过滤后的列表
-            cachedMemories = GetFilteredMemories();
+            Owner.cachedMemories = Parts.Utilities.GetFilteredMemories();
             
             // 重新计算高度和位置
-            cachedCardHeights.Clear();
-            cachedCardYPositions.Clear();
-            cachedTotalHeight = 0f;
+            Owner.cachedCardHeights.Clear();
+            Owner.cachedCardYPositions.Clear();
+            Owner.cachedTotalHeight = 0f;
             
-            foreach (var memory in cachedMemories)
+            foreach (var memory in Owner.cachedMemories)
             {
-                cachedCardYPositions.Add(cachedTotalHeight);
-                float height = GetCardHeight(memory.Layer);
-                cachedCardHeights.Add(height);
-                cachedTotalHeight += height + CARD_SPACING;
+                Owner.cachedCardYPositions.Add(Owner.cachedTotalHeight);
+                float height = Parts.Utilities.GetCardHeight(memory.Layer);
+                Owner.cachedCardHeights.Add(height);
+                Owner.cachedTotalHeight += height + MainTabWindow_Memory.CARD_SPACING;
             }
         }
         
-        private void DrawMemoryCard(Rect rect, MemoryEntry memory)
+        internal void DrawMemoryCard(Rect rect, MemoryEntry memory)
         {
-            bool isSelected = selectedMemories.Contains(memory);
-            Color borderColor = GetLayerColor(memory.Layer);
+            bool isSelected = Owner.selectedMemories.Contains(memory);
+            Color borderColor = Parts.Utilities.GetLayerColor(memory.Layer);
             
             // Background
             if (memory.IsPinned)
@@ -186,7 +188,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             
             // Hover highlight
-            if (Mouse.IsOver(rect) && !isDragging)
+            if (Mouse.IsOver(rect) && !Owner.isDragging)
             {
                 Widgets.DrawLightHighlight(rect);
             }
@@ -210,9 +212,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (Widgets.ButtonImage(pinButtonRect, memory.IsPinned ? TexButton.ReorderUp : TexButton.ReorderDown))
             {
                 memory.IsPinned = !memory.IsPinned;
-                if (currentMemoryComp != null)
+                if (Owner.currentMemoryComp != null)
                 {
-                    currentMemoryComp.PinMemory(memory.Id, memory.IsPinned);
+                    Owner.currentMemoryComp.PinMemory(memory.Id, memory.IsPinned);
                 }
                 // ? v3.3.32: No need to mark dirty for pin/unpin as it doesn't affect filtering
                 Event.current.Use();
@@ -228,12 +230,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             if (Widgets.ButtonImage(editButtonRect, TexButton.Rename))
             {
-                if (currentMemoryComp != null)
+                if (Owner.currentMemoryComp != null)
                 {
-                    Find.WindowStack.Add(new Dialog_EditMemory(memory, currentMemoryComp));
+                    Find.WindowStack.Add(new Dialog_EditMemory(memory, Owner.currentMemoryComp));
                     // ? v3.3.32: Mark dirty when opening edit dialog
                     // User might change layer or type which affects filtering
-                    filtersDirty = true;
+                    Owner.filtersDirty = true;
                 }
                 Event.current.Use();
             }
@@ -247,7 +249,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             // Header
             Text.Font = GameFont.Tiny;
-            string layerLabel = GetLayerLabel(memory.Layer);
+            string layerLabel = Parts.Utilities.GetLayerLabel(memory.Layer);
             string typeLabel = memory.Type.ToString();
             string timeLabel = memory.AgeString;
             
@@ -268,7 +270,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Rect textRect = new Rect(contentRect.x, contentY, contentRect.width, contentHeight);
             
             string displayText = memory.DisplayContent;
-            int maxLength = GetContentMaxLength(memory.Layer);
+            int maxLength = Parts.Utilities.GetContentMaxLength(memory.Layer);
             if (displayText.Length > maxLength)
             {
                 displayText = displayText.Substring(0, maxLength) + "...";
@@ -297,7 +299,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Text.Font = GameFont.Small;
         }
         
-        private void HandleMemoryClick(MemoryEntry memory)
+        internal void HandleMemoryClick(MemoryEntry memory)
         {
             bool ctrl = Event.current.control;
             bool shift = Event.current.shift;
@@ -305,18 +307,18 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (ctrl)
             {
                 // Toggle selection
-                if (selectedMemories.Contains(memory))
-                    selectedMemories.Remove(memory);
+                if (Owner.selectedMemories.Contains(memory))
+                    Owner.selectedMemories.Remove(memory);
                 else
-                    selectedMemories.Add(memory);
+                    Owner.selectedMemories.Add(memory);
                     
-                lastSelectedMemory = memory;
+                Owner.lastSelectedMemory = memory;
             }
-            else if (shift && lastSelectedMemory != null)
+            else if (shift && Owner.lastSelectedMemory != null)
             {
                 // Range selection
-                var filteredMemories = GetFilteredMemories();
-                int startIndex = filteredMemories.IndexOf(lastSelectedMemory);
+                var filteredMemories = Parts.Utilities.GetFilteredMemories();
+                int startIndex = filteredMemories.IndexOf(Owner.lastSelectedMemory);
                 int endIndex = filteredMemories.IndexOf(memory);
                 
                 if (startIndex >= 0 && endIndex >= 0)
@@ -326,80 +328,80 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     
                     for (int i = min; i <= max; i++)
                     {
-                        selectedMemories.Add(filteredMemories[i]);
+                        Owner.selectedMemories.Add(filteredMemories[i]);
                     }
                 }
                 
-                lastSelectedMemory = memory;
+                Owner.lastSelectedMemory = memory;
             }
             else
             {
                 // Single selection
-                selectedMemories.Clear();
-                selectedMemories.Add(memory);
-                lastSelectedMemory = memory;
+                Owner.selectedMemories.Clear();
+                Owner.selectedMemories.Add(memory);
+                Owner.lastSelectedMemory = memory;
             }
         }
         
-        private void HandleDragSelection(Rect listRect, Rect viewRect)
+        internal void HandleDragSelection(Rect listRect, Rect viewRect)
         {
             Event e = Event.current;
             
             // 左键按下：记录起始位置
             if (e.type == EventType.MouseDown && e.button == 0 && listRect.Contains(e.mousePosition))
             {
-                isMouseDown = true;
-                mouseDownScreenPos = e.mousePosition;
-                dragStartPos = e.mousePosition - listRect.position;
-                dragCurrentPos = dragStartPos;
-                // ⭐ 不 Use 事件，不设 isDragging，等超过阈值再设
+                Owner.isMouseDown = true;
+                Owner.mouseDownScreenPos = e.mousePosition;
+                Owner.dragStartPos = e.mousePosition - listRect.position;
+                Owner.dragCurrentPos = Owner.dragStartPos;
+                // ⭐ 不 Use 事件，不设 Owner.isDragging，等超过阈值再设
             }
             
             // 鼠标移动中：判断是否超过拖拽阈值
-            if (isMouseDown && e.type == EventType.MouseDrag && e.button == 0)
+            if (Owner.isMouseDown && e.type == EventType.MouseDrag && e.button == 0)
             {
-                float distance = Vector2.Distance(mouseDownScreenPos, e.mousePosition);
+                float distance = Vector2.Distance(Owner.mouseDownScreenPos, e.mousePosition);
                 
-                if (!isDragging && distance >= DRAG_THRESHOLD)
+                if (!Owner.isDragging && distance >= MainTabWindow_Memory.DRAG_THRESHOLD)
                 {
                     // 超过阈值，正式进入框选模式
-                    isDragging = true;
+                    Owner.isDragging = true;
                 }
                 
-                if (isDragging)
+                if (Owner.isDragging)
                 {
                     // ⭐ 在viewport坐标系中
-                    dragCurrentPos = e.mousePosition - listRect.position;
+                    Owner.dragCurrentPos = e.mousePosition - listRect.position;
                     
                     // 转换为content坐标（加上scroll offset）
                     Rect selectionBoxViewport = GetSelectionBox();
                     Rect selectionBoxContent = new Rect(
                         selectionBoxViewport.x, 
-                        selectionBoxViewport.y + timelineScrollPosition.y,
+                        selectionBoxViewport.y + Owner.timelineScrollPosition.y,
                         selectionBoxViewport.width,
                         selectionBoxViewport.height
                     );
                     
-                    var filteredMemories = GetFilteredMemories();
+                    var filteredMemories = Parts.Utilities.GetFilteredMemories();
                     
                     bool ctrl = Event.current.control;
                     if (!ctrl)
                     {
-                        selectedMemories.Clear();
+                        Owner.selectedMemories.Clear();
                     }
                     
                     float y = 0f;
                     foreach (var memory in filteredMemories)
                     {
-                        float height = GetCardHeight(memory.Layer);
+                        float height = Parts.Utilities.GetCardHeight(memory.Layer);
                         Rect cardRect = new Rect(0f, y, viewRect.width, height);
                         
                         if (selectionBoxContent.Overlaps(cardRect))
                         {
-                            selectedMemories.Add(memory);
+                            Owner.selectedMemories.Add(memory);
                         }
                         
-                        y += height + CARD_SPACING;
+                        y += height + MainTabWindow_Memory.CARD_SPACING;
                     }
                     
                     e.Use();
@@ -407,19 +409,19 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        private void DrawSelectionBox()
+        internal void DrawSelectionBox()
         {
             Rect selectionBox = GetSelectionBox();
             Widgets.DrawBox(selectionBox);
             Widgets.DrawBoxSolid(selectionBox, new Color(1f, 0.8f, 0.3f, 0.2f));
         }
         
-        private Rect GetSelectionBox()
+        internal Rect GetSelectionBox()
         {
-            float minX = Mathf.Min(dragStartPos.x, dragCurrentPos.x);
-            float minY = Mathf.Min(dragStartPos.y, dragCurrentPos.y);
-            float maxX = Mathf.Max(dragStartPos.x, dragCurrentPos.x);
-            float maxY = Mathf.Max(dragStartPos.y, dragCurrentPos.y);
+            float minX = Mathf.Min(Owner.dragStartPos.x, Owner.dragCurrentPos.x);
+            float minY = Mathf.Min(Owner.dragStartPos.y, Owner.dragCurrentPos.y);
+            float maxX = Mathf.Max(Owner.dragStartPos.x, Owner.dragCurrentPos.x);
+            float maxY = Mathf.Max(Owner.dragStartPos.y, Owner.dragCurrentPos.y);
             
             return new Rect(minX, minY, maxX - minX, maxY - minY);
         }

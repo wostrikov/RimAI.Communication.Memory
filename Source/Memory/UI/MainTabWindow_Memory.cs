@@ -8,79 +8,54 @@ using System;
 namespace Ustas.RimAI.Communication.Memory.UI
 {
     /// <summary>
-    /// Mind Stream Timeline - Multi-Select Memory Cards
-    /// ★ v3.3.19: 完全重构 - 时间线卡片布局 + 拖拽多选 + 批量操作
-    /// ★ v3.3.32: 性能优化 - GetFilteredMemories缓存机制
-    /// ★ v3.3.40: 代码重构 - 拆分为多个 partial class 文件
-    /// 
-    /// 文件结构：
-    /// - MainTabWindow_Memory.cs (主文件 - 字段定义和入口)
-    /// - MainTabWindow_Memory_TopBar.cs (TopBar 绘制)
-    /// - MainTabWindow_Memory_Controls.cs (控制面板)
-    /// - MainTabWindow_Memory_Timeline.cs (时间线绘制)
-    /// - MainTabWindow_Memory_Actions.cs (批量操作)
-    /// - MainTabWindow_Memory_ImportExport.cs (导入导出)
-    /// - MainTabWindow_Memory_Utilities.cs (辅助方法)
-    /// - MainTabWindow_Memory_Helpers.cs (聚合逻辑)
+    /// Mind Stream Timeline window shell. Drawing and actions live on MemoryTab collaborators.
     /// </summary>
-    public partial class MainTabWindow_Memory : MainTabWindow
+    public class MainTabWindow_Memory : MainTabWindow
     {
-        // ==================== Data & State ====================
-        private Pawn selectedPawn = null;
-        private FourLayerMemoryComp currentMemoryComp = null;
-        
-        // ? 新增：显示所有类人生物选项
-        private bool showAllHumanlikes = false;
-        
-        // Multi-select support
-        private HashSet<MemoryEntry> selectedMemories = new HashSet<MemoryEntry>();
-        private MemoryEntry lastSelectedMemory = null;
-        
-        // Drag selection
-        private bool isDragging = false;
-        private bool isMouseDown = false;           // ⭐ 左键已按下但尚未判定为拖拽
-        private Vector2 dragStartPos = Vector2.zero;
-        private Vector2 dragCurrentPos = Vector2.zero;
-        private Vector2 mouseDownScreenPos = Vector2.zero; // ⭐ 按下时的屏幕坐标（用于阈值判定）
-        private const float DRAG_THRESHOLD = 5f;    // ⭐ 拖拽判定阈值（像素）
-        
-        // UI State
-        private Vector2 timelineScrollPosition = Vector2.zero;
-        private MemoryType? filterType = null;
-        
-        // Layer filters
-        private bool showABM = true;
-        private bool showSCM = true;
-        private bool showELS = true;
-        private bool showCLPA = true;
-        
-        // ? v3.3.32: Filtered memories cache
-        private List<MemoryEntry> cachedFilteredMemories;
-        private bool filtersDirty = true;
-        
-        // Layout constants
-        private const float TOP_BAR_HEIGHT = 50f;
-        private const float CONTROL_PANEL_WIDTH = 220f;
-        private const float SPACING = 10f;
-        private const float CARD_WIDTH_FULL = 600f;
-        private const float CARD_SPACING = 8f;
-        
-        // ? 性能优化：缓存数据
-        private List<MemoryEntry> cachedMemories = new List<MemoryEntry>();
-        private List<float> cachedCardHeights = new List<float>();
-        private List<float> cachedCardYPositions = new List<float>();
-        private float cachedTotalHeight = 0f;
-        
-        // 脏检查状态 (用于检测是否需要刷新缓存)
-        private int lastMemoryCount = -1;
-        private bool lastShowABM;
-        private bool lastShowSCM;
-        private bool lastShowELS;
-        private bool lastShowCLPA;
-        private MemoryType? lastFilterType;
-        private Pawn lastSelectedPawn;
-        private int lastRefreshTick = -1;
-        
+        internal MemoryTabParts Parts;
+
+        internal Pawn selectedPawn = null;
+        internal FourLayerMemoryComp currentMemoryComp = null;
+        internal bool showAllHumanlikes = false;
+        internal HashSet<MemoryEntry> selectedMemories = new HashSet<MemoryEntry>();
+        internal MemoryEntry lastSelectedMemory = null;
+        internal bool isDragging = false;
+        internal bool isMouseDown = false;
+        internal Vector2 dragStartPos = Vector2.zero;
+        internal Vector2 dragCurrentPos = Vector2.zero;
+        internal Vector2 mouseDownScreenPos = Vector2.zero;
+        internal const float DRAG_THRESHOLD = 5f;
+        internal Vector2 timelineScrollPosition = Vector2.zero;
+        internal MemoryType? filterType = null;
+        internal bool showABM = true;
+        internal bool showSCM = true;
+        internal bool showELS = true;
+        internal bool showCLPA = true;
+        internal List<MemoryEntry> cachedFilteredMemories;
+        internal bool filtersDirty = true;
+        internal const float TOP_BAR_HEIGHT = 50f;
+        internal const float CONTROL_PANEL_WIDTH = 220f;
+        internal const float SPACING = 10f;
+        internal const float CARD_WIDTH_FULL = 600f;
+        internal const float CARD_SPACING = 8f;
+        internal List<MemoryEntry> cachedMemories = new List<MemoryEntry>();
+        internal List<float> cachedCardHeights = new List<float>();
+        internal List<float> cachedCardYPositions = new List<float>();
+        internal float cachedTotalHeight = 0f;
+        internal int lastMemoryCount = -1;
+        internal bool lastShowABM;
+        internal bool lastShowSCM;
+        internal bool lastShowELS;
+        internal bool lastShowCLPA;
+        internal MemoryType? lastFilterType;
+        internal Pawn lastSelectedPawn;
+        internal int lastRefreshTick = -1;
+
+        public MainTabWindow_Memory()
+        {
+            Parts = new MemoryTabParts(this);
+        }
+
         public override Vector2 RequestedTabSize => new Vector2(1200f, 700f);
 
         /// <summary>
@@ -99,7 +74,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             // Top Bar
             Rect topBarRect = new Rect(0f, 0f, inRect.width, TOP_BAR_HEIGHT);
-            DrawTopBar(topBarRect);
+            Parts.TopBar.DrawTopBar(topBarRect);
             
             // Content area
             float contentY = TOP_BAR_HEIGHT + SPACING;
@@ -107,31 +82,31 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             if (selectedPawn == null)
             {
-                DrawNoPawnSelected(new Rect(0f, contentY, inRect.width, contentHeight));
+                Parts.Utilities.DrawNoPawnSelected(new Rect(0f, contentY, inRect.width, contentHeight));
                 return;
             }
             
             var memoryComp = selectedPawn.TryGetComp<FourLayerMemoryComp>();
             if (memoryComp == null)
             {
-                DrawNoMemoryComponent(new Rect(0f, contentY, inRect.width, contentHeight));
+                Parts.Utilities.DrawNoMemoryComponent(new Rect(0f, contentY, inRect.width, contentHeight));
                 return;
             }
             
             currentMemoryComp = memoryComp;
             
             // ? 在绘制任何子组件之前刷新缓存
-            CheckAndRefreshCache();
+            Parts.Timeline.CheckAndRefreshCache();
             
             // Left Control Panel
             Rect controlPanelRect = new Rect(0f, contentY, CONTROL_PANEL_WIDTH, contentHeight);
-            DrawControlPanel(controlPanelRect);
+            Parts.Controls.DrawControlPanel(controlPanelRect);
             
             // Right Timeline
             float timelineX = CONTROL_PANEL_WIDTH + SPACING;
             float timelineWidth = inRect.width - timelineX;
             Rect timelineRect = new Rect(timelineX, contentY, timelineWidth, contentHeight);
-            DrawTimeline(timelineRect);
+            Parts.Timeline.DrawTimeline(timelineRect);
             
             // Handle drag end / single click
             if (Event.current.type == EventType.MouseUp && Event.current.button == 0)
@@ -164,7 +139,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         
                         if (clickedMemory != null)
                         {
-                            HandleMemoryClick(clickedMemory);
+                            Parts.Timeline.HandleMemoryClick(clickedMemory);
                         }
                         else
                         {

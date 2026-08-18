@@ -12,6 +12,10 @@ namespace Ustas.RimAI.Communication.Memory
 {
     public class RimTalkMemoryPatchSettings : ModSettings
     {
+        internal RimTalkMemoryPatchSettingsParts Parts;
+
+        public RimTalkMemoryPatchSettings() { Parts = new RimTalkMemoryPatchSettingsParts(this); }
+
         // ⭐ 提示词规范化规则
         /// <summary>
         /// 替换规则定义
@@ -149,16 +153,16 @@ namespace Ustas.RimAI.Communication.Memory
         public List<string> knowledgeMatchingSources = new List<string> { "prompt", "fullname", "role", "age", "gender", "backstory", "traits", "skills", "relations" };
 
         // UI折叠状态
-        private static bool expandDynamicInjection = true;
-        private static bool expandMemoryCapacity = false;
-        private static bool expandDecayRates = false;
-        private static bool expandSummarization = false;
-        private static bool expandAIConfig = true;
-        private static bool expandMemoryTypes = false;
-        private static bool expandVectorEnhancement = true; // ⭐ 恢复向量增强折叠状态
-        private static bool expandExperimentalFeatures = true;
+        internal static bool expandDynamicInjection = true;
+        internal static bool expandMemoryCapacity = false;
+        internal static bool expandDecayRates = false;
+        internal static bool expandSummarization = false;
+        internal static bool expandAIConfig = true;
+        internal static bool expandMemoryTypes = false;
+        internal static bool expandVectorEnhancement = true; // ⭐ 恢复向量增强折叠状态
+        internal static bool expandExperimentalFeatures = true;
         
-        private static Vector2 scrollPosition = Vector2.zero;
+        internal static Vector2 scrollPosition = Vector2.zero;
 
         public override void ExposeData()
         {
@@ -284,11 +288,74 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        public void DoSettingsWindowContents(Rect inRect)
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        
+        /// <summary>
+        /// 验证 AI 配置
+        /// </summary>
+        
+
+        
+
+        
+        
+        
+
+        
+        
+        /// <summary>
+        /// ✦ 绘制提示词规范化设置 UI
+        /// </summary>
+    
+        #region Cluster forwards
+        public void DoSettingsWindowContents(Rect inRect) => Parts.MainUi.DoSettingsWindowContents(inRect);
+        internal void DrawPresetConfiguration(Listing_Standard listing) => Parts.MainUi.DrawPresetConfiguration(listing);
+        internal void DrawPresetCard(Rect rect, string title, int memoryCount, int knowledgeCount, int tokenEstimate) => Parts.MainUi.DrawPresetCard(rect, title, memoryCount, knowledgeCount, tokenEstimate);
+        internal void DrawQuickActionButtons(Listing_Standard listing) => Parts.MainUi.DrawQuickActionButtons(listing);
+        internal void DrawActionButton(Rect rect, string label, string tip, System.Action onClick) => Parts.MainUi.DrawActionButton(rect, label, tip, onClick);
+        internal void DrawAIConfigSettings(Listing_Standard listing) => Parts.MainUi.DrawAIConfigSettings(listing);
+        internal void ValidateAIConfig() => Parts.MainUi.ValidateAIConfig();
+        internal void OpenCommonKnowledgeDialog() => Parts.MainUi.OpenCommonKnowledgeDialog();
+        internal void DrawCollapsibleSection(Listing_Standard listing, string title, ref bool expanded, System.Action drawContent) => Parts.AdvancedUi.DrawCollapsibleSection(listing, title, ref expanded, drawContent);
+        internal void DrawDynamicInjectionSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawDynamicInjectionSettings(listing);
+        internal void DrawMemoryCapacitySettings(Listing_Standard listing) => Parts.AdvancedUi.DrawMemoryCapacitySettings(listing);
+        internal void DrawDecaySettings(Listing_Standard listing) => Parts.AdvancedUi.DrawDecaySettings(listing);
+        internal void DrawSummarizationSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawSummarizationSettings(listing);
+        internal void DrawMemoryTypesSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawMemoryTypesSettings(listing);
+        internal void DrawExperimentalFeaturesSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawExperimentalFeaturesSettings(listing);
+        internal void DrawVectorEnhancementSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawVectorEnhancementSettings(listing);
+        internal void DrawPromptNormalizationSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawPromptNormalizationSettings(listing);
+        #endregion
+}
+    internal sealed class RimTalkSettingsMainUi : RimTalkMemoryPatchSettingsCollaborator
+    {
+        internal RimTalkSettingsMainUi(RimTalkMemoryPatchSettings owner) : base(owner) { }
+
+public void DoSettingsWindowContents(Rect inRect)
         {
             Listing_Standard listingStandard = new Listing_Standard();
             Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 1400f);
-            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect);
+            Widgets.BeginScrollView(inRect, ref RimTalkMemoryPatchSettings.scrollPosition, viewRect);
             listingStandard.Begin(viewRect);
 
             DrawPresetConfiguration(listingStandard);
@@ -305,14 +372,14 @@ namespace Ustas.RimAI.Communication.Memory
             Rect advancedButtonRect = listingStandard.GetRect(40f);
             if (Widgets.ButtonText(advancedButtonRect, "RimTalk_Settings_AdvancedSettings".Translate()))
             {
-                Find.WindowStack.Add(new AdvancedSettingsWindow(this));
+                Find.WindowStack.Add(new AdvancedSettingsWindow(Owner));
             }
 
             listingStandard.End();
             Widgets.EndScrollView();
         }
 
-        private void DrawPresetConfiguration(Listing_Standard listing)
+internal void DrawPresetConfiguration(Listing_Standard listing)
         {
             Text.Font = GameFont.Medium;
             listing.Label("RimTalk_Settings_PresetConfig".Translate());
@@ -334,7 +401,7 @@ namespace Ustas.RimAI.Communication.Memory
             listing.GapLine();
         }
 
-        private void DrawPresetCard(Rect rect, string title, int memoryCount, int knowledgeCount, int tokenEstimate)
+internal void DrawPresetCard(Rect rect, string title, int memoryCount, int knowledgeCount, int tokenEstimate)
         {
             Widgets.DrawBoxSolid(rect, new Color(0.18f, 0.18f, 0.18f, 0.6f));
             Widgets.DrawHighlightIfMouseover(rect);
@@ -356,7 +423,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        private void DrawQuickActionButtons(Listing_Standard listing)
+internal void DrawQuickActionButtons(Listing_Standard listing)
         {
             Text.Font = GameFont.Medium;
             listing.Label("RimTalk_Settings_FeatureEntries".Translate());
@@ -376,7 +443,7 @@ namespace Ustas.RimAI.Communication.Memory
             // ⭐ 恢复"提示词替换"按钮
             DrawActionButton(new Rect(rowRect.x + buttonWidth + spacing, rowRect.y, buttonWidth, buttonHeight), "RimTalk_Settings_PromptReplacement".Translate(), "RimTalk_Settings_PromptReplacementTip".Translate(), delegate
             {
-                Find.WindowStack.Add(new PromptNormalizationWindow(this));
+                Find.WindowStack.Add(new PromptNormalizationWindow(Owner));
             });
 
             DrawActionButton(new Rect(rowRect.x + 2f * (buttonWidth + spacing), rowRect.y, buttonWidth, buttonHeight), "RimTalk_Settings_InjectionPreviewer".Translate(), "RimTalk_Settings_InjectionPreviewerTip".Translate(), delegate
@@ -385,7 +452,7 @@ namespace Ustas.RimAI.Communication.Memory
             });
         }
 
-        private void DrawActionButton(Rect rect, string label, string tip, System.Action onClick)
+internal void DrawActionButton(Rect rect, string label, string tip, System.Action onClick)
         {
             if (Widgets.ButtonText(rect, label))
             {
@@ -394,155 +461,9 @@ namespace Ustas.RimAI.Communication.Memory
             TooltipHandler.TipRegion(rect, tip);
         }
 
-        private void DrawCollapsibleSection(Listing_Standard listing, string title, ref bool expanded, System.Action drawContent)
+internal void DrawAIConfigSettings(Listing_Standard listing)
         {
-            Rect headerRect = listing.GetRect(30f);
-            Widgets.DrawBoxSolid(headerRect, new Color(0.2f, 0.2f, 0.2f, 0.5f));
-            
-            Text.Font = GameFont.Medium;
-            Rect labelRect = new Rect(headerRect.x + 30f, headerRect.y + 3f, headerRect.width - 30f, headerRect.height);
-            Widgets.Label(labelRect, title);
-            Text.Font = GameFont.Small;
-            
-            Rect iconRect = new Rect(headerRect.x + 5f, headerRect.y + 7f, 20f, 20f);
-            if (Widgets.ButtonImage(iconRect, expanded ? TexButton.Collapse : TexButton.Reveal))
-            {
-                expanded = !expanded;
-            }
-            
-            listing.Gap(3f);
-            
-            if (expanded)
-            {
-                listing.Gap(3f);
-                drawContent?.Invoke();
-                listing.Gap(6f);
-            }
-            
-            listing.GapLine();
-        }
-
-        private void DrawDynamicInjectionSettings(Listing_Standard listing)
-        {
-            listing.CheckboxLabeled("RimTalk_Settings_EnableDynamicInjection".Translate(), ref useDynamicInjection);
-            
-            if (useDynamicInjection)
-            {
-                GUI.color = new Color(0.8f, 1f, 0.8f);
-                listing.Label("  " + "RimTalk_Settings_DynamicInjectionDesc".Translate());
-                GUI.color = Color.white;
-                
-                listing.Gap();
-                
-                // ⭐ v4.0: ABM 注入轮数设置
-                listing.Label("RimTalk_Settings_MaxABMInjectionRoundsLabel".Translate(maxABMInjectionRounds));
-                maxABMInjectionRounds = (int)listing.Slider(maxABMInjectionRounds, 1, 10);
-                GUI.color = Color.gray;
-                listing.Label("  " + "RimTalk_Settings_MaxABMInjectionRoundsDesc".Translate());
-                GUI.color = Color.white;
-                
-                listing.Gap();
-                
-                // ⭐ 是否注入玩家发言
-                listing.CheckboxLabeled("RimTalk_Settings_IsPlayerDialogueInject".Translate(), ref IsPlayerDialogueInject);
-                GUI.color = Color.gray;
-                listing.Label("  " + "RimTalk_Settings_IsPlayerDialogueInjectDesc".Translate());
-                GUI.color = Color.white;
-                
-                listing.Gap();
-
-                // ⭐ 是否启用轮次记忆
-                // 防呆设计：拨动开关时会自动调整ABM注入轮数
-                bool oldIsActive = IsRoundMemoryActive;
-                listing.CheckboxLabeled("RimTalk_Settings_IsRoundMemoryActive".Translate(), ref IsRoundMemoryActive);
-                GUI.color = Color.gray;
-                listing.Label("  " + "RimTalk_Settings_IsRoundMemoryActiveDesc".Translate());
-                GUI.color = Color.white;
-                if (oldIsActive != IsRoundMemoryActive)
-                {
-                    // 如果开关状态发生了改变，即时改变ABM注入轮数
-                    if (IsRoundMemoryActive)
-                    {
-                        // 开关被【打开】时，设为默认值3
-                        maxABMInjectionRounds = 3;
-                    }
-                    else
-                    {
-                        // 开关被【关闭】时，设为0
-                        maxABMInjectionRounds = 0;
-                    }
-                }
-
-                listing.Gap();
-
-                listing.Label("RimTalk_Settings_MaxInjectedMemoriesLabel".Translate(maxInjectedMemories));
-                maxInjectedMemories = (int)listing.Slider(maxInjectedMemories, 1, 20);
-                
-                listing.Label("RimTalk_Settings_MaxInjectedKnowledgeLabel".Translate(maxInjectedKnowledge));
-                
-                // 滑条和输入框组合
-                Rect knowledgeSliderRect = listing.GetRect(28f);
-                Rect sliderRect = new Rect(knowledgeSliderRect.x, knowledgeSliderRect.y, knowledgeSliderRect.width - 70f, 28f);
-                Rect inputRect = new Rect(knowledgeSliderRect.xMax - 60f, knowledgeSliderRect.y, 60f, 24f);
-                
-                // 滑条
-                maxInjectedKnowledge = (int)Widgets.HorizontalSlider(sliderRect, maxInjectedKnowledge, 0f, 100f, true);
-                
-                // 输入框
-                string knowledgeInput = maxInjectedKnowledge.ToString();
-                knowledgeInput = Widgets.TextField(inputRect, knowledgeInput);
-                if (int.TryParse(knowledgeInput, out int parsedKnowledge))
-                {
-                    maxInjectedKnowledge = Mathf.Clamp(parsedKnowledge, 0, 100);
-                }
-                
-                listing.Gap();
-                
-                listing.Label("RimTalk_Settings_MemoryScoreThresholdLabel".Translate(memoryScoreThreshold.ToString("P0")));
-                memoryScoreThreshold = listing.Slider(memoryScoreThreshold, 0f, 1f);
-                
-                listing.Label("RimTalk_Settings_KnowledgeScoreThresholdLabel".Translate(knowledgeScoreThreshold.ToString("P0")));
-                knowledgeScoreThreshold = listing.Slider(knowledgeScoreThreshold, 0f, 1f);
-            }
-        }
-
-        private void DrawMemoryCapacitySettings(Listing_Standard listing)
-        {
-            listing.Label("RimTalk_Settings_SCMCapacityLabel".Translate(maxSituationalMemories));
-            maxSituationalMemories = (int)listing.Slider(maxSituationalMemories, 10, 50);
-            
-            listing.Label("RimTalk_Settings_ELSCapacityLabel".Translate(maxEventLogMemories));
-            maxEventLogMemories = (int)listing.Slider(maxEventLogMemories, 20, 100);
-        }
-
-        private void DrawDecaySettings(Listing_Standard listing)
-        {
-            listing.Label("RimTalk_Settings_SCMDecayLabel".Translate(scmDecayRate.ToString("P1")));
-            scmDecayRate = listing.Slider(scmDecayRate, 0.001f, 0.05f);
-            
-            listing.Label("RimTalk_Settings_ELSDecayLabel".Translate(elsDecayRate.ToString("P1")));
-            elsDecayRate = listing.Slider(elsDecayRate, 0.0005f, 0.02f);
-            
-            listing.Label("RimTalk_Settings_CLPADecayLabel".Translate(clpaDecayRate.ToString("P1")));
-            clpaDecayRate = listing.Slider(clpaDecayRate, 0.0001f, 0.01f);
-        }
-
-        private void DrawSummarizationSettings(Listing_Standard listing)
-        {
-            listing.CheckboxLabeled("RimTalk_Settings_EnableDailySummarization".Translate(), ref enableDailySummarization);
-            
-            if (enableDailySummarization)
-            {
-                listing.Label("RimTalk_Settings_TriggerTimeLabel".Translate(summarizationHour));
-                summarizationHour = (int)listing.Slider(summarizationHour, 0, 23);
-            }
-            
-            listing.CheckboxLabeled("RimTalk_Settings_EnableAutoArchive".Translate(), ref enableAutoArchive);
-        }
-
-        private void DrawAIConfigSettings(Listing_Standard listing)
-        {
-            listing.CheckboxLabeled("RimTalk_Settings_PreferRimTalkAI".Translate(), ref useRimTalkAIConfig);
+            listing.CheckboxLabeled("RimTalk_Settings_PreferRimTalkAI".Translate(), ref Owner.useRimTalkAIConfig);
             
             if (useRimTalkAIConfig)
             {
@@ -556,7 +477,7 @@ namespace Ustas.RimAI.Communication.Memory
             listing.Gap();
             
             // ⭐ v3.3.20: 使用辅助类绘制提供商选择
-            SettingsUIDrawers.DrawAIProviderSelection(listing, this);
+            SettingsUIDrawers.DrawAIProviderSelection(listing, Owner);
             
             listing.Gap();
             
@@ -585,7 +506,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (canToggleCaching)
             {
-                listing.CheckboxLabeled("RimTalk_Settings_EnablePromptCaching".Translate(), ref enablePromptCaching);
+                listing.CheckboxLabeled("RimTalk_Settings_EnablePromptCaching".Translate(), ref Owner.enablePromptCaching);
             }
             else
             {
@@ -649,11 +570,8 @@ namespace Ustas.RimAI.Communication.Memory
             listing.Label("RimTalk_Settings_ValidateConfigTip".Translate());
             GUI.color = Color.white;
         }
-        
-        /// <summary>
-        /// 验证 AI 配置
-        /// </summary>
-        private void ValidateAIConfig()
+
+internal void ValidateAIConfig()
         {
             if (useRimTalkAIConfig)
             {
@@ -714,39 +632,7 @@ namespace Ustas.RimAI.Communication.Memory
             });
         }
 
-        private void DrawMemoryTypesSettings(Listing_Standard listing)
-        {
-            listing.CheckboxLabeled("RimTalk_Settings_ActionMemory".Translate(), ref enableActionMemory);
-            listing.CheckboxLabeled("RimTalk_Settings_ConversationMemory".Translate(), ref enableConversationMemory);
-        }
-
-        private void DrawExperimentalFeaturesSettings(Listing_Standard listing)
-        {
-            listing.CheckboxLabeled("RimTalk_Settings_EnableProactiveRecall".Translate(), ref enableProactiveRecall);
-            
-            if (enableProactiveRecall)
-            {
-                listing.Label("RimTalk_Settings_TriggerChanceLabel".Translate(recallTriggerChance.ToString("P0")));
-                recallTriggerChance = listing.Slider(recallTriggerChance, 0.05f, 0.60f);
-            }
-            
-            listing.Gap();
-            listing.GapLine();
-            
-            // ⭐ v4.0: 知识匹配源选择（动态从 RimTalk 获取 Mustache 变量）
-            SettingsUIDrawers.DrawKnowledgeMatchingSourcesSettings(listing, this);
-            
-            // ⭐ 常识链设置
-            SettingsUIDrawers.DrawKnowledgeChainingSettings(listing, this);
-        }
-        
-        private void DrawVectorEnhancementSettings(Listing_Standard listing)
-        {
-            // ⭐ SiliconFlow向量服务设置
-            SettingsUIDrawers.DrawSiliconFlowSettings(listing, this);
-        }
-
-        private void OpenCommonKnowledgeDialog()
+internal void OpenCommonKnowledgeDialog()
         {
             if (Current.Game == null)
             {
@@ -763,107 +649,19 @@ namespace Ustas.RimAI.Communication.Memory
 
             Find.WindowStack.Add(new Dialog_CommonKnowledge(memoryManager.CommonKnowledge));
         }
-        
-        /// <summary>
-        /// ✦ 绘制提示词规范化设置 UI
-        /// </summary>
-        private void DrawPromptNormalizationSettings(Listing_Standard listing)
+    }
+
+    internal sealed class RimTalkMemoryPatchSettingsParts
+    {
+        internal readonly RimTalkMemoryPatchSettings Owner;
+        internal readonly RimTalkSettingsMainUi MainUi;
+        internal readonly RimTalkSettingsAdvancedUi AdvancedUi;
+        internal RimTalkMemoryPatchSettingsParts(RimTalkMemoryPatchSettings owner)
         {
-            // ⭐ 使用辅助类绘制
-            SettingsUIDrawers.DrawPromptNormalizationSettings(listing, this);
-        }
-
-        private class AdvancedSettingsWindow : Window
-        {
-            private readonly RimTalkMemoryPatchSettings settings;
-            private Vector2 scrollPos;
-
-            public override Vector2 InitialSize => new Vector2(900f, 760f);
-
-            public AdvancedSettingsWindow(RimTalkMemoryPatchSettings settings)
-            {
-                this.settings = settings;
-                doCloseX = true;
-                doCloseButton = true;
-                absorbInputAroundWindow = true;
-                closeOnClickedOutside = false;
-            }
-
-            public override void DoWindowContents(Rect inRect)
-            {
-                Listing_Standard listing = new Listing_Standard();
-                Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 2200f); // ⭐ 增加高度
-                Widgets.BeginScrollView(inRect, ref scrollPos, viewRect);
-                listing.Begin(viewRect);
-
-                Text.Font = GameFont.Medium;
-                listing.Label("RimTalk_Settings_AdvancedSettingsTitle".Translate());
-                Text.Font = GameFont.Small;
-                GUI.color = Color.gray;
-                listing.Label("RimTalk_Settings_AdvancedSettingsDesc".Translate());
-                GUI.color = Color.white;
-                listing.GapLine();
-
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_DynamicInjectionSection".Translate(), ref expandDynamicInjection, delegate { settings.DrawDynamicInjectionSettings(listing); });
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryCapacitySection".Translate(), ref expandMemoryCapacity, delegate { settings.DrawMemoryCapacitySettings(listing); });
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryDecaySection".Translate(), ref expandDecayRates, delegate { settings.DrawDecaySettings(listing); });
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_SummarizationSection".Translate(), ref expandSummarization, delegate { settings.DrawSummarizationSettings(listing); });
-
-                if (settings.useAISummarization)
-                {
-                    settings.DrawCollapsibleSection(listing, "RimTalk_Settings_AIConfigSection".Translate(), ref expandAIConfig, delegate { settings.DrawAIConfigSettings(listing); });
-                }
-
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryTypesSection".Translate(), ref expandMemoryTypes, delegate { settings.DrawMemoryTypesSettings(listing); });
-                
-                // ⭐ 添加向量增强设置
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_VectorEnhancementSection".Translate(), ref expandVectorEnhancement, delegate { settings.DrawVectorEnhancementSettings(listing); });
-                
-                settings.DrawCollapsibleSection(listing, "RimTalk_Settings_ExperimentalSection".Translate(), ref expandExperimentalFeatures, delegate { settings.DrawExperimentalFeaturesSettings(listing); });
-
-                listing.End();
-                Widgets.EndScrollView();
-            }
-        }
-
-        private class PromptNormalizationWindow : Window
-        {
-            private readonly RimTalkMemoryPatchSettings settings;
-            private Vector2 scrollPos;
-
-            public override Vector2 InitialSize => new Vector2(750f, 520f);
-
-            public PromptNormalizationWindow(RimTalkMemoryPatchSettings settings)
-            {
-                this.settings = settings;
-                doCloseX = true;
-                doCloseButton = true;
-                absorbInputAroundWindow = true;
-                closeOnClickedOutside = false;
-            }
-
-            public override void DoWindowContents(Rect inRect)
-            {
-                Listing_Standard listing = new Listing_Standard();
-                Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 420f);
-                Widgets.BeginScrollView(inRect, ref scrollPos, viewRect);
-                listing.Begin(viewRect);
-
-                Text.Font = GameFont.Medium;
-                listing.Label("RimTalk_Settings_PromptReplacementTitle".Translate());
-                Text.Font = GameFont.Small;
-                GUI.color = Color.gray;
-                listing.Label("RimTalk_Settings_PromptReplacementDesc".Translate());
-                GUI.color = Color.white;
-                listing.Gap(6f);
-
-                settings.DrawPromptNormalizationSettings(listing);
-
-                listing.End();
-                Widgets.EndScrollView();
-
-                PromptNormalizer.UpdateRules(settings.normalizationRules);
-            }
+            Owner = owner;
+            MainUi = new RimTalkSettingsMainUi(owner);
+            AdvancedUi = new RimTalkSettingsAdvancedUi(owner);
         }
     }
+
 }

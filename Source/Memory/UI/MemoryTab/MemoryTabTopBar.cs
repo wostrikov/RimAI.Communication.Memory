@@ -12,11 +12,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - TopBar 绘制部分
     /// 包含顶部栏、Pawn选择器和统计信息显示
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabTopBar : MemoryTabCollaborator
     {
+        internal MemoryTabTopBar(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Top Bar ====================
         
-        private void DrawTopBar(Rect rect)
+        internal void DrawTopBar(Rect rect)
         {
             Widgets.DrawMenuSection(rect);
             Rect innerRect = rect.ContractedBy(5f);
@@ -27,10 +29,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             // ? Show All Humanlikes Checkbox
             Rect checkboxRect = new Rect(innerRect.x + 260f, innerRect.y + 10f, 180f, 25f);
-            Widgets.CheckboxLabeled(checkboxRect, "RimTalk_ShowAllHumanlikes".Translate(), ref showAllHumanlikes);
+            Widgets.CheckboxLabeled(checkboxRect, "RimTalk_ShowAllHumanlikes".Translate(), ref Owner.showAllHumanlikes);
             
             // ? 统计信息栏（移到这里，替换掉总记忆数）
-            if (currentMemoryComp != null)
+            if (Owner.currentMemoryComp != null)
             {
                 Rect statsRect = new Rect(innerRect.x + 450f, innerRect.y + 8f, 350f, 30f);
                 DrawTopBarStats(statsRect);
@@ -59,27 +61,27 @@ namespace Ustas.RimAI.Communication.Memory.UI
             rightX -= buttonWidth + spacing;
             if (Widgets.ButtonText(new Rect(rightX, innerRect.y + 5f, buttonWidth, 35f), "RimTalk_MindStream_Knowledge".Translate()))
             {
-                OpenCommonKnowledgeDialog();
+                Parts.Utilities.OpenCommonKnowledgeDialog();
             }
 
             // 操作指南按钮
             rightX -= buttonWidth + spacing;
             if (Widgets.ButtonText(new Rect(rightX, innerRect.y + 5f, buttonWidth, 35f), "RimTalk_MindStream_OperationGuide".Translate()))
             {
-                ShowOperationGuide();
+                Parts.Utilities.ShowOperationGuide();
             }
         }
         
         // ? 新增：TopBar统计信息显示
-        private void DrawTopBarStats(Rect rect)
+        internal void DrawTopBarStats(Rect rect)
         {
-            if (currentMemoryComp == null)
+            if (Owner.currentMemoryComp == null)
                 return;
             
-            int abmCount = currentMemoryComp.ActiveMemories.Count;
-            int scmCount = currentMemoryComp.SituationalMemories.Count;
-            int elsCount = currentMemoryComp.EventLogMemories.Count;
-            int clpaCount = currentMemoryComp.ArchiveMemories.Count;
+            int abmCount = Owner.currentMemoryComp.ActiveMemories.Count;
+            int scmCount = Owner.currentMemoryComp.SituationalMemories.Count;
+            int elsCount = Owner.currentMemoryComp.EventLogMemories.Count;
+            int clpaCount = Owner.currentMemoryComp.ArchiveMemories.Count;
             
             Text.Font = GameFont.Small;
             
@@ -92,11 +94,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Text.Font = GameFont.Small;
         }
         
-        private void DrawPawnSelector(Rect rect)
+        internal void DrawPawnSelector(Rect rect)
         {
             // ? 根据showAllHumanlikes决定显示哪些Pawn
             List<Pawn> colonists;
-            if (showAllHumanlikes)
+            if (Owner.showAllHumanlikes)
             {
                 // 显示所有类人生物
                 colonists = Find.CurrentMap?.mapPawns?.AllPawnsSpawned
@@ -115,7 +117,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return;
             }
             
-            string label = selectedPawn != null ? selectedPawn.LabelShort : "RimTalk_SelectColonist".Translate().ToString();
+            string label = Owner.selectedPawn != null ? Owner.selectedPawn.LabelShort : "RimTalk_SelectColonist".Translate().ToString();
             
             if (Widgets.ButtonText(rect, label))
             {
@@ -144,19 +146,19 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     
                     options.Add(new FloatMenuOption(pawnLabel, delegate 
                     { 
-                        selectedPawn = p;
-                        selectedMemories.Clear(); // Clear selection when changing pawn
-                        filtersDirty = true; // ? v3.3.32: Mark cache dirty when pawn changes
+                        Owner.selectedPawn = p;
+                        Owner.selectedMemories.Clear(); // Clear selection when changing pawn
+                        Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty when pawn changes
                     }));
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
             
             // Auto-select
-            if (selectedPawn == null && colonists.Count > 0)
+            if (Owner.selectedPawn == null && colonists.Count > 0)
             {
-                selectedPawn = colonists[0];
-                filtersDirty = true; // ? v3.3.32: Mark cache dirty on first selection
+                Owner.selectedPawn = colonists[0];
+                Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty on first selection
             }
         }
     }

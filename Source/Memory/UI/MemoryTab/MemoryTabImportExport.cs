@@ -12,16 +12,18 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - ImportExport 导入导出部分
     /// 包含记忆导入导出功能
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabImportExport : MemoryTabCollaborator
     {
+        internal MemoryTabImportExport(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Import/Export ====================
         
         /// <summary>
         /// 导出记忆到XML文件
         /// </summary>
-        private void ExportMemories()
+        internal void ExportMemories()
         {
-            if (selectedPawn == null || currentMemoryComp == null)
+            if (Owner.selectedPawn == null || Owner.currentMemoryComp == null)
             {
                 Messages.Message("RimTalk_Memory_ExportNoPawn".Translate(), MessageTypeDefOf.RejectInput, false);
                 return;
@@ -29,7 +31,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             try
             {
-                string fileName = $"{selectedPawn.Name.ToStringShort}_Memories_{Find.TickManager.TicksGame}.xml";
+                string fileName = $"{Owner.selectedPawn.Name.ToStringShort}_Memories_{Find.TickManager.TicksGame}.xml";
                 string savePath = System.IO.Path.Combine(GenFilePaths.SaveDataFolderPath, "MemoryExports");
                 
                 if (!System.IO.Directory.Exists(savePath))
@@ -41,14 +43,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 
                 // 收集所有记忆
                 var allMemories = new List<MemoryEntry>();
-                allMemories.AddRange(currentMemoryComp.ActiveMemories);
-                allMemories.AddRange(currentMemoryComp.SituationalMemories);
-                allMemories.AddRange(currentMemoryComp.EventLogMemories);
-                allMemories.AddRange(currentMemoryComp.ArchiveMemories);
+                allMemories.AddRange(Owner.currentMemoryComp.ActiveMemories);
+                allMemories.AddRange(Owner.currentMemoryComp.SituationalMemories);
+                allMemories.AddRange(Owner.currentMemoryComp.EventLogMemories);
+                allMemories.AddRange(Owner.currentMemoryComp.ArchiveMemories);
                 
                 // ? 修复：使用临时变量存储属性值
-                string pawnId = selectedPawn.ThingID;
-                string pawnName = selectedPawn.Name.ToStringShort;
+                string pawnId = Owner.selectedPawn.ThingID;
+                string pawnName = Owner.selectedPawn.Name.ToStringShort;
                 
                 // 使用Verse的XML序列化
                 Scribe.saver.InitSaving(fullPath, "MemoryExport");
@@ -84,9 +86,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
         /// <summary>
         /// 从XML文件导入记忆
         /// </summary>
-        private void ImportMemories()
+        internal void ImportMemories()
         {
-            if (selectedPawn == null || currentMemoryComp == null)
+            if (Owner.selectedPawn == null || Owner.currentMemoryComp == null)
             {
                 Messages.Message("RimTalk_Memory_ImportNoPawn".Translate(), MessageTypeDefOf.RejectInput, false);
                 return;
@@ -138,7 +140,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         /// <summary>
         /// 从指定文件导入记忆
         /// </summary>
-        private void ImportFromFile(string filePath)
+        internal void ImportFromFile(string filePath)
         {
             try
             {
@@ -161,7 +163,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 
                 // 确认导入
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
-                    "RimTalk_Memory_ImportConfirm".Translate(pawnName, importedMemories.Count, selectedPawn.Name.ToStringShort),
+                    "RimTalk_Memory_ImportConfirm".Translate(pawnName, importedMemories.Count, Owner.selectedPawn.Name.ToStringShort),
                     delegate
                     {
                         int imported = 0;
@@ -173,38 +175,38 @@ namespace Ustas.RimAI.Communication.Memory.UI
                             {
                                 case MemoryLayer.Active:
                                     // ⭐ v4.0: ABM 无容量限制
-                                    currentMemoryComp.ActiveMemories.Add(memory);
+                                    Owner.currentMemoryComp.ActiveMemories.Add(memory);
                                     imported++;
                                     break;
                                     
                                 case MemoryLayer.Situational:
                                     // ⭐ v4.0: SCM 已废弃，但仍支持导入旧数据
-                                    if (currentMemoryComp.SituationalMemories.Count < RimTalkMemoryPatchMod.Settings.maxSituationalMemories)
+                                    if (Owner.currentMemoryComp.SituationalMemories.Count < RimTalkMemoryPatchMod.Settings.maxSituationalMemories)
                                     {
-                                        currentMemoryComp.SituationalMemories.Add(memory);
+                                        Owner.currentMemoryComp.SituationalMemories.Add(memory);
                                         imported++;
                                     }
                                     break;
                                     
                                 case MemoryLayer.EventLog:
-                                    if (currentMemoryComp.EventLogMemories.Count < RimTalkMemoryPatchMod.Settings.maxEventLogMemories)
+                                    if (Owner.currentMemoryComp.EventLogMemories.Count < RimTalkMemoryPatchMod.Settings.maxEventLogMemories)
                                     {
-                                        currentMemoryComp.EventLogMemories.Add(memory);
+                                        Owner.currentMemoryComp.EventLogMemories.Add(memory);
                                         imported++;
                                     }
                                     break;
                                     
                                 case MemoryLayer.Archive:
-                                    if (currentMemoryComp.ArchiveMemories.Count < RimTalkMemoryPatchMod.Settings.maxArchiveMemories)
+                                    if (Owner.currentMemoryComp.ArchiveMemories.Count < RimTalkMemoryPatchMod.Settings.maxArchiveMemories)
                                     {
-                                        currentMemoryComp.ArchiveMemories.Add(memory);
+                                        Owner.currentMemoryComp.ArchiveMemories.Add(memory);
                                         imported++;
                                     }
                                     break;
                             }
                         }
                         
-                        filtersDirty = true; // ? v3.3.32: Mark cache dirty after importing memories
+                        Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after importing memories
                         
                         Messages.Message("RimTalk_Memory_ImportSuccess".Translate(imported, importedMemories.Count), 
                             MessageTypeDefOf.PositiveEvent, false);

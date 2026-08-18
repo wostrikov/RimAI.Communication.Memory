@@ -12,14 +12,16 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - Controls 控制面板部分
     /// 包含层级过滤器、类型过滤器和操作按钮
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabControls : MemoryTabCollaborator
     {
+        internal MemoryTabControls(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Control Panel ====================
         
-        private void DrawControlPanel(Rect rect)
+        internal void DrawControlPanel(Rect rect)
         {
             Widgets.DrawMenuSection(rect);
-            Rect innerRect = rect.ContractedBy(SPACING);
+            Rect innerRect = rect.ContractedBy(MainTabWindow_Memory.SPACING);
             float y = innerRect.y;
             
             // Title
@@ -50,7 +52,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             DrawGlobalActions(innerRect, y);
         }
         
-        private float DrawLayerFilters(Rect parentRect, float startY)
+        internal float DrawLayerFilters(Rect parentRect, float startY)
         {
             float y = startY;
             
@@ -64,45 +66,45 @@ namespace Ustas.RimAI.Communication.Memory.UI
             float checkboxHeight = 24f;
             
             // ? v3.3.32: Store previous values to detect changes
-            bool prevShowABM = showABM;
-            bool prevShowSCM = showSCM;
-            bool prevShowELS = showELS;
-            bool prevShowCLPA = showCLPA;
+            bool prevShowABM = Owner.showABM;
+            bool prevShowSCM = Owner.showSCM;
+            bool prevShowELS = Owner.showELS;
+            bool prevShowCLPA = Owner.showCLPA;
             
             // ABM
             Rect abmRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color abmColor = new Color(0.3f, 0.8f, 1f); // Cyan
-            DrawColoredCheckbox(abmRect, "RimTalk_MindStream_ABM".Translate(), ref showABM, abmColor, MemoryLayer.Active);
+            DrawColoredCheckbox(abmRect, "RimTalk_MindStream_ABM".Translate(), ref Owner.showABM, abmColor, MemoryLayer.Active);
             y += checkboxHeight + 2f;
             
             // SCM - ? 带右键菜单
             Rect scmRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color scmColor = new Color(0.3f, 1f, 0.5f); // Green
-            DrawColoredCheckbox(scmRect, "RimTalk_MindStream_SCM".Translate(), ref showSCM, scmColor, MemoryLayer.Situational);
+            DrawColoredCheckbox(scmRect, "RimTalk_MindStream_SCM".Translate(), ref Owner.showSCM, scmColor, MemoryLayer.Situational);
             y += checkboxHeight + 2f;
             
             // ELS - ? 带右键菜单
             Rect elsRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color elsColor = new Color(1f, 0.8f, 0.3f); // Yellow
-            DrawColoredCheckbox(elsRect, "RimTalk_MindStream_ELS".Translate(), ref showELS, elsColor, MemoryLayer.EventLog);
+            DrawColoredCheckbox(elsRect, "RimTalk_MindStream_ELS".Translate(), ref Owner.showELS, elsColor, MemoryLayer.EventLog);
             y += checkboxHeight + 2f;
             
             // CLPA - ? 带右键菜单
             Rect clpaRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color clpaColor = new Color(0.8f, 0.4f, 1f); // Purple
-            DrawColoredCheckbox(clpaRect, "RimTalk_MindStream_CLPA".Translate(), ref showCLPA, clpaColor, MemoryLayer.Archive);
+            DrawColoredCheckbox(clpaRect, "RimTalk_MindStream_CLPA".Translate(), ref Owner.showCLPA, clpaColor, MemoryLayer.Archive);
             y += checkboxHeight;
             
             // ? v3.3.32: Mark cache dirty if any filter changed
-            if (showABM != prevShowABM || showSCM != prevShowSCM || showELS != prevShowELS || showCLPA != prevShowCLPA)
+            if (Owner.showABM != prevShowABM || Owner.showSCM != prevShowSCM || Owner.showELS != prevShowELS || Owner.showCLPA != prevShowCLPA)
             {
-                filtersDirty = true;
+                Owner.filtersDirty = true;
             }
             
             return y;
         }
         
-        private void DrawColoredCheckbox(Rect rect, string label, ref bool value, Color color, MemoryLayer? rightClickLayer)
+        internal void DrawColoredCheckbox(Rect rect, string label, ref bool value, Color color, MemoryLayer? rightClickLayer)
         {
             // ? 右键检测（如果指定了层级）- 在绘制之前
             if (rightClickLayer.HasValue)
@@ -128,11 +130,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // ? 添加工具提示提示用户可以右键
             if (rightClickLayer.HasValue && Mouse.IsOver(rect))
             {
-                TooltipHandler.TipRegion(rect, "RimTalk_MindStream_RightClickToCreate".Translate(GetLayerLabel(rightClickLayer.Value)));
+                TooltipHandler.TipRegion(rect, "RimTalk_MindStream_RightClickToCreate".Translate(Parts.Utilities.GetLayerLabel(rightClickLayer.Value)));
             }
         }
         
-        private float DrawTypeFilters(Rect parentRect, float startY)
+        internal float DrawTypeFilters(Rect parentRect, float startY)
         {
             float y = startY;
             
@@ -147,48 +149,48 @@ namespace Ustas.RimAI.Communication.Memory.UI
             float spacing = 2f;
             
             // All
-            bool isAllSelected = filterType == null;
+            bool isAllSelected = Owner.filterType == null;
             if (isAllSelected)
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_All".Translate()))
             {
-                if (filterType != null) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != null) // ? v3.3.32: Only mark dirty if actually changed
                 {
-                    filterType = null;
-                    selectedMemories.Clear();
-                    filtersDirty = true;
+                    Owner.filterType = null;
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true;
                 }
             }
             GUI.color = Color.white;
             y += buttonHeight + spacing;
             
             // Conversation
-            bool isConvSelected = filterType == MemoryType.Conversation;
+            bool isConvSelected = Owner.filterType == MemoryType.Conversation;
             if (isConvSelected)
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_Conversation".Translate()))
             {
-                if (filterType != MemoryType.Conversation) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != MemoryType.Conversation) // ? v3.3.32: Only mark dirty if actually changed
                 {
-                    filterType = MemoryType.Conversation;
-                    selectedMemories.Clear();
-                    filtersDirty = true;
+                    Owner.filterType = MemoryType.Conversation;
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true;
                 }
             }
             GUI.color = Color.white;
             y += buttonHeight + spacing;
             
             // Action
-            bool isActionSelected = filterType == MemoryType.Action;
+            bool isActionSelected = Owner.filterType == MemoryType.Action;
             if (isActionSelected)
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_Action".Translate()))
             {
-                if (filterType != MemoryType.Action) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != MemoryType.Action) // ? v3.3.32: Only mark dirty if actually changed
                 {
-                    filterType = MemoryType.Action;
-                    selectedMemories.Clear();
-                    filtersDirty = true;
+                    Owner.filterType = MemoryType.Action;
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true;
                 }
             }
             GUI.color = Color.white;
@@ -197,7 +199,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return y;
         }
         
-        private float DrawBatchActions(Rect parentRect, float startY)
+        internal float DrawBatchActions(Rect parentRect, float startY)
         {
             float y = startY;
             
@@ -210,11 +212,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             float buttonHeight = 32f;
             float spacing = 5f;
-            bool hasSelection = selectedMemories.Count > 0;
+            bool hasSelection = Owner.selectedMemories.Count > 0;
             
             // ? 如果没有选中，则操作对象为当前页面所有可见记忆
             // 优先使用缓存的列表
-            var targetMemories = hasSelection ? selectedMemories.ToList() : cachedMemories;
+            var targetMemories = hasSelection ? Owner.selectedMemories.ToList() : Owner.cachedMemories;
             int targetCount = targetMemories.Count;
             
             // ? 修复：总结按钮现在支持 ABM + SCM
@@ -256,7 +258,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), summarizeLabel))
             {
-                SummarizeMemories(targetMemories);
+                Parts.Actions.SummarizeMemories(targetMemories);
             }
             GUI.enabled = true;
             y += buttonHeight + spacing;
@@ -275,7 +277,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), archiveLabel))
             {
-                ArchiveMemories(targetMemories);
+                Parts.Actions.ArchiveMemories(targetMemories);
             }
             GUI.enabled = true;
             y += buttonHeight + spacing;
@@ -294,7 +296,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), deleteLabel))
             {
-                DeleteMemories(targetMemories);
+                Parts.Actions.DeleteMemories(targetMemories);
             }
             GUI.color = Color.white;
             GUI.enabled = true;
@@ -303,7 +305,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return y;
         }
         
-        private void DrawGlobalActions(Rect parentRect, float startY)
+        internal void DrawGlobalActions(Rect parentRect, float startY)
         {
             float y = startY;
             
@@ -320,7 +322,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // Summarize All
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_SummarizeAll".Translate()))
             {
-                SummarizeAll();
+                Parts.Actions.SummarizeAll();
             }
             y += buttonHeight + spacing;
 
@@ -328,7 +330,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // Archive All
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_ArchiveAll".Translate()))
             {
-                ArchiveAll();
+                Parts.Actions.ArchiveAll();
             }
             y += buttonHeight + spacing * 2;
             */
@@ -340,21 +342,21 @@ namespace Ustas.RimAI.Communication.Memory.UI
             GUI.color = new Color(0.5f, 0.8f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, halfWidth, buttonHeight), "RimTalk_Memory_Export".Translate()))
             {
-                ExportMemories();
+                Parts.ImportExport.ExportMemories();
             }
             
             // Import button (right)
             GUI.color = new Color(0.8f, 1f, 0.5f);
             if (Widgets.ButtonText(new Rect(parentRect.x + halfWidth + spacing, y, halfWidth, buttonHeight), "RimTalk_Memory_Import".Translate()))
             {
-                ImportMemories();
+                Parts.ImportExport.ImportMemories();
             }
             GUI.color = Color.white;
         }
         
-        private void ShowCreateMemoryMenu(MemoryLayer layer)
+        internal void ShowCreateMemoryMenu(MemoryLayer layer)
         {
-            if (selectedPawn == null || currentMemoryComp == null)
+            if (Owner.selectedPawn == null || Owner.currentMemoryComp == null)
             {
                 Messages.Message("RimTalk_MindStream_PleaseSelectColonist".Translate(), MessageTypeDefOf.RejectInput, false);
                 return;
@@ -362,16 +364,16 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             
-            string layerName = GetLayerLabel(layer);
+            string layerName = Parts.Utilities.GetLayerLabel(layer);
             
             options.Add(new FloatMenuOption("RimTalk_MindStream_AddConversationTo".Translate(layerName), delegate
             {
-                Find.WindowStack.Add(new Dialog_CreateMemory(selectedPawn, currentMemoryComp, layer, MemoryType.Conversation));
+                Find.WindowStack.Add(new Dialog_CreateMemory(Owner.selectedPawn, Owner.currentMemoryComp, layer, MemoryType.Conversation));
             }));
             
             options.Add(new FloatMenuOption("RimTalk_MindStream_AddActionTo".Translate(layerName), delegate
             {
-                Find.WindowStack.Add(new Dialog_CreateMemory(selectedPawn, currentMemoryComp, layer, MemoryType.Action));
+                Find.WindowStack.Add(new Dialog_CreateMemory(Owner.selectedPawn, Owner.currentMemoryComp, layer, MemoryType.Action));
             }));
             
             Find.WindowStack.Add(new FloatMenu(options));

@@ -9,13 +9,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// <summary>
     /// MainTabWindow_Memory 辅助方法（部分类）
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabHelpers : MemoryTabCollaborator
     {
+        internal MemoryTabHelpers(MainTabWindow_Memory owner) : base(owner) { }
+
         /// <summary>
         /// ⭐ 通用记忆聚合方法 - 支持AI总结
         /// ⭐ v3.3.2.35: 修复时间戳继承和插入位置问题
         /// </summary>
-        private void AggregateMemories(
+        internal void AggregateMemories(
             List<MemoryEntry> memories,
             MemoryLayer targetLayer,
             List<MemoryEntry> sourceList,
@@ -70,7 +72,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 var settings = RimTalkMemoryPatchMod.Settings;
                 if (settings.useAISummarization && AI.IndependentAISummarizer.IsAvailable())
                 {
-                    string cacheKey = AI.IndependentAISummarizer.ComputeCacheKey(selectedPawn, items);
+                    string cacheKey = AI.IndependentAISummarizer.ComputeCacheKey(Owner.selectedPawn, items);
 
                     AI.IndependentAISummarizer.RegisterCallback(cacheKey, (aiSummary) =>
                     {
@@ -84,7 +86,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         }
                     });
 
-                    AI.IndependentAISummarizer.SummarizeMemories(selectedPawn, items, promptTemplate);
+                    AI.IndependentAISummarizer.SummarizeMemories(Owner.selectedPawn, items, promptTemplate);
 
                     aggregated.AddTag("简单" + (targetLayer == MemoryLayer.Archive ? "归档" : "总结"));
                     aggregated.AddTag("待AI更新");
@@ -107,7 +109,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         /// <summary>
         /// ⭐ 新方法：根据时间戳将记忆插入到正确的位置（保持列表按时间降序排序）
         /// </summary>
-        private void InsertMemoryByTimestamp(List<MemoryEntry> list, MemoryEntry entry)
+        internal void InsertMemoryByTimestamp(List<MemoryEntry> list, MemoryEntry entry)
         {
             // 如果列表为空，直接添加
             if (list.Count == 0)
@@ -133,7 +135,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         /// <summary>
         /// 创建简单总结（用于手动总结时的占位符）
         /// </summary>
-        private string CreateSimpleSummary(List<MemoryEntry> memories, MemoryType type)
+        internal string CreateSimpleSummary(List<MemoryEntry> memories, MemoryType type)
         {
             if (memories == null || memories.Count == 0)
                 return "";
@@ -202,7 +204,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         /// <summary>
         /// 创建归档摘要（用于手动归档时的占位符）
         /// </summary>
-        private string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type)
+        internal string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type)
         {
             if (memories == null || memories.Count == 0)
                 return "";

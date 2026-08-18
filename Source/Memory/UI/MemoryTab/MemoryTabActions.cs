@@ -12,13 +12,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
     /// MainTabWindow_Memory - Actions 批量操作部分
     /// 包含总结、归档、删除等批量操作逻辑
     /// </summary>
-    public partial class MainTabWindow_Memory
+    internal sealed class MemoryTabActions : MemoryTabCollaborator
     {
+        internal MemoryTabActions(MainTabWindow_Memory owner) : base(owner) { }
+
         // ==================== Batch Actions ====================
         
-        private void SummarizeMemories(List<MemoryEntry> targetMemories)
+        internal void SummarizeMemories(List<MemoryEntry> targetMemories)
         {
-            if (currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
+            if (Owner.currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
                 return;
             
             // ? 修复：同时收集 ABM 和 SCM（只排除总结过的记忆）
@@ -58,30 +60,30 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 confirmMessage,
                 delegate
                 {
-                    AggregateMemories(
+                    Parts.Helpers.AggregateMemories(
                         allMemoriesToSummarize,
                         MemoryLayer.EventLog,
-                        currentMemoryComp.SituationalMemories,
-                        currentMemoryComp.EventLogMemories,
+                        Owner.currentMemoryComp.SituationalMemories,
+                        Owner.currentMemoryComp.EventLogMemories,
                         "daily_summary"
                     );
                     
                     // ? 总结后清空ABM（因为已经总结过了）
                     foreach (var abm in abmMemories)
                     {
-                        currentMemoryComp.ActiveMemories.Remove(abm);
+                        Owner.currentMemoryComp.ActiveMemories.Remove(abm);
                     }
                     
-                    selectedMemories.Clear();
-                    filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
                     Messages.Message("RimTalk_MindStream_SummarizedN".Translate(scmMemories.Count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
         }
         
-        private void ArchiveMemories(List<MemoryEntry> targetMemories)
+        internal void ArchiveMemories(List<MemoryEntry> targetMemories)
         {
-            if (currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
+            if (Owner.currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
                 return;
             
             // ? 修复：排除总结过的记忆
@@ -99,24 +101,24 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 "RimTalk_MindStream_ArchiveConfirm".Translate(elsMemories.Count),
                 delegate
                 {
-                    AggregateMemories(
+                    Parts.Helpers.AggregateMemories(
                         elsMemories,
                         MemoryLayer.Archive,
-                        currentMemoryComp.EventLogMemories,
-                        currentMemoryComp.ArchiveMemories,
+                        Owner.currentMemoryComp.EventLogMemories,
+                        Owner.currentMemoryComp.ArchiveMemories,
                         "deep_archive"
                     );
                     
-                    selectedMemories.Clear();
-                    filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
                     Messages.Message("RimTalk_MindStream_ArchivedN".Translate(elsMemories.Count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
         }
         
-        private void DeleteMemories(List<MemoryEntry> targetMemories)
+        internal void DeleteMemories(List<MemoryEntry> targetMemories)
         {
-            if (currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
+            if (Owner.currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
                 return;
             
             int count = targetMemories.Count;
@@ -127,17 +129,17 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 {
                     foreach (var memory in targetMemories.ToList())
                     {
-                        currentMemoryComp.DeleteMemory(memory.Id);
+                        Owner.currentMemoryComp.DeleteMemory(memory.Id);
                     }
                     
-                    selectedMemories.Clear();
-                    filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.selectedMemories.Clear();
+                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
                     Messages.Message("RimTalk_MindStream_DeletedN".Translate(count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
         }
         
-        private void SummarizeAll()
+        internal void SummarizeAll()
         {
             List<Pawn> pawnsToSummarize = new List<Pawn>();
             foreach (var map in Find.Maps)
@@ -165,7 +167,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         }
         
         /* 废弃代码，暂时先不删而是注释掉，之后再善后
-        private void ArchiveAll()
+        internal void ArchiveAll()
         {
             int count = 0;
             foreach (var map in Find.Maps)

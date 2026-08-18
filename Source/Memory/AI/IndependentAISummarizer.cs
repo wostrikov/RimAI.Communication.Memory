@@ -24,59 +24,144 @@ namespace Ustas.RimAI.Communication.Memory.AI
     public static class IndependentAISummarizer
     {
         // ? v3.3.2.35: 优化正则表达式 - 提升为静态编译字段
-        private static readonly Regex GoogleResponseRegex = new Regex(
+        internal static readonly Regex GoogleResponseRegex = new Regex(
             @"""text""\s*:\s*""(.*?)""",
             RegexOptions.Compiled | RegexOptions.Singleline
         );
         
-        private static readonly Regex OpenAIResponseRegex = new Regex(
+        internal static readonly Regex OpenAIResponseRegex = new Regex(
             @"""content""\s*:\s*""(.*?)""",
             RegexOptions.Compiled | RegexOptions.Singleline
         );
         
-        private static bool isInitialized = false;
-        private static bool useRimTalkAdapter = false;
-        private static string apiKey, apiUrl, model, provider;
+        internal static bool isInitialized = false;
+        internal static bool useRimTalkAdapter = false;
+        internal static string apiKey, apiUrl, model, provider;
         
         // ? 修复1: 添加缓存大小限制，防止内存泄漏
-        private const int MAX_CACHE_SIZE = 100; // 最多缓存100个总结
-        private const int CACHE_CLEANUP_THRESHOLD = 120; // 达到120个时清理
+        internal const int MAX_CACHE_SIZE = 100; // 最多缓存100个总结
+        internal const int CACHE_CLEANUP_THRESHOLD = 120; // 达到120个时清理
         
-        private static readonly Dictionary<string, string> completedSummaries = new Dictionary<string, string>();
-        private static readonly HashSet<string> pendingSummaries = new HashSet<string>();
-        private static readonly Dictionary<string, List<Action<string>>> callbackMap = new Dictionary<string, List<Action<string>>>();
-        private static readonly Queue<Action> mainThreadActions = new Queue<Action>();
+        internal static readonly Dictionary<string, string> completedSummaries = new Dictionary<string, string>();
+        internal static readonly HashSet<string> pendingSummaries = new HashSet<string>();
+        internal static readonly Dictionary<string, List<Action<string>>> callbackMap = new Dictionary<string, List<Action<string>>>();
+        internal static readonly Queue<Action> mainThreadActions = new Queue<Action>();
 
-        public static string ComputeCacheKey(Pawn pawn, List<MemoryEntry> memories)
+        
+
+        
+
+        
+
+        /// <summary>
+        /// ? 修复：添加强制重新初始化方法
+        /// </summary>
+        
+        
+        /// <summary>
+        /// ? v3.3.3: 清除所有API配置和缓存
+        /// </summary>
+        
+        
+        
+        
+        /// <summary>
+        /// ? v3.3.3: 验证API配置
+        /// </summary>
+        
+        
+        /// <summary>
+        /// 尝试从 RimTalk 加载配置（兼容模式）
+        /// </summary>
+        
+
+        
+
+        
+
+        
+
+        
+
+        /// <summary>
+        /// ? v3.3.2.34: 重构版 - 使用 DTO 类和手动序列化（安全）
+        /// 彻底修复特殊字符导致的 JSON 格式错误
+        /// </summary>
+        
+        
+        /// <summary>
+        /// ? v3.3.2.34: 安全的 JSON 字符串转义
+        /// 处理所有特殊字符：引号、换行、反斜杠等
+        /// </summary>
+        
+
+        
+
+        /// <summary>
+        /// ? v3.3.2.35: 优化版 - 使用静态编译的正则表达式
+        /// </summary>
+        
+
+        
+
+        
+        
+        
+    
+        #region Cluster forwards
+        public static string ComputeCacheKey(Pawn pawn, List<MemoryEntry> memories) => AISummarizerLifecycle.ComputeCacheKey(pawn, memories);
+        public static void RegisterCallback(string cacheKey, Action<string> callback) => AISummarizerLifecycle.RegisterCallback(cacheKey, callback);
+        public static void ProcessPendingCallbacks(int maxPerTick = 5) => AISummarizerLifecycle.ProcessPendingCallbacks(maxPerTick);
+        public static void ForceReinitialize() => AISummarizerLifecycle.ForceReinitialize();
+        public static void ClearAllConfiguration() => AISummarizerLifecycle.ClearAllConfiguration();
+        public static void Initialize() => AISummarizerLifecycle.Initialize();
+        internal static bool ValidateConfiguration() => AISummarizerLifecycle.ValidateConfiguration();
+        internal static bool TryLoadFromRimTalk() => AISummarizerLifecycle.TryLoadFromRimTalk();
+        internal static void ApplyDefaultUrlIfMissing() => AISummarizerLifecycle.ApplyDefaultUrlIfMissing();
+        public static bool IsAvailable() => AISummarizerLifecycle.IsAvailable();
+        public static void TryDetectPlayer2LocalApp() => AISummarizerLifecycle.TryDetectPlayer2LocalApp();
+        public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, string promptTemplate) => AISummarizerPrompt.SummarizeMemories(pawn, memories, promptTemplate);
+        internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string template) => AISummarizerPrompt.BuildPrompt(pawn, memories, template);
+        internal static string BuildJsonRequest(string prompt) => AISummarizerPrompt.BuildJsonRequest(prompt);
+        internal static string EscapeJsonString(string text) => AISummarizerPrompt.EscapeJsonString(text);
+        internal static Task<string> CallAIAsync(string prompt) => AISummarizerHttp.CallAIAsync(prompt);
+        internal static string ParseResponse(string responseText) => AISummarizerHttp.ParseResponse(responseText);
+        internal static string ReadStreamAsText(System.IO.Stream stream) => AISummarizerHttp.ReadStreamAsText(stream);
+        internal static Task<string> ReadStreamAsTextAsync(System.IO.Stream stream) => AISummarizerHttp.ReadStreamAsTextAsync(stream);
+        #endregion
+}
+    internal static class AISummarizerLifecycle
+    {
+public static string ComputeCacheKey(Pawn pawn, List<MemoryEntry> memories)
         {
             var ids = memories.Select(m => m.Id ?? m.Content.GetHashCode().ToString()).ToArray();
             string joinedIds = string.Join("|", ids);
             return $"{pawn.ThingID}_{memories.Count}_{joinedIds.GetHashCode()}";
         }
 
-        public static void RegisterCallback(string cacheKey, Action<string> callback)
+public static void RegisterCallback(string cacheKey, Action<string> callback)
         {
-            lock (callbackMap)
+            lock (IndependentAISummarizer.callbackMap)
             {
-                if (!callbackMap.TryGetValue(cacheKey, out var callbacks))
+                if (!IndependentAISummarizer.callbackMap.TryGetValue(cacheKey, out var callbacks))
                 {
                     callbacks = new List<Action<string>>();
-                    callbackMap[cacheKey] = callbacks;
+                    IndependentAISummarizer.callbackMap[cacheKey] = callbacks;
                 }
                 callbacks.Add(callback);
             }
         }
 
-        public static void ProcessPendingCallbacks(int maxPerTick = 5)
+public static void ProcessPendingCallbacks(int maxPerTick = 5)
         {
             int processed = 0;
-            lock (mainThreadActions)
+            lock (IndependentAISummarizer.mainThreadActions)
             {
-                while (mainThreadActions.Count > 0 && processed < maxPerTick)
+                while (IndependentAISummarizer.mainThreadActions.Count > 0 && processed < maxPerTick)
                 {
                     try
                     {
-                        mainThreadActions.Dequeue()?.Invoke();
+                        IndependentAISummarizer.mainThreadActions.Dequeue()?.Invoke();
                     }
                     catch (Exception ex)
                     {
@@ -87,53 +172,47 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
 
-        /// <summary>
-        /// ? 修复：添加强制重新初始化方法
-        /// </summary>
-        public static void ForceReinitialize()
+public static void ForceReinitialize()
         {
-            isInitialized = false;
+            IndependentAISummarizer.isInitialized = false;
             Initialize();
         }
-        
-        /// <summary>
-        /// ? v3.3.3: 清除所有API配置和缓存
-        /// </summary>
-        public static void ClearAllConfiguration()
+
+public static void ClearAllConfiguration()
         {
             // 清除静态变量
-            apiKey = "";
-            apiUrl = "";
-            model = "";
-            provider = "";
-            useRimTalkAdapter = false;
-            isInitialized = false;
+            IndependentAISummarizer.apiKey = "";
+            IndependentAISummarizer.apiUrl = "";
+            IndependentAISummarizer.model = "";
+            IndependentAISummarizer.provider = "";
+            IndependentAISummarizer.useRimTalkAdapter = false;
+            IndependentAISummarizer.isInitialized = false;
             
             // 清除所有缓存
-            lock (completedSummaries)
+            lock (IndependentAISummarizer.completedSummaries)
             {
-                completedSummaries.Clear();
+                IndependentAISummarizer.completedSummaries.Clear();
             }
             
-            lock (pendingSummaries)
+            lock (IndependentAISummarizer.pendingSummaries)
             {
-                pendingSummaries.Clear();
+                IndependentAISummarizer.pendingSummaries.Clear();
             }
             
-            lock (callbackMap)
+            lock (IndependentAISummarizer.callbackMap)
             {
-                callbackMap.Clear();
+                IndependentAISummarizer.callbackMap.Clear();
             }
             
-            lock (mainThreadActions)
+            lock (IndependentAISummarizer.mainThreadActions)
             {
-                mainThreadActions.Clear();
+                IndependentAISummarizer.mainThreadActions.Clear();
             }
             
             Log.Message("[AI] ?? All API configuration and cache cleared");
         }
-        
-        public static void Initialize()
+
+public static void Initialize()
         {
             try
             {
@@ -144,35 +223,35 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 {
                     if (TryLoadFromRimTalk())
                     {
-                        Log.Message($"[AI] Loaded from RimTalk ({provider}/{model})");
-                        isInitialized = true;
+                        Log.Message($"[AI] Loaded from RimTalk ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                        IndependentAISummarizer.isInitialized = true;
                         return;
                     }
                     Log.Warning("[AI] Конфігурацію RimTalk не налаштовано; незалежний fallback вимкнено для inherited mode");
-                    isInitialized = false;
+                    IndependentAISummarizer.isInitialized = false;
                     return;
                 }
                 
                 // 使用独立配置
-                apiKey = settings.independentProvider == "OpenAI"
+                IndependentAISummarizer.apiKey = settings.independentProvider == "OpenAI"
                     ? AiCredentialResolver.Resolve().Value
                     : settings.independentApiKey;
-                apiUrl = settings.independentApiUrl;
-                model = settings.independentModel;
-                provider = settings.independentProvider;
+                IndependentAISummarizer.apiUrl = settings.independentApiUrl;
+                IndependentAISummarizer.model = settings.independentModel;
+                IndependentAISummarizer.provider = settings.independentProvider;
                 
                 // ? v3.3.6: Player2 特殊处理 - 优先使用本地应用
-                if (provider == "Player2")
+                if (IndependentAISummarizer.provider == "Player2")
                 {
                     var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
                     {
-                        FallbackApiKey = apiKey,
+                        FallbackApiKey = IndependentAISummarizer.apiKey,
                         RequestGameKey = Player2GameKeys.Memory
                     });
                     if (session.Succeeded)
                     {
-                        apiKey = session.ApiKey;
-                        apiUrl = Player2Endpoints.ChatCompletions(session.BaseUrl);
+                        IndependentAISummarizer.apiKey = session.ApiKey;
+                        IndependentAISummarizer.apiUrl = Player2Endpoints.ChatCompletions(session.BaseUrl);
                         Log.Message(session.IsLocal
                             ? "[AI] Using Player2 local app connection"
                             : "[AI] Using Player2 remote API with manual key");
@@ -185,52 +264,49 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 }
                 
                 // 如果 URL 为空，根据提供商设置默认值
-                if (string.IsNullOrEmpty(apiUrl))
+                if (string.IsNullOrEmpty(IndependentAISummarizer.apiUrl))
                 {
-                    if (provider == "OpenAI")
+                    if (IndependentAISummarizer.provider == "OpenAI")
                     {
-                        apiUrl = "https://api.openai.com/v1/chat/completions";
+                        IndependentAISummarizer.apiUrl = "https://api.openai.com/v1/chat/completions";
                     }
-                    else if (provider == "DeepSeek")
+                    else if (IndependentAISummarizer.provider == "DeepSeek")
                     {
-                        apiUrl = "https://api.deepseek.com/v1/chat/completions";
+                        IndependentAISummarizer.apiUrl = "https://api.deepseek.com/v1/chat/completions";
                     }
-                    else if (provider == "Google")
+                    else if (IndependentAISummarizer.provider == "Google")
                     {
-                        apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
+                        IndependentAISummarizer.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
                     }
-                    else if (provider == "Player2")
+                    else if (IndependentAISummarizer.provider == "Player2")
                     {
-                        apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
+                        IndependentAISummarizer.apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
                     }
                 }
                 
                 // ? 详细验证配置
                 if (!ValidateConfiguration())
                 {
-                    isInitialized = false;
+                    IndependentAISummarizer.isInitialized = false;
                     return;
                 }
                 
-                Log.Message($"[AI] ? Initialized with independent config ({provider}/{model})");
-                Log.Message($"[AI]    Credential source: {(provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
-                Log.Message($"[AI]    API URL: {apiUrl}");
-                isInitialized = true;
+                Log.Message($"[AI] ? Initialized with independent config ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                Log.Message($"[AI]    Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
+                Log.Message($"[AI]    API URL: {IndependentAISummarizer.apiUrl}");
+                IndependentAISummarizer.isInitialized = true;
             }
             catch (Exception ex)
             {
                 Log.Error($"[AI] ? Init failed: {ex.Message}");
-                isInitialized = false;
+                IndependentAISummarizer.isInitialized = false;
             }
         }
-        
-        /// <summary>
-        /// ? v3.3.3: 验证API配置
-        /// </summary>
-        private static bool ValidateConfiguration()
+
+internal static bool ValidateConfiguration()
         {
             // 检查API Key
-            if (string.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(IndependentAISummarizer.apiKey))
             {
                 Log.Error("[AI] ? API Key is empty!");
                 Log.Error("[AI]    Налаштуйте доступ у: Параметри → Налаштування модів → RimTalk-Expand Memory → AI");
@@ -238,35 +314,35 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
             
             // 检查API Key长度
-            if (apiKey.Length < 10)
+            if (IndependentAISummarizer.apiKey.Length < 10)
             {
-                Log.Error($"[AI] ? API Key too short (length: {apiKey.Length})!");
+                Log.Error($"[AI] ? API Key too short (length: {IndependentAISummarizer.apiKey.Length})!");
                 Log.Error("[AI]    Valid API Keys are usually 20+ characters");
                 Log.Error("[AI]    Credential is invalid or too short");
                 return false;
             }
             
             // ? v3.3.6: Player2/Custom模式不强制检查格式
-            if (provider != "Custom" && provider != "Player2" && provider != "Google")
+            if (IndependentAISummarizer.provider != "Custom" && IndependentAISummarizer.provider != "Player2" && IndependentAISummarizer.provider != "Google")
             {
                 // 检查API Key格式（OpenAI/DeepSeek建议以sk-开头，但只是警告）
-                if ((provider == "OpenAI" || provider == "DeepSeek") && !apiKey.StartsWith("sk-"))
+                if ((IndependentAISummarizer.provider == "OpenAI" || IndependentAISummarizer.provider == "DeepSeek") && !IndependentAISummarizer.apiKey.StartsWith("sk-"))
                 {
-                    Log.Warning($"[AI] ?? API Key doesn't start with 'sk-' for {provider}");
+                    Log.Warning($"[AI] ?? API Key doesn't start with 'sk-' for {IndependentAISummarizer.provider}");
                     Log.Warning("[AI]    Credential format is unusual");
-                    Log.Warning("[AI]    If using third-party proxy, select 'Custom' or 'Player2' provider");
+                    Log.Warning("[AI]    If using third-party proxy, select 'Custom' or 'Player2' IndependentAISummarizer.provider");
                 }
             }
             
             // 检查API URL
-            if (string.IsNullOrEmpty(apiUrl))
+            if (string.IsNullOrEmpty(IndependentAISummarizer.apiUrl))
             {
                 Log.Error("[AI] ? API URL is empty!");
                 return false;
             }
             
             // 检查Model
-            if (string.IsNullOrEmpty(model))
+            if (string.IsNullOrEmpty(IndependentAISummarizer.model))
             {
                 Log.Error("[AI] Назву моделі не налаштовано");
                 return false;
@@ -274,11 +350,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             return true;
         }
-        
-        /// <summary>
-        /// 尝试从 RimTalk 加载配置（兼容模式）
-        /// </summary>
-        private static bool TryLoadFromRimTalk()
+
+internal static bool TryLoadFromRimTalk()
         {
             try
             {
@@ -288,35 +361,35 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 string snapshotUrl = snapshot?.BaseUrl;
                 if (snapshot is { HasActive: true } && !string.IsNullOrEmpty(snapshotModel))
                 {
-                    apiKey = null;
-                    provider = snapshotProvider ?? "";
-                    apiUrl = snapshotUrl ?? "";
-                    model = snapshotModel;
-                    if (string.Equals(model, "Custom", StringComparison.OrdinalIgnoreCase))
-                        model = snapshot.CustomModel;
+                    IndependentAISummarizer.apiKey = null;
+                    IndependentAISummarizer.provider = snapshotProvider ?? "";
+                    IndependentAISummarizer.apiUrl = snapshotUrl ?? "";
+                    IndependentAISummarizer.model = snapshotModel;
+                    if (string.Equals(IndependentAISummarizer.model, "Custom", StringComparison.OrdinalIgnoreCase))
+                        IndependentAISummarizer.model = snapshot.CustomModel;
                     ApplyDefaultUrlIfMissing();
-                    if (!string.IsNullOrEmpty(model))
+                    if (!string.IsNullOrEmpty(IndependentAISummarizer.model))
                     {
-                        useRimTalkAdapter = true;
-                        isInitialized = true;
-                        Log.Message($"[AI] Loaded from shared text AI ({provider}/{model})");
+                        IndependentAISummarizer.useRimTalkAdapter = true;
+                        IndependentAISummarizer.isInitialized = true;
+                        Log.Message($"[AI] Loaded from shared text AI ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
                         return true;
                     }
                 }
 
                 var config = Settings.Get()?.GetActiveConfig();
                 if (config == null) return false;
-                apiKey = null;
-                apiUrl = config.BaseUrl;
-                provider = config.Provider.ToString();
-                model = config.SelectedModel;
-                if (model == "Custom")
-                    model = config.CustomModelName;
+                IndependentAISummarizer.apiKey = null;
+                IndependentAISummarizer.apiUrl = config.BaseUrl;
+                IndependentAISummarizer.provider = config.Provider.ToString();
+                IndependentAISummarizer.model = config.SelectedModel;
+                if (IndependentAISummarizer.model == "Custom")
+                    IndependentAISummarizer.model = config.CustomModelName;
                 ApplyDefaultUrlIfMissing();
-                if (string.IsNullOrEmpty(model)) return false;
-                useRimTalkAdapter = true;
-                isInitialized = true;
-                Log.Message($"[AI] Loaded from Communication ({provider}/{model})");
+                if (string.IsNullOrEmpty(IndependentAISummarizer.model)) return false;
+                IndependentAISummarizer.useRimTalkAdapter = true;
+                IndependentAISummarizer.isInitialized = true;
+                Log.Message($"[AI] Loaded from Communication ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
                 return true;
             }
             catch (Exception ex)
@@ -327,48 +400,84 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
 
-        private static void ApplyDefaultUrlIfMissing()
+internal static void ApplyDefaultUrlIfMissing()
         {
-            if (!string.IsNullOrEmpty(apiUrl)) return;
-            if (!useRimTalkAdapter && provider == "Google")
+            if (!string.IsNullOrEmpty(IndependentAISummarizer.apiUrl)) return;
+            if (!IndependentAISummarizer.useRimTalkAdapter && IndependentAISummarizer.provider == "Google")
             {
-                apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
+                IndependentAISummarizer.apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/MODEL_PLACEHOLDER:generateContent?key=API_KEY_PLACEHOLDER";
                 return;
             }
 
-            if (!useRimTalkAdapter && provider == "Player2")
+            if (!IndependentAISummarizer.useRimTalkAdapter && IndependentAISummarizer.provider == "Player2")
             {
-                apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
+                IndependentAISummarizer.apiUrl = Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame);
                 return;
             }
 
-            apiUrl = GameplayTextAiProviderCatalog.ChatEndpoint(provider);
+            IndependentAISummarizer.apiUrl = GameplayTextAiProviderCatalog.ChatEndpoint(IndependentAISummarizer.provider);
         }
 
-        public static bool IsAvailable()
+public static bool IsAvailable()
         {
-            if (!isInitialized) Initialize();
-            return isInitialized;
+            if (!IndependentAISummarizer.isInitialized) Initialize();
+            return IndependentAISummarizer.isInitialized;
         }
 
-        public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, string promptTemplate)
+public static void TryDetectPlayer2LocalApp()
         {
-            if (!IsAvailable()) return null;
-
-            string cacheKey = ComputeCacheKey(pawn, memories);
-
-            lock (completedSummaries)
+            Task.Run(() =>
             {
-                if (completedSummaries.TryGetValue(cacheKey, out string summary))
+                try
+                {
+                    Log.Message("[AI] Checking for local Player2 app...");
+                    var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
+                    {
+                        RequestGameKey = Player2GameKeys.Memory
+                    });
+                    if (session.Succeeded && session.IsLocal)
+                    {
+                        LongEventHandler.ExecuteWhenFinished(() =>
+                        {
+                            Messages.Message("RimTalk_Settings_Player2Detected".Translate(), MessageTypeDefOf.PositiveEvent, false);
+                        });
+                        return;
+                    }
+
+                    Log.Message("[AI] Player2 local app not found, will use remote API");
+                    LongEventHandler.ExecuteWhenFinished(() =>
+                    {
+                        Messages.Message("RimTalk_Settings_Player2NotFound".Translate(), MessageTypeDefOf.NeutralEvent, false);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Log.Warning($"[AI] Player2 detection error: {ex.Message}");
+                }
+            });
+        }
+    }
+
+    internal static class AISummarizerPrompt
+    {
+public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, string promptTemplate)
+        {
+            if (!IndependentAISummarizer.IsAvailable()) return null;
+
+            string cacheKey = IndependentAISummarizer.ComputeCacheKey(pawn, memories);
+
+            lock (IndependentAISummarizer.completedSummaries)
+            {
+                if (IndependentAISummarizer.completedSummaries.TryGetValue(cacheKey, out string summary))
                 {
                     return summary; // Return cached result directly if available
                 }
             }
 
-            lock (pendingSummaries)
+            lock (IndependentAISummarizer.pendingSummaries)
             {
-                if (pendingSummaries.Contains(cacheKey)) return null; // Already processing
-                pendingSummaries.Add(cacheKey);
+                if (IndependentAISummarizer.pendingSummaries.Contains(cacheKey)) return null; // Already processing
+                IndependentAISummarizer.pendingSummaries.Add(cacheKey);
             }
 
             string prompt = BuildPrompt(pawn, memories, promptTemplate);
@@ -377,47 +486,47 @@ namespace Ustas.RimAI.Communication.Memory.AI
             {
                 try
                 {
-                    string result = await CallAIAsync(prompt);
+                    string result = await IndependentAISummarizer.CallAIAsync(prompt);
                     if (result != null)
                     {
-                        lock (completedSummaries)
+                        lock (IndependentAISummarizer.completedSummaries)
                         {
                             // ? 修改1: 增加缓存上限，防止内存泄漏
-                            if (completedSummaries.Count >= CACHE_CLEANUP_THRESHOLD)
+                            if (IndependentAISummarizer.completedSummaries.Count >= IndependentAISummarizer.CACHE_CLEANUP_THRESHOLD)
                             {
                                 // ? v3.3.2.29: 确定性清理 - 按 key 字母顺序升序排序后删除前50%
                                 // 使用字母顺序排序代替随机 Take()，确保相同的缓存状态总是删除相同的条目
-                                var toRemove = completedSummaries.Keys
+                                var toRemove = IndependentAISummarizer.completedSummaries.Keys
                                     .OrderBy(k => k, StringComparer.Ordinal) // 字母顺序升序
-                                    .Take(MAX_CACHE_SIZE / 2)
+                                    .Take(IndependentAISummarizer.MAX_CACHE_SIZE / 2)
                                     .ToList();
                                 
                                 foreach (var key in toRemove)
                                 {
-                                    completedSummaries.Remove(key);
+                                    IndependentAISummarizer.completedSummaries.Remove(key);
                                 }
                                 
 
                                 if (Prefs.DevMode)
                                 {
-                                    Log.Message($"[AI Summarizer] ?? Cleaned cache: {toRemove.Count} entries removed (deterministic by key order), {completedSummaries.Count} remaining");
+                                    Log.Message($"[AI Summarizer] ?? Cleaned cache: {toRemove.Count} entries removed (deterministic by key order), {IndependentAISummarizer.completedSummaries.Count} remaining");
                                 }
                             }
                             
-                            completedSummaries[cacheKey] = result;
+                            IndependentAISummarizer.completedSummaries[cacheKey] = result;
                         }
-                        lock (callbackMap)
+                        lock (IndependentAISummarizer.callbackMap)
                         {
-                            if (callbackMap.TryGetValue(cacheKey, out var callbacks))
+                            if (IndependentAISummarizer.callbackMap.TryGetValue(cacheKey, out var callbacks))
                             {
                                 foreach (var cb in callbacks)
                                 {
-                                    lock (mainThreadActions)
+                                    lock (IndependentAISummarizer.mainThreadActions)
                                     {
-                                        mainThreadActions.Enqueue(() => cb(result));
+                                        IndependentAISummarizer.mainThreadActions.Enqueue(() => cb(result));
                                     }
                                 }
-                                callbackMap.Remove(cacheKey);
+                                IndependentAISummarizer.callbackMap.Remove(cacheKey);
                             }
                         }
                     }
@@ -428,9 +537,9 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 }
                 finally
                 {
-                    lock (pendingSummaries)
+                    lock (IndependentAISummarizer.pendingSummaries)
                     {
-                        pendingSummaries.Remove(cacheKey);
+                        IndependentAISummarizer.pendingSummaries.Remove(cacheKey);
                     }
                 }
             });
@@ -438,7 +547,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return null; // Indicates that the process is async
         }
 
-        private static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string template)
+internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string template)
         {
             var settings = RimTalkMemoryPatchMod.Settings;
             
@@ -512,13 +621,9 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return result;
         }
 
-        /// <summary>
-        /// ? v3.3.2.34: 重构版 - 使用 DTO 类和手动序列化（安全）
-        /// 彻底修复特殊字符导致的 JSON 格式错误
-        /// </summary>
-        private static string BuildJsonRequest(string prompt)
+internal static string BuildJsonRequest(string prompt)
         {
-            bool isGoogle = (provider == "Google");
+            bool isGoogle = (IndependentAISummarizer.provider == "Google");
             var settings = RimTalkMemoryPatchMod.Settings;
             bool enableCaching = settings != null && settings.enablePromptCaching;
             
@@ -539,7 +644,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 int maxTokens = settings != null ? settings.summaryMaxTokens : 200;
                 sb.Append($"\"maxOutputTokens\":{maxTokens}");
                 
-                if (model.Contains("flash"))
+                if (IndependentAISummarizer.model.Contains("flash"))
                 {
                     sb.Append(",\"thinkingConfig\":{\"thinkingBudget\":0}");
                 }
@@ -563,7 +668,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 
                 var sb = new StringBuilder();
                 sb.Append("{");
-                sb.Append($"\"model\":\"{model}\",");
+                sb.Append($"\"IndependentAISummarizer.model\":\"{IndependentAISummarizer.model}\",");
                 sb.Append("\"messages\":[");
                 
                 // system消息（带缓存控制）
@@ -573,13 +678,13 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 if (enableCaching)
                 {
                     // ? OpenAI/Custom/Player2 都尝试使用 cache_control
-                    if ((provider == "OpenAI" || provider == "Custom" || provider == "Player2") && 
-                        (model.Contains("gpt-4") || model.Contains("gpt-3.5")))
+                    if ((IndependentAISummarizer.provider == "OpenAI" || IndependentAISummarizer.provider == "Custom" || IndependentAISummarizer.provider == "Player2") && 
+                        (IndependentAISummarizer.model.Contains("gpt-4") || IndependentAISummarizer.model.Contains("gpt-3.5")))
                     {
                         // OpenAI Prompt Caching
                         sb.Append(",\"cache_control\":{\"type\":\"ephemeral\"}");
                     }
-                    else if (provider == "DeepSeek")
+                    else if (IndependentAISummarizer.provider == "DeepSeek")
                     {
                         // DeepSeek缓存控制
                         sb.Append(",\"cache\":true");
@@ -598,7 +703,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 sb.Append($"\"max_tokens\":{maxTokens}");
 
                 
-                if (enableCaching && provider == "DeepSeek")
+                if (enableCaching && IndependentAISummarizer.provider == "DeepSeek")
                 {
                     sb.Append(",\"enable_prompt_cache\":true");
                 }
@@ -608,12 +713,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 return sb.ToString();
             }
         }
-        
-        /// <summary>
-        /// ? v3.3.2.34: 安全的 JSON 字符串转义
-        /// 处理所有特殊字符：引号、换行、反斜杠等
-        /// </summary>
-        private static string EscapeJsonString(string text)
+
+internal static string EscapeJsonString(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return "";
@@ -662,10 +763,13 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             return sb.ToString();
         }
+    }
 
-        private static async Task<string> CallAIAsync(string prompt)
+    internal static class AISummarizerHttp
+    {
+internal static async Task<string> CallAIAsync(string prompt)
         {
-            if (useRimTalkAdapter)
+            if (IndependentAISummarizer.useRimTalkAdapter)
             {
                 var client = await global::Ustas.RimAI.Communication.Client.AIClientFactory.GetAIClientAsync();
                 if (client == null) return null;
@@ -678,12 +782,12 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 return payload?.Response;
             }
 
-            if (provider == "OpenAI")
+            if (IndependentAISummarizer.provider == "OpenAI")
             {
                 var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
                 {
                     Messages = new[] { new TextAiMessage("user", prompt) },
-                    Model = model,
+                    Model = IndependentAISummarizer.model,
                     ApiShape = TextAiApiShape.Responses,
                     UseSharedGameplayCredential = true,
                     Caller = "memory-summarizer",
@@ -692,17 +796,17 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 return shared.Succeeded ? shared.Text : null;
             }
 
-            if (provider != "Google")
+            if (IndependentAISummarizer.provider != "Google")
             {
                 var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
                 {
                     Messages = new[] { new TextAiMessage("user", prompt) },
-                    Model = model,
-                    BaseUrl = apiUrl,
-                    ApiKey = apiKey,
+                    Model = IndependentAISummarizer.model,
+                    BaseUrl = IndependentAISummarizer.apiUrl,
+                    ApiKey = IndependentAISummarizer.apiKey,
                     UseSharedGameplayCredential = false,
                     ApiShape = TextAiApiShape.ChatCompletions,
-                    PrebuiltJson = BuildJsonRequest(prompt),
+                    PrebuiltJson = IndependentAISummarizer.BuildJsonRequest(prompt),
                     Caller = "memory-summarizer",
                     Arbitration = AiRequestMetadata.FromCaller("memory-summarizer")
                 }));
@@ -718,10 +822,10 @@ namespace Ustas.RimAI.Communication.Memory.AI
             {
                 try
                 {
-                    string actualUrl = apiUrl;
-                    if (provider == "Google")
+                    string actualUrl = IndependentAISummarizer.apiUrl;
+                    if (IndependentAISummarizer.provider == "Google")
                     {
-                        actualUrl = apiUrl.Replace("MODEL_PLACEHOLDER", model).Replace("API_KEY_PLACEHOLDER", apiKey);
+                        actualUrl = IndependentAISummarizer.apiUrl.Replace("MODEL_PLACEHOLDER", IndependentAISummarizer.model).Replace("API_KEY_PLACEHOLDER", IndependentAISummarizer.apiKey);
                     }
 
                     if (attempt > 1)
@@ -731,9 +835,9 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     else
                     {
                         Log.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
-                        Log.Message($"[AI Summarizer]   Provider: {provider}");
-                        Log.Message($"[AI Summarizer]   Model: {model}");
-                        Log.Message($"[AI Summarizer]   Credential source: {(provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
+                        Log.Message($"[AI Summarizer]   Provider: {IndependentAISummarizer.provider}");
+                        Log.Message($"[AI Summarizer]   Model: {IndependentAISummarizer.model}");
+                        Log.Message($"[AI Summarizer]   Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
                     }
 
                     var request = (HttpWebRequest)WebRequest.Create(actualUrl);
@@ -741,23 +845,23 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     request.ContentType = "application/json";
                     
                     // ? v3.3.3: Google API不使用Bearer token（Key在URL中）
-                    if (provider != "Google")
+                    if (IndependentAISummarizer.provider != "Google")
                     {
-                        if (provider == "Player2")
+                        if (IndependentAISummarizer.provider == "Player2")
                         {
                             foreach (var header in Player2Session.Current.AuthHeaders(Player2GameKeys.Memory))
                                 request.Headers[header.Key] = header.Value;
                         }
                         else
                         {
-                            request.Headers["Authorization"] = $"Bearer {apiKey}";
+                            request.Headers["Authorization"] = $"Bearer {IndependentAISummarizer.apiKey}";
                         }
                     }
                     
                     // ? 增加超时时间到120秒（2分钟）
                     request.Timeout = 120000; // 原来是30000（30秒）
 
-                    string json = BuildJsonRequest(prompt);
+                    string json = IndependentAISummarizer.BuildJsonRequest(prompt);
 
                     // 显式使用更宽容的转码方式
                     var tolerantUtf8 = new UTF8Encoding(false, false);
@@ -829,8 +933,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
 	                            // 认证错误：显示完整错误信息（帮助调试）
 	                            errorDetail = errorText;
 	                            Log.Error($"[AI Summarizer] ? Authentication Error ({errorResponse.StatusCode}):");
-	                            Log.Error("[AI Summarizer]    Credential rejected by provider");
-	                            Log.Error($"[AI Summarizer]    Provider: {provider}");
+	                            Log.Error("[AI Summarizer]    Credential rejected by IndependentAISummarizer.provider");
+	                            Log.Error($"[AI Summarizer]    Provider: {IndependentAISummarizer.provider}");
 	                            Log.Error($"[AI Summarizer]    Response: {errorText}");
 	                            Log.Error("[AI Summarizer] ");
 	                            Log.Error("[AI Summarizer] ?? Possible solutions:");
@@ -895,13 +999,10 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return null;
         }
 
-        /// <summary>
-        /// ? v3.3.2.35: 优化版 - 使用静态编译的正则表达式
-        /// </summary>
-        private static string ParseResponse(string responseText)
+internal static string ParseResponse(string responseText)
         {
             // ? v3.3.7: 方法入口日志（确保方法被调用）
-            Log.Message($"[AI Summarizer] 🔍 ParseResponse called, provider={provider}");
+            Log.Message($"[AI Summarizer] 🔍 ParseResponse called, IndependentAISummarizer.provider={IndependentAISummarizer.provider}");
             
             try
             {
@@ -909,7 +1010,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 Log.Message($"[AI Summarizer] Full API Response (Length: {responseText.Length}):\n{responseText}");
 
                 // 必须配合之前给你的那个能跳过转义引号的正则
-                var regex = provider == "Google" ? GoogleResponseRegex : OpenAIResponseRegex;
+                var regex = IndependentAISummarizer.provider == "Google" ? IndependentAISummarizer.GoogleResponseRegex : IndependentAISummarizer.OpenAIResponseRegex;
 
                 // ⭐ 核心修改：使用 Matches (复数) 抓取所有数据包
                 var matches = regex.Matches(responseText);
@@ -942,7 +1043,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return null;
         }
 
-        private static string ReadStreamAsText(System.IO.Stream stream)
+internal static string ReadStreamAsText(System.IO.Stream stream)
         {
             if (stream == null) return "";
             
@@ -963,7 +1064,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
 
-        private static async Task<string> ReadStreamAsTextAsync(System.IO.Stream stream)
+internal static async Task<string> ReadStreamAsTextAsync(System.IO.Stream stream)
         {
             if (stream == null) return "";
             
@@ -983,38 +1084,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 }
             }
         }
-        
-        public static void TryDetectPlayer2LocalApp()
-        {
-            Task.Run(() =>
-            {
-                try
-                {
-                    Log.Message("[AI] Checking for local Player2 app...");
-                    var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
-                    {
-                        RequestGameKey = Player2GameKeys.Memory
-                    });
-                    if (session.Succeeded && session.IsLocal)
-                    {
-                        LongEventHandler.ExecuteWhenFinished(() =>
-                        {
-                            Messages.Message("RimTalk_Settings_Player2Detected".Translate(), MessageTypeDefOf.PositiveEvent, false);
-                        });
-                        return;
-                    }
-
-                    Log.Message("[AI] Player2 local app not found, will use remote API");
-                    LongEventHandler.ExecuteWhenFinished(() =>
-                    {
-                        Messages.Message("RimTalk_Settings_Player2NotFound".Translate(), MessageTypeDefOf.NeutralEvent, false);
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Log.Warning($"[AI] Player2 detection error: {ex.Message}");
-                }
-            });
-        }
     }
+
 }
