@@ -5,25 +5,22 @@ using System.Text;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Injection;
+using Ustas.RimAI.Communication.Prompt;
 using Ustas.RimAI.Core.Diagnostics;
 using Ustas.RimAI.Core.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
     /// <summary>
-    /// 为 {{pawn.memory}} Mustache 变量提供内容
-    /// 
-    /// 当 RimTalk 解析模板时遇到 {{pawn1.memory}}，
-    /// 会调用此 Provider 获取 pawn1 的记忆内容
+    /// Provides {{pawn.memory}} for Scriban. On the normal Talk path, returns the Projection
+    /// already prepared by PromptManager.AttachTypedMemoryContext (OPTION A).
+    /// Fallback retrieval runs only when no precomputed Projection is present.
     /// </summary>
     public static class MemoryVariableProvider
     {
         /// <summary>
-        /// 获取 Pawn 的记忆内容
-        /// 由 RimTalk Mustache Parser 在解析 {{pawnN.memory}} 时调用
+        /// Gets Memory text for a pawn. Prefer precomputed TypedMemoryProjections from LastContext.
         /// </summary>
-        /// <param name="pawn">目标 Pawn（由 RimTalk 传入）</param>
-        /// <returns>格式化的记忆文本</returns>
         public static string GetPawnMemory(Pawn pawn)
         {
             if (pawn == null)
@@ -31,9 +28,19 @@ namespace Ustas.RimAI.Communication.Memory.API
                 return "";
             }
 
+            // OPTION A — normal Talk path: present Attach's query-aware Projection (no second GetContext).
+            var promptContext = PromptManager.LastContext;
+            if (promptContext != null
+                && promptContext.UsedTypedMemoryContext
+                && promptContext.TryGetTypedMemoryProjection(pawn.ThingID, out var precomputed))
+            {
+                return precomputed ?? string.Empty;
+            }
+
             var typed = MemoryContextAccess.Current;
             if (typed != null)
             {
+                // Fallback: template/preview without Attach. Explicit PawnId-only request.
                 var result = typed.GetContext(new MemoryContextRequest { PawnId = pawn.ThingID });
                 return result?.Projection ?? string.Empty;
             }

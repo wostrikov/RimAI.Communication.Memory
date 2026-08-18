@@ -19,7 +19,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             var pawn = MemoryPawnResolver.Resolve(request);
             var settings = RimTalkMemoryPatchMod.Settings;
             int maxABMRounds = settings?.maxABMInjectionRounds ?? 3;
-            int maxTotal = settings?.maxInjectedMemories ?? 10;
+            int maxTotal = ResolveMaxMemoryEntries(request, settings?.maxInjectedMemories ?? 10);
             var memories = new List<MemoryContextEntry>();
             var allEntries = new List<MemoryEntry>();
 
@@ -71,7 +71,9 @@ namespace Ustas.RimAI.Communication.Memory.API
 
             var pawn = MemoryPawnResolver.Resolve(request);
             var scores = new List<KnowledgeScore>();
-            int maxEntries = request.MaxEntries > 0 ? request.MaxEntries : settings?.maxInjectedKnowledge ?? 10;
+            int maxEntries = request.MaxEntries > 0
+                ? request.MaxEntries
+                : ResolveMaxMemoryEntries(request, settings?.maxInjectedKnowledge ?? 10);
             string text = library.InjectKnowledgeWithDetails(
                 query,
                 maxEntries,
@@ -151,6 +153,25 @@ namespace Ustas.RimAI.Communication.Memory.API
                     entry.Type.ToString()));
                 added++;
             }
+        }
+
+        /// <summary>
+        /// Applies settings quota capped by TokenBudget using the Relations convention
+        /// (<see cref="MemoryContextDefaults.TokensPerMemoryEntry"/> tokens per entry).
+        /// Default Talk budget 2000 → 25 entries, so typical maxInjectedMemories=10 is unchanged.
+        /// </summary>
+        static int ResolveMaxMemoryEntries(MemoryContextRequest request, int settingsMax)
+        {
+            int maxTotal = settingsMax > 0 ? settingsMax : 10;
+            if (request?.TokenBudget > 0)
+            {
+                int fromBudget = Math.Max(1, request.TokenBudget / MemoryContextDefaults.TokensPerMemoryEntry);
+                maxTotal = Math.Min(maxTotal, fromBudget);
+            }
+
+            if (request != null && request.MaxEntries > 0)
+                maxTotal = Math.Min(maxTotal, request.MaxEntries);
+            return maxTotal;
         }
     }
 }

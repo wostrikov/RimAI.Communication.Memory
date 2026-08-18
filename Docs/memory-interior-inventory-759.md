@@ -21,57 +21,58 @@ Production scope: `Source/**/*.cs` excluding `obj`/`bin`.
 
 Wave A commits: Core `a7af29a`, Memory `02f07c4`. Do not discard.
 
-## Semantic decision (mandatory before Wave B)
+## Semantic decision — OPTION A (closing gate)
 
-### Production call graph (traced)
+### Before (Wave A wart — confirmed defect)
 
 ```text
-TalkService.GenerateTalk
- └─ PromptManager.BuildMessages
-     ├─ [PATH A] AttachTypedMemoryContext
-     │     → MemoryContextAccess.Current.GetContext({
-     │           PawnId=initiator, PawnIds=all, Query=talkRequest.Prompt, TokenBudget=2000
-     │       })
-     │     → PromptContext.UsedTypedMemoryContext / TypedMemorySource only
-     │     → Projection / Memories / Knowledge DISCARDED
-     │
-     └─ BuildMessagesFromPreset → ScribanParser.Render
-           └─ [PATH B] {{ p.memory }} → MemoryVariableProvider.GetPawnMemory
-                 → GetContext({ PawnId })   // NO Query
-                 → Projection spliced into final PromptMessages
-                       → AIService.ChatStreaming
-
-[PATH C] UnifiedMemoryInjector.Inject
-  → when typed registered: GetContext({ PawnId, Query=dialogueContext }).Projection
-  → NOT on live TalkService path (Scriban early-returns typed branch before Inject)
-  → orphan public caller GetMemoryPrompt deleted in Wave D
+Attach:
+  Query-aware GetContext (often initiator-only) → Projection DISCARDED
+Scriban {{p.memory}}:
+  GetContext({ PawnId }) → final prompt Memory text (query-blind)
+Talk path:
+  1 + N GetContext
+TokenBudget:
+  set on Attach request but unread by MemoryContextProvider
 ```
 
-### Overlap / duplicate retrieval
+### After (OPTION A closing gate)
 
-- PATH A + PATH B run on **the same** `BuildMessages` for every talk.
-- Typical GetContext count: **1 + N** (Attach once + one Scriban call per pawn in `{{ p.memory }}` loop).
-- Query-aware Projection from Attach is **computed then wasted**.
-- `TokenBudget` is set by Attach / Relations but **never read** by `MemoryContextProvider` (dead field for quotas; settings quotas apply instead).
-- `UsedTypedMemoryContext` / `TypedMemorySource` are **write-only** (no production readers).
+```text
+AttachTypedMemoryContext:
+  for each talk pawn:
+    GetContext({ PawnId, PawnIds, Query=talkRequest.Prompt,
+                 TokenBudget=MemoryContextDefaults.DefaultTokenBudget })
+    → store Projection in PromptContext.TypedMemoryProjections[PawnId]
+Scriban {{p.memory}}:
+  MemoryVariableProvider reads PromptManager.LastContext precomputed Projection
+  → NO GetContext on normal Talk path
+Talk path:
+  N GetContext (one per talk pawn) — not 1+N
+TokenBudget:
+  owned by MemoryContextDefaults.DefaultTokenBudget (2000)
+  MemoryContextProvider caps entry quota via TokenBudget / TokensPerMemoryEntry (80)
+  (Relations convention; default 2000 → 25, so typical maxInjectedMemories=10 unchanged)
+```
 
-### Decision
+### UnifiedMemoryInjector disposition
 
-| Item | Choice |
-| --- | --- |
-| Intended canonical model | **OPTION A** — one query-aware retrieval per prompt; Scriban presents already-computed Projection |
-| Implemented in 7.5.9 | **No** — prompt semantics frozen as Wave A characterization |
-| Reason | Fixing Attach discard / Scriban blindness is a product behavior change; user scoped 7.5.9 to architecture reform with behavior preserved |
-| Follow-up | Explicit ticket after 7.5.9: wire Attach (or prompt prep) Projection into `{{p.memory}}`; rewrite Attach characterization deliberately |
-| PATH C | Documented as **parallel / legacy** injector API; not the Communication talk text path when typed provider is registered |
-| Access façade | **ALLOWED_BOUNDARY_FACADE** (`MemoryContextAccess`) — keep Register/Clear; Clear on `MemoryComposition.Stop` |
+**Retained** as compatibility / untyped fallback (`GetFourLayerMemories` when typed Access is null)
+and as an independent typed API with `Query=dialogueContext`. **Not** on the normal Talk
+Scriban path when Attach has prepared projections.
+
+### Fallback
+
+`MemoryVariableProvider` falls back to `GetContext({ PawnId })` only when
+`LastContext` has no precomputed Projection for that pawn (preview / templates without Attach).
+Normal Talk path must not hit fallback (covered by Stage759 Case7).
 
 ### Prompt output behavior
 
-**Unchanged in 7.5.9.** Final talk Memory text remains Scriban `PawnId`-only Projection. Confirmed defect (query-blind prompts) is inventoried, not fixed.
+**Intentionally changed:** final Talk Memory text is now **query-aware** (uses `talkRequest.Prompt`).
+Treated as a verified defect fix after Wave A characterization proved Attach discarded the rich Projection.
 
-E2E protection: `Stage759MemoryPromptProjectionE2ETests` (5 cases) + Wave A `Stage759MemoryContextCharacterizationTests` (16).
-
+E2E: `Stage759MemoryPromptProjectionE2ETests` (OPTION A contract) + updated Wave A characterization.
 ## Waves B–D applied
 
 ### Wave B — composition + context graph
@@ -139,4 +140,6 @@ Rule: do not rewrite Wave A tests to preferred OPTION A until the deferred fix l
 
 ## Stage status
 
-**7.5.9 remains CURRENT** until the deferred OPTION A projection-semantics fix lands (user decision: architecture-only close is insufficient). Roadmap not marked ✅. Whimsical not edited.
+**7.5.9 COMPLETE** after OPTION A closing gate (query-aware Projection reaches final Talk prompt;
+N retrievals per talk, not 1+N; TokenBudget live via entry-cap convention).
+Whimsical not edited.
