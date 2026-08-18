@@ -148,6 +148,40 @@ Public contract remains Core `IMemoryContextProvider` / `IKnowledgeContextProvid
 4. Migrate touched Verse.Log → `RimAiLog`; narrow catch sites when touched.
 5. Delete dead adapters (`SimpleRimTalkIntegration` empty, commented SiliconFlow) only when unused.
 
-## Characterization tests (Wave A)
+## Observed warts (do not "fix" in characterization tests)
 
-Core: `Stage759MemoryContextCharacterizationTests` — Access lifecycle + pure goldens for AppendLayer / formatter type tags / legacy DisplayContent prefix / GetContext defaults.
+Freeze current behavior; treat as inventory until an explicit reform wave.
+
+1. **`PromptManager.AttachTypedMemoryContext` discards Projection**  
+   Calls `IMemoryContextProvider.GetContext` with `PawnId`, `PawnIds`, `Query=talkRequest.Prompt`, `TokenBudget=2000`, then sets only `UsedTypedMemoryContext` + `TypedMemorySource`.  
+   `Projection` / `Memories` / `Knowledge` are not copied onto `PromptContext`. Silent: no exception if Memory content is empty.
+
+2. **Scriban `{{pawn.memory}}` is the path that returns Projection**  
+   `MemoryVariableProvider.GetPawnMemory` (typed branch) returns `GetContext({ PawnId }).Projection`.  
+   Request has **no `Query`**, unlike `UnifiedMemoryInjector` typed branch which passes `Query=dialogueContext`.
+
+3. **Dual typed callers disagree on Query**  
+   Attach (unused Projection) and Injector (with Query) vs VariableProvider (PawnId only). ELS ranking can silently differ by entrypoint.
+
+4. **`EmbeddingService.IsAvailable()` is hard `false`**  
+   `GetEmbeddingAsync` returns null immediately. Semantic embedding path is dead; SuperKeywordEngine is the live path.
+
+5. **`MemoryEntry` Scribe labels stay camelCase / mixed**  
+   e.g. `timestamp`, `IsSummarized` (Pascal on one field). Missing `IsSummarized` loads as **true** (compat).
+
+6. **`MemoryComposition.Stop` does not clear `MemoryContextAccess`**  
+   Stale provider can remain registered after Stop.
+
+## Characterization tests (Wave A) — coverage map
+
+Core: `Stage759MemoryContextCharacterizationTests`
+
+| Zone | Tests (intent) |
+| --- | --- |
+| 1 Injection / prompt | Attach keeps only Source flags (Projection discarded); Scriban vs Injector request shape + Projection return |
+| 2 Persistence | Frozen `MemoryEntry` Scribe labels; load defaults including `IsSummarized=true` missing default |
+| 3 Faked externals | `EmbeddingService.IsAvailable` false; GetEmbedding when unavailable → null |
+| 4 Cross-call ambient | Access overwrite/clear; shared provider instance across consumers |
+| Kept goldens | AppendLayer / layer order / quotas / formatter / type tags / legacy prefix / empty result |
+
+Rule: goldens are snapshots of today, including warts. Suspected bugs are listed above — not corrected in tests.
