@@ -1,21 +1,21 @@
-# ¿ìËÙ²¿Êð½Å±¾£¨ÎÞ²ÎÊý£©
-# ±àÒë²¢²¿Êð Mod µ½ RimWorld
+# ï¿½ï¿½ï¿½Ù²ï¿½ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½Þ²ï¿½ï¿½ï¿½ï¿½ï¿½
+# ï¿½ï¿½ï¿½ë²¢ï¿½ï¿½ï¿½ï¿½ Mod ï¿½ï¿½ RimWorld
 
-Write-Host "ÕýÔÚ²¿Êð RimTalk-ExpandMemory..." -ForegroundColor Cyan
+Write-Host "ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ RimTalk-ExpandMemory..." -ForegroundColor Cyan
 
-# ±àÒë
-dotnet build RimTalk-ExpandMemory.csproj --configuration Release --verbosity minimal
+# ï¿½ï¿½ï¿½ï¿½
+dotnet build Source\RimAI.Communication.Memory.csproj --configuration Release --verbosity minimal
 
 if ($LASTEXITCODE -eq 0) {
-    Write-Host "? ±àÒë³É¹¦" -ForegroundColor Green
+    Write-Host "? ï¿½ï¿½ï¿½ï¿½É¹ï¿½" -ForegroundColor Green
     
-    # ²¿Êð
+    # ï¿½ï¿½ï¿½ï¿½
     $TargetPath = "C:\Program Files (x86)\Steam\steamapps\common\RimWorld\Mods\RimTalk-ExpandMemory"
     
-    # ´´½¨Ä¿Â¼
+    # ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
     New-Item -ItemType Directory -Path $TargetPath -Force | Out-Null
     
-    # ¸´ÖÆÎÄ¼þ
+    # ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
     Copy-Item -Path "About" -Destination "$TargetPath\About" -Recurse -Force
     Copy-Item -Path "1.6" -Destination "$TargetPath\1.6" -Recurse -Force
     Copy-Item -Path "Languages" -Destination "$TargetPath\Languages" -Recurse -Force
@@ -24,9 +24,10 @@ if ($LASTEXITCODE -eq 0) {
         Copy-Item -Path "Textures" -Destination "$TargetPath\Textures" -Recurse -Force
     }
     
-    Write-Host "? ²¿ÊðÍê³É: $TargetPath" -ForegroundColor Green
+    Write-Host "? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: $TargetPath" -ForegroundColor Green
     Write-Host ""
-    Write-Host "ÇëÔÚ RimWorld Mod ¹ÜÀíÆ÷ÖÐÆôÓÃ Mod" -ForegroundColor Yellow
+    Write-Host "ï¿½ï¿½ï¿½ï¿½ RimWorld Mod ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Mod" -ForegroundColor Yellow
 } else {
-    Write-Host "? ±àÒëÊ§°Ü" -ForegroundColor Red
+    Write-Host "? ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½" -ForegroundColor Red
 }
+

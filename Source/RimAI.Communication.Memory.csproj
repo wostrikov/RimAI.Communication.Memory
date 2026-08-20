@@ -11,6 +11,7 @@
 		<BaseIntermediateOutputPath Condition=" '$(BaseIntermediateOutputPath)' == '' ">$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\obj\</BaseIntermediateOutputPath>
 
 		<ModFolderName>RimAI.Communication.Memory</ModFolderName>
+		<ModRoot>$(MSBuildProjectDirectory)\..</ModRoot>
 
 		<!-- 编程配置项 -->
 		<RootNamespace>Ustas.RimAI.Communication.Memory</RootNamespace>
@@ -50,10 +51,10 @@
 		<Reference Include="System.Net.Http">
 			<Private>False</Private>
 		</Reference>
-		<ProjectReference Include="..\RimAI.Communication\RimAI.Communication.csproj">
+		<ProjectReference Include="..\..\RimAI.Communication\Source\RimAI.Communication.csproj">
 			<Private>False</Private>
 		</ProjectReference>
-		<ProjectReference Include="..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
+		<ProjectReference Include="..\..\RimAI.Core\src\RimAI.Core\RimAI.Core.csproj">
 			<Private>False</Private>
 		</ProjectReference>
 
@@ -77,12 +78,12 @@
 	  exactly how MainTabWindow_Memory became an unresolved XML type at runtime.
 	-->
 	<Target Name="StageModAssemblies">
-		<MakeDir Directories="$(ProjectDir)$(GameVersion)\Assemblies" />
+		<MakeDir Directories="$(ModRoot)\$(GameVersion)\Assemblies" />
 		<ItemGroup>
 			<_StagedAssemblies Include="$(TargetPath)" />
 			<_StagedAssemblies Include="$(OutputPath)Newtonsoft.Json.dll" Condition="Exists('$(OutputPath)Newtonsoft.Json.dll')" />
 		</ItemGroup>
-		<Copy SourceFiles="@(_StagedAssemblies)" DestinationFolder="$(ProjectDir)$(GameVersion)\Assemblies\" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(_StagedAssemblies)" DestinationFolder="$(ModRoot)\$(GameVersion)\Assemblies\" SkipUnchangedFiles="true" />
 	</Target>
 
 	<!-- Deploy to RimWorld client (Windows) -->
@@ -92,10 +93,10 @@
 		</PropertyGroup>
 		<Message Text="Copying to $(WinModPath)" Importance="high" />
 		<MakeDir Directories="$(WinModPath)" />
-		<Exec Command="robocopy &quot;$(ProjectDir)About&quot; &quot;$(WinModPath)About&quot; /MIR" IgnoreExitCode="true" />
-		<Exec Command="robocopy &quot;$(ProjectDir)Languages&quot; &quot;$(WinModPath)Languages&quot; /MIR" IgnoreExitCode="true" />
-		<Exec Command="robocopy &quot;$(ProjectDir)Textures&quot; &quot;$(WinModPath)Textures&quot; /MIR" IgnoreExitCode="true" />
-		<Exec Command="robocopy &quot;$(ProjectDir)$(GameVersion)&quot; &quot;$(WinModPath)$(GameVersion)&quot; /MIR" IgnoreExitCode="true" />
+		<Exec Command="robocopy &quot;$(ModRoot)\About&quot; &quot;$(WinModPath)About&quot; /MIR" IgnoreExitCode="true" />
+		<Exec Command="robocopy &quot;$(ModRoot)\Languages&quot; &quot;$(WinModPath)Languages&quot; /MIR" IgnoreExitCode="true" />
+		<Exec Command="robocopy &quot;$(ModRoot)\Textures&quot; &quot;$(WinModPath)Textures&quot; /MIR" IgnoreExitCode="true" />
+		<Exec Command="robocopy &quot;$(ModRoot)\$(GameVersion)&quot; &quot;$(WinModPath)$(GameVersion)&quot; /MIR" IgnoreExitCode="true" />
 		<Message Text="--- Windows deployment finished successfully ---" Importance="high" />
 	</Target>
 
@@ -105,11 +106,12 @@
 			<DeployPath>$(RimWorldDir)/RimWorldMac.app/Mods/$(ModFolderName)/</DeployPath>
 		</PropertyGroup>
 		<MakeDir Directories="$(DeployPath)" />
-		<Exec Command="rsync -a --delete --checksum &quot;$(ProjectDir)About/&quot; &quot;$(DeployPath)About/&quot;" />
-		<Exec Command="rsync -a --delete --checksum &quot;$(ProjectDir)Languages/&quot; &quot;$(DeployPath)Languages/&quot;" />
-		<Exec Command="rsync -a --delete --checksum &quot;$(ProjectDir)Textures/&quot; &quot;$(DeployPath)Textures/&quot;" />
-		<Exec Command="rsync -a --delete --checksum &quot;$(ProjectDir)$(GameVersion)/&quot; &quot;$(DeployPath)$(GameVersion)/&quot;" />
+		<Exec Command="rsync -a --delete --checksum &quot;$(ModRoot)\About/&quot; &quot;$(DeployPath)About/&quot;" />
+		<Exec Command="rsync -a --delete --checksum &quot;$(ModRoot)\Languages/&quot; &quot;$(DeployPath)Languages/&quot;" />
+		<Exec Command="rsync -a --delete --checksum &quot;$(ModRoot)\Textures/&quot; &quot;$(DeployPath)Textures/&quot;" />
+		<Exec Command="rsync -a --delete --checksum &quot;$(ModRoot)\$(GameVersion)/&quot; &quot;$(DeployPath)$(GameVersion)/&quot;" />
 		<Message Text="--- macOS deployment finished successfully ---" Importance="high" />
 	</Target>
 
 </Project>
+
