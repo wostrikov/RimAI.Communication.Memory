@@ -70,8 +70,23 @@
 		<CallTarget Targets="MacDeploy" Condition=" '$(OS)' != 'Windows_NT' " />
 	</Target>
 
+	<!--
+	  Stage assemblies into the versioned mod layout before content sync.
+	  /*/Assemblies is gitignored and BaseOutputPath lives under LOCALAPPDATA, so a plain
+	  robocopy/rsync of $(GameVersion) would publish Defs without the built DLL — which is
+	  exactly how MainTabWindow_Memory became an unresolved XML type at runtime.
+	-->
+	<Target Name="StageModAssemblies">
+		<MakeDir Directories="$(ProjectDir)$(GameVersion)\Assemblies" />
+		<ItemGroup>
+			<_StagedAssemblies Include="$(TargetPath)" />
+			<_StagedAssemblies Include="$(OutputPath)Newtonsoft.Json.dll" Condition="Exists('$(OutputPath)Newtonsoft.Json.dll')" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_StagedAssemblies)" DestinationFolder="$(ProjectDir)$(GameVersion)\Assemblies\" SkipUnchangedFiles="true" />
+	</Target>
+
 	<!-- Deploy to RimWorld client (Windows) -->
-	<Target Name="WinDeploy">
+	<Target Name="WinDeploy" DependsOnTargets="StageModAssemblies">
 		<PropertyGroup>
 			<WinModPath>$(RimWorldDir)\Mods\$(ModFolderName)\</WinModPath>
 		</PropertyGroup>
@@ -85,7 +100,7 @@
 	</Target>
 
 	<!-- Deploy to RimWorld client (macOS) -->
-	<Target Name="MacDeploy">
+	<Target Name="MacDeploy" DependsOnTargets="StageModAssemblies">
 		<PropertyGroup>
 			<DeployPath>$(RimWorldDir)/RimWorldMac.app/Mods/$(ModFolderName)/</DeployPath>
 		</PropertyGroup>
