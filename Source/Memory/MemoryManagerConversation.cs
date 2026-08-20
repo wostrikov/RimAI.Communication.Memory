@@ -18,13 +18,11 @@ internal string FormatConversationText(PendingConversation record)
         {
             var sb = new StringBuilder();
             
-            // 第一行：参与者列表
             if (record.ParticipantNames != null && record.ParticipantNames.Count > 0)
             {
                 sb.AppendLine($"[Учасники розмови: {string.Join(", ", record.ParticipantNames)}]");
             }
             
-            // 对话内容
             foreach (var line in record.RawDialogue)
             {
                 sb.AppendLine($"{line.SpeakerName}: \"{line.Text}\"");
@@ -40,7 +38,6 @@ internal List<Pawn> FindPawnsByThingIds(List<string> thingIds)
             if (thingIds == null || thingIds.Count == 0)
                 return result;
             
-            // 创建 HashSet 加速查找
             var idSet = new HashSet<string>(thingIds);
             
             foreach (var map in Find.Maps)
@@ -50,10 +47,10 @@ internal List<Pawn> FindPawnsByThingIds(List<string> thingIds)
                     if (idSet.Contains(pawn.ThingID))
                     {
                         result.Add(pawn);
-                        idSet.Remove(pawn.ThingID); // 找到后移除，避免重复
+                        idSet.Remove(pawn.ThingID);
                         
                         if (idSet.Count == 0)
-                            return result; // 所有都找到了
+                            return result;
                     }
                 }
             }

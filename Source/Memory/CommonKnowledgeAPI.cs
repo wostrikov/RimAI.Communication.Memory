@@ -5,28 +5,10 @@ using Verse;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 常识库公共 API - 供其他 Mod 使用
-    /// 
-    /// 使用方法：
-    /// 1. 添加常识：CommonKnowledgeAPI.AddKnowledge("标签", "内容", 0.5f)
-    /// 2. 更新常识：CommonKnowledgeAPI.UpdateKnowledge("id", "新内容")
-    /// 3. 查询常识：CommonKnowledgeAPI.FindKnowledge("标签")
-    /// 4. 删除常识：CommonKnowledgeAPI.RemoveKnowledge("id")
-    /// 
-    /// 版本：v3.3.x
-    /// </summary>
     public static class CommonKnowledgeAPI
     {
         #region 添加常识
 
-        /// <summary>
-        /// 添加一条常识（简化版）
-        /// </summary>
-        /// <param name="tag">标签，支持多个（用逗号分隔）</param>
-        /// <param name="content">内容</param>
-        /// <param name="importance">重要性（0-1），默认0.5</param>
-        /// <returns>新常识的ID</returns>
         public static string AddKnowledge(string tag, string content, float importance = 0.5f)
         {
             try
@@ -42,7 +24,7 @@ namespace Ustas.RimAI.Communication.Memory
                 {
                     importance = UnityEngine.Mathf.Clamp01(importance),
                     isEnabled = true,
-                    isUserEdited = false // 标记为非用户编辑，可以被自动处理
+                    isUserEdited = false
                 };
 
                 library.AddEntry(entry);
@@ -56,17 +38,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 添加一条常识（完整版）
-        /// </summary>
-        /// <param name="tag">标签，支持多个（用逗号分隔）</param>
-        /// <param name="content">内容</param>
-        /// <param name="importance">重要性（0-1）</param>
-        /// <param name="matchMode">匹配模式（Any=任意一个标签匹配即可，All=所有标签必须匹配）</param>
-        /// <param name="targetPawnId">目标Pawn ID（-1=全局，其他=仅对该Pawn有效）</param>
-        /// <param name="canBeExtracted">是否可以被提取（用于常识链）</param>
-        /// <param name="canBeMatched">是否可以被匹配（用于常识链）</param>
-        /// <returns>新常识的ID</returns>
+        // Hard constraint — changing this breaks an invariant. (summary summary param name tag param param name content param param name importance param param name matchMode Any All param param name targetPawnId Pawn)
         public static string AddKnowledgeEx(
             string tag, 
             string content, 
@@ -94,7 +66,6 @@ namespace Ustas.RimAI.Communication.Memory
                     isUserEdited = false
                 };
 
-                // 设置扩展属性
                 ExtendedKnowledgeEntry.SetCanBeExtracted(entry, canBeExtracted);
                 ExtendedKnowledgeEntry.SetCanBeMatched(entry, canBeMatched);
 
@@ -109,12 +80,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 批量添加常识
-        /// </summary>
-        /// <param name="knowledgeList">常识列表（标签-内容对）</param>
-        /// <param name="importance">默认重要性</param>
-        /// <returns>成功添加的数量</returns>
         public static int AddKnowledgeBatch(List<(string tag, string content)> knowledgeList, float importance = 0.5f)
         {
             if (knowledgeList == null || knowledgeList.Count == 0)
@@ -134,12 +99,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         #region 更新常识
 
-        /// <summary>
-        /// 更新常识内容
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <param name="newContent">新内容</param>
-        /// <returns>是否成功</returns>
         public static bool UpdateKnowledge(string id, string newContent)
         {
             try
@@ -154,7 +113,6 @@ namespace Ustas.RimAI.Communication.Memory
                 entry.content = newContent;
                 entry.InvalidateCache();
                 
-                // 触发向量更新（如果启用）
                 try
                 {
                     if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
@@ -176,12 +134,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 更新常识标签
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <param name="newTag">新标签</param>
-        /// <returns>是否成功</returns>
         public static bool UpdateKnowledgeTag(string id, string newTag)
         {
             try
@@ -201,12 +153,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 更新常识重要性
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <param name="newImportance">新重要性（0-1）</param>
-        /// <returns>是否成功</returns>
         public static bool UpdateKnowledgeImportance(string id, float newImportance)
         {
             try
@@ -225,12 +171,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 启用/禁用常识
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <param name="enabled">是否启用</param>
-        /// <returns>是否成功</returns>
         public static bool SetKnowledgeEnabled(string id, bool enabled)
         {
             try
@@ -253,11 +193,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         #region 查询常识
 
-        /// <summary>
-        /// 根据ID查找常识
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <returns>常识条目，未找到返回null</returns>
         public static CommonKnowledgeEntry FindKnowledgeById(string id)
         {
             try
@@ -275,11 +210,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 根据标签查找常识（支持部分匹配）
-        /// </summary>
-        /// <param name="tag">标签（支持部分匹配）</param>
-        /// <returns>匹配的常识列表</returns>
         public static List<CommonKnowledgeEntry> FindKnowledge(string tag)
         {
             try
@@ -299,11 +229,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 根据内容查找常识（支持部分匹配）
-        /// </summary>
-        /// <param name="content">内容关键词</param>
-        /// <returns>匹配的常识列表</returns>
         public static List<CommonKnowledgeEntry> FindKnowledgeByContent(string content)
         {
             try
@@ -323,10 +248,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 获取所有常识
-        /// </summary>
-        /// <returns>所有常识列表</returns>
         public static List<CommonKnowledgeEntry> GetAllKnowledge()
         {
             try
@@ -344,10 +265,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 获取常识数量
-        /// </summary>
-        /// <returns>常识总数</returns>
         public static int GetKnowledgeCount()
         {
             try
@@ -369,11 +286,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         #region 删除常识
 
-        /// <summary>
-        /// 根据ID删除常识
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <returns>是否成功</returns>
         public static bool RemoveKnowledge(string id)
         {
             try
@@ -396,11 +308,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 根据标签删除所有匹配的常识
-        /// </summary>
-        /// <param name="tag">标签</param>
-        /// <returns>删除的数量</returns>
         public static int RemoveKnowledgeByTag(string tag)
         {
             try
@@ -429,10 +336,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 清空所有常识（危险操作）
-        /// </summary>
-        /// <returns>是否成功</returns>
         public static bool ClearAllKnowledge()
         {
             try
@@ -455,12 +358,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         #region 导入/导出
 
-        /// <summary>
-        /// 从文本导入常识
-        /// </summary>
-        /// <param name="text">格式化的常识文本（每行一条）</param>
-        /// <param name="clearExisting">是否清空现有常识</param>
-        /// <returns>导入的数量</returns>
         public static int ImportFromText(string text, bool clearExisting = false)
         {
             try
@@ -478,10 +375,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 导出所有常识为文本
-        /// </summary>
-        /// <returns>格式化的常识文本</returns>
         public static string ExportToText()
         {
             try
@@ -503,20 +396,11 @@ namespace Ustas.RimAI.Communication.Memory
 
         #region 高级功能
 
-        /// <summary>
-        /// 检查常识是否存在（根据ID）
-        /// </summary>
-        /// <param name="id">常识ID</param>
-        /// <returns>是否存在</returns>
         public static bool ExistsKnowledge(string id)
         {
             return FindKnowledgeById(id) != null;
         }
 
-        /// <summary>
-        /// 获取常识库统计信息
-        /// </summary>
-        /// <returns>统计信息</returns>
         public static KnowledgeStats GetStats()
         {
             try
@@ -545,16 +429,13 @@ namespace Ustas.RimAI.Communication.Memory
         #endregion
     }
 
-    /// <summary>
-    /// 常识库统计信息
-    /// </summary>
     public struct KnowledgeStats
     {
-        public int TotalCount;          // 总数
-        public int EnabledCount;        // 启用的数量
-        public int DisabledCount;       // 禁用的数量
-        public int UserEditedCount;     // 用户编辑的数量
-        public int GlobalCount;         // 全局常识数量
-        public int PawnSpecificCount;   // Pawn专属常识数量
+        public int TotalCount;         
+        public int EnabledCount;       
+        public int DisabledCount;      
+        public int UserEditedCount;    
+        public int GlobalCount;        
+        public int PawnSpecificCount;  
     }
 }

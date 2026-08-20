@@ -3,9 +3,6 @@ using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
-    /// <summary>
-    /// AI 请求管理器 - 启动协程
-    /// </summary>
     public class AIRequestManager : WorldComponent
     {
         public AIRequestManager(World world) : base(world) { }

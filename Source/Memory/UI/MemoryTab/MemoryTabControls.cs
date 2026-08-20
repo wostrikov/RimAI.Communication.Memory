@@ -8,10 +8,6 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory - Controls 控制面板部分
-    /// 包含层级过滤器、类型过滤器和操作按钮
-    /// </summary>
     internal sealed class MemoryTabControls : MemoryTabCollaborator
     {
         internal MemoryTabControls(MainTabWindow_Memory owner) : base(owner) { }
@@ -38,7 +34,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             y = DrawTypeFilters(innerRect, y);
             y += 10f;
             
-            // ? 移除了 DrawStatistics 调用，统计已移到TopBar
             
             // Separator
             Widgets.DrawLineHorizontal(innerRect.x, y, innerRect.width);
@@ -65,7 +60,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             float checkboxHeight = 24f;
             
-            // ? v3.3.32: Store previous values to detect changes
             bool prevShowABM = Owner.showABM;
             bool prevShowSCM = Owner.showSCM;
             bool prevShowELS = Owner.showELS;
@@ -77,25 +71,21 @@ namespace Ustas.RimAI.Communication.Memory.UI
             DrawColoredCheckbox(abmRect, "RimTalk_MindStream_ABM".Translate(), ref Owner.showABM, abmColor, MemoryLayer.Active);
             y += checkboxHeight + 2f;
             
-            // SCM - ? 带右键菜单
             Rect scmRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color scmColor = new Color(0.3f, 1f, 0.5f); // Green
             DrawColoredCheckbox(scmRect, "RimTalk_MindStream_SCM".Translate(), ref Owner.showSCM, scmColor, MemoryLayer.Situational);
             y += checkboxHeight + 2f;
             
-            // ELS - ? 带右键菜单
             Rect elsRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color elsColor = new Color(1f, 0.8f, 0.3f); // Yellow
             DrawColoredCheckbox(elsRect, "RimTalk_MindStream_ELS".Translate(), ref Owner.showELS, elsColor, MemoryLayer.EventLog);
             y += checkboxHeight + 2f;
             
-            // CLPA - ? 带右键菜单
             Rect clpaRect = new Rect(parentRect.x, y, parentRect.width, checkboxHeight);
             Color clpaColor = new Color(0.8f, 0.4f, 1f); // Purple
             DrawColoredCheckbox(clpaRect, "RimTalk_MindStream_CLPA".Translate(), ref Owner.showCLPA, clpaColor, MemoryLayer.Archive);
             y += checkboxHeight;
             
-            // ? v3.3.32: Mark cache dirty if any filter changed
             if (Owner.showABM != prevShowABM || Owner.showSCM != prevShowSCM || Owner.showELS != prevShowELS || Owner.showCLPA != prevShowCLPA)
             {
                 Owner.filtersDirty = true;
@@ -106,7 +96,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         
         internal void DrawColoredCheckbox(Rect rect, string label, ref bool value, Color color, MemoryLayer? rightClickLayer)
         {
-            // ? 右键检测（如果指定了层级）- 在绘制之前
             if (rightClickLayer.HasValue)
             {
                 if (Event.current.type == EventType.MouseDown && 
@@ -115,7 +104,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 {
                     ShowCreateMemoryMenu(rightClickLayer.Value);
                     Event.current.Use();
-                    return; // 不继续绘制复选框，避免状态变化
+                    return;
                 }
             }
             
@@ -127,7 +116,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Rect checkboxRect = new Rect(rect.x + 8f, rect.y, rect.width - 8f, rect.height);
             Widgets.CheckboxLabeled(checkboxRect, label, ref value);
             
-            // ? 添加工具提示提示用户可以右键
             if (rightClickLayer.HasValue && Mouse.IsOver(rect))
             {
                 TooltipHandler.TipRegion(rect, "RimTalk_MindStream_RightClickToCreate".Translate(Parts.Utilities.GetLayerLabel(rightClickLayer.Value)));
@@ -154,7 +142,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_All".Translate()))
             {
-                if (Owner.filterType != null) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != null)
                 {
                     Owner.filterType = null;
                     Owner.selectedMemories.Clear();
@@ -170,7 +158,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_Conversation".Translate()))
             {
-                if (Owner.filterType != MemoryType.Conversation) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != MemoryType.Conversation)
                 {
                     Owner.filterType = MemoryType.Conversation;
                     Owner.selectedMemories.Clear();
@@ -186,7 +174,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 GUI.color = new Color(0.5f, 0.7f, 1f);
             if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_Action".Translate()))
             {
-                if (Owner.filterType != MemoryType.Action) // ? v3.3.32: Only mark dirty if actually changed
+                if (Owner.filterType != MemoryType.Action)
                 {
                     Owner.filterType = MemoryType.Action;
                     Owner.selectedMemories.Clear();
@@ -214,12 +202,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             float spacing = 5f;
             bool hasSelection = Owner.selectedMemories.Count > 0;
             
-            // ? 如果没有选中，则操作对象为当前页面所有可见记忆
-            // 优先使用缓存的列表
             var targetMemories = hasSelection ? Owner.selectedMemories.ToList() : Owner.cachedMemories;
             int targetCount = targetMemories.Count;
             
-            // ? 修复：总结按钮现在支持 ABM + SCM
             int abmCount = targetMemories.Count(m => m.Layer == MemoryLayer.Active);
             int scmCount = targetMemories.Count(m => m.Layer == MemoryLayer.Situational);
             int summarizableCount = abmCount + scmCount;
@@ -326,16 +311,8 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             y += buttonHeight + spacing;
 
-            /* 此方法高度危险，完全没有正确处理固定的记忆！
-            // Archive All
-            if (Widgets.ButtonText(new Rect(parentRect.x, y, parentRect.width, buttonHeight), "RimTalk_MindStream_ArchiveAll".Translate()))
-            {
-                Parts.Actions.ArchiveAll();
-            }
-            y += buttonHeight + spacing * 2;
-            */
+            
 
-            // ? 导出/导入按钮（并排显示）
             float halfWidth = (parentRect.width - spacing) / 2f;
             
             // Export button (left)

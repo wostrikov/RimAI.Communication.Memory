@@ -19,7 +19,6 @@ public void DecayActivity()
             float elsRate = RimTalkMemoryPatchMod.Settings.elsDecayRate;
             float clpaRate = RimTalkMemoryPatchMod.Settings.clpaDecayRate;
 
-            // 步骤1：衰减所有记忆的activity
             foreach (var memory in situationalMemories)
                 memory.Decay(scmRate);
 
@@ -29,22 +28,19 @@ public void DecayActivity()
             foreach (var memory in archiveMemories)
                 memory.Decay(clpaRate);
 
-            // ⭐ 步骤2：清理极低activity的"死亡"记忆（方案1）
             CleanupLowActivityMemories();
 
-            // ⭐ 步骤3：强制执行容量限制（方案3）
             EnforceMemoryLimits();
         }
 
 internal void CleanupLowActivityMemories()
         {
-            const float ACTIVITY_THRESHOLD = 0.01f; // activity < 0.01视为"死亡"
+            const float ACTIVITY_THRESHOLD = 0.01f;
 
             int removedSCM = 0;
             int removedELS = 0;
             int removedCLPA = 0;
 
-            // 清理SCM中的低activity记忆（移除 isUserEdited 检查）
             int beforeSCM = situationalMemories.Count;
             situationalMemories.RemoveAll(m =>
                 m.Activity < ACTIVITY_THRESHOLD &&
@@ -52,7 +48,6 @@ internal void CleanupLowActivityMemories()
             );
             removedSCM = beforeSCM - situationalMemories.Count;
 
-            // 清理ELS中的低activity记忆（移除 isUserEdited 检查）
             int beforeELS = eventLogMemories.Count;
             eventLogMemories.RemoveAll(m =>
                 m.Activity < ACTIVITY_THRESHOLD &&
@@ -60,7 +55,6 @@ internal void CleanupLowActivityMemories()
             );
             removedELS = beforeELS - eventLogMemories.Count;
 
-            // ⭐ 清理CLPA中的低activity记忆（移除 isUserEdited 检查）
             int beforeCLPA = archiveMemories.Count;
             archiveMemories.RemoveAll(m =>
                 m.Activity < ACTIVITY_THRESHOLD &&
@@ -68,7 +62,6 @@ internal void CleanupLowActivityMemories()
             );
             removedCLPA = beforeCLPA - archiveMemories.Count;
 
-            // 开发模式日志
             if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0 || removedCLPA > 0))
             {
                 var pawn = parent as Pawn;
@@ -82,19 +75,16 @@ internal void EnforceMemoryLimits()
             int removedSCM = 0;
             int removedELS = 0;
 
-            // ⭐ 修复：只计算非固定的记忆数量（移除 isUserEdited 检查）
             int scmNonPinnedCount = situationalMemories.Count(m => !m.IsPinned);
             int elsNonPinnedCount = eventLogMemories.Count(m => !m.IsPinned);
 
-            // ⭐ 处理SCM容量限制（移除 isUserEdited 检查）
             if (scmNonPinnedCount > MaxSCM)
             {
                 int toRemoveCount = scmNonPinnedCount - MaxSCM;
-                // 按activity升序排序，删除最低的
                 var toRemove = situationalMemories
                     .Where(m => !m.IsPinned)
                     .OrderBy(m => m.Activity)
-                    .ThenBy(m => m.GameTick) // 相同activity时，删除更旧的
+                    .ThenBy(m => m.GameTick)
                     .Take(toRemoveCount)
                     .ToList();
 
@@ -105,11 +95,9 @@ internal void EnforceMemoryLimits()
                 }
             }
 
-            // ⭐ 处理ELS容量限制（移除 isUserEdited 检查）
             if (elsNonPinnedCount > MaxELS)
             {
                 int toRemoveCount = elsNonPinnedCount - MaxELS;
-                // 按activity升序排序，删除最低的
                 var toRemove = eventLogMemories
                     .Where(m => !m.IsPinned)
                     .OrderBy(m => m.Activity)
@@ -124,7 +112,6 @@ internal void EnforceMemoryLimits()
                 }
             }
 
-            // 开发模式日志
             if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0))
             {
                 var pawn = parent as Pawn;

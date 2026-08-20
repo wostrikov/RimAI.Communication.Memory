@@ -7,70 +7,51 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 常识条目显式分类（用户可在UI中手动选择）
-    /// ⭐ None = 自动推断（根据标签关键词）
-    /// </summary>
     public enum KnowledgeEntryCategory
     {
-        None,           // 自动推断
-        Instructions,   // 指令规则
-        Lore,           // 世界观设定
-        PawnStatus,     // 殖民者状态
-        History,        // 历史记录
-        Other           // 其他
+        None,          
+        Instructions,  
+        Lore,          
+        PawnStatus,    
+        History,       
+        Other          
     }
 
-    /// <summary>
-    /// 关键词匹配模式
-    /// </summary>
     public enum KeywordMatchMode
     {
-        Any,    // 单词匹配：只要出现其中一个词就算
-        All     // 组合匹配：必须同时出现所有标签
+        Any,   
+        All      // Hard constraint — changing this breaks an invariant.
     }
 
-    /// <summary>
-    /// 匹配类型
-    /// </summary>
     public enum KnowledgeMatchType
     {
-        Keyword,    // 关键词匹配
-        Vector,     // 向量检索
-        Mixed       // 混合
+        Keyword,   
+        Vector,    
+        Mixed      
     }
 
-    /// <summary>
-    /// 常识条目
-    /// </summary>
     public class CommonKnowledgeEntry : IExposable
     {
         public string id;
-        public string tag;          // 标签（支持多个，用逗号分隔）
-        public string content;      // 内容（用于注入）
-        public float importance;    // 重要性
-        public List<string> keywords; // 关键词（可选，用户手动设置，不导出导入）
-        public bool isEnabled;      // 是否启用
-        public bool isUserEdited;   // 是否被用户编辑过（用于保护手动修改）
+        public string tag;         
+        public string content;     
+        public float importance;   
+        public List<string> keywords;
+        public bool isEnabled;     
+        public bool isUserEdited;  
         
-        // 目标Pawn限制（用于角色专属常识）
-        public int targetPawnId = -1;  // -1表示全局，否则只对特定Pawn有效
+        public int targetPawnId = -1; 
         
-        // 创建时间戳和原始事件文本（用于动态更新时间前缀）
-        public int creationTick = -1;       // -1表示永久，>=0表示创建时的游戏tick
-        public string originalEventText = "";  // 保存不带时间前缀的原始事件文本
+        public int creationTick = -1;      
+        public string originalEventText = ""; 
 
-        // 匹配控制属性
-        public KeywordMatchMode matchMode = KeywordMatchMode.Any; // 关键词匹配模式（默认Any）
+        public KeywordMatchMode matchMode = KeywordMatchMode.Any;
         
-        // 显式分类（用户在UI中手动选择，None表示自动推断）
         public KnowledgeEntryCategory category = KnowledgeEntryCategory.None;
         
-        private List<string> cachedTags; // 缓存分割后的标签列表
+        private List<string> cachedTags;
 
-        /// <summary>
-        /// 清除标签缓存（在修改tag后必须调用）
-        /// </summary>
+        // Hard constraint — changing this breaks an invariant. (summary tag summary)
         public void InvalidateCache()
         {
             cachedTags = null;
@@ -82,8 +63,8 @@ namespace Ustas.RimAI.Communication.Memory
             keywords = new List<string>();
             isEnabled = true;
             importance = 0.5f;
-            targetPawnId = -1; // 默认全局
-            creationTick = -1; // 默认永久
+            targetPawnId = -1;
+            creationTick = -1;
             originalEventText = "";
             matchMode = KeywordMatchMode.Any;
         }
@@ -113,9 +94,8 @@ namespace Ustas.RimAI.Communication.Memory
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 if (keywords == null) keywords = new List<string>();
-                cachedTags = null; // 清除缓存，强制重新解析
+                cachedTags = null;
                 
-                // 兼容旧存档 - 如果没有originalEventText，从content中提取
                 if (string.IsNullOrEmpty(originalEventText) && !string.IsNullOrEmpty(content))
                 {
                     originalEventText = RemoveTimePrefix(content);
@@ -199,7 +179,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         public string FormatForExport()
         {
-            // 获取扩展属性
             bool canBeExtracted = ExtendedKnowledgeEntry.CanBeExtracted(this);
             bool canBeMatched = ExtendedKnowledgeEntry.CanBeMatched(this);
             
@@ -223,18 +202,12 @@ namespace Ustas.RimAI.Communication.Memory
         }
     }
 
-    /// <summary>
-    /// 常识评分结果
-    /// </summary>
     public class KnowledgeScore
     {
         public CommonKnowledgeEntry Entry;
         public float Score;
     }
     
-    /// <summary>
-    /// 常识评分详情（用于调试和UI展示）
-    /// </summary>
     public class KnowledgeScoreDetail
     {
         public CommonKnowledgeEntry Entry;
@@ -256,9 +229,6 @@ namespace Ustas.RimAI.Communication.Memory
         public string FailReason;
     }
     
-    /// <summary>
-    /// 关键词提取信息
-    /// </summary>
     public class KeywordExtractionInfo
     {
         public List<string> ContextKeywords = new List<string>();
@@ -267,9 +237,6 @@ namespace Ustas.RimAI.Communication.Memory
         public PawnKeywordInfo PawnInfo;
     }
     
-    /// <summary>
-    /// Pawn关键词信息
-    /// </summary>
     public class PawnKeywordInfo
     {
         public string PawnName;
@@ -277,7 +244,7 @@ namespace Ustas.RimAI.Communication.Memory
         public List<string> AgeKeywords = new List<string>();
         public List<string> GenderKeywords = new List<string>();
         public List<string> RaceKeywords = new List<string>();
-        public List<string> IdentityKeywords = new List<string>();  // 身份（殖民者/囚犯/奴隶/访客）
+        public List<string> IdentityKeywords = new List<string>(); 
         public List<string> TraitKeywords = new List<string>();
         public List<string> SkillKeywords = new List<string>();
         public List<string> SkillLevelKeywords = new List<string>();

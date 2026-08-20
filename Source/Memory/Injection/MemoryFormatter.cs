@@ -4,18 +4,8 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.Injection
 {
-    /// <summary>
-    /// 记忆格式化器
-    /// 职责：统一编号 + 格式化输出
-    /// </summary>
     public static class MemoryFormatter
     {
-        /// <summary>
-        /// 格式化记忆列表
-        /// </summary>
-        /// <param name="memories">记忆列表</param>
-        /// <param name="startIndex">起始序号（默认1）</param>
-        /// <returns>格式化的文本</returns>
         public static string Format(List<MemoryEntry> memories, int startIndex = 1)
         {
             if (memories == null || memories.Count == 0)
@@ -29,7 +19,6 @@ namespace Ustas.RimAI.Communication.Memory.Injection
                 string typeTag = GetMemoryTypeTag(memory.Type);
                 string timeStr = GetTimeString(memory);
                 
-                // 格式：序号. [类型] 内容 (时间)
                 sb.AppendLine($"{index}. [{typeTag}] {memory.Content} ({timeStr})");
                 index++;
             }
@@ -37,9 +26,6 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             return sb.ToString().TrimEnd();
         }
         
-        /// <summary>
-        /// 格式化单条记忆
-        /// </summary>
         public static string FormatSingle(MemoryEntry memory, int index)
         {
             if (memory == null)
@@ -51,18 +37,11 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             return $"{index}. [{typeTag}] {memory.Content} ({timeStr})";
         }
         
-        /// <summary>
-        /// 获取时间字符串
-        /// ABM/SCM 使用模糊时间，ELS/CLPA 使用游戏日期
-        /// </summary>
         private static string GetTimeString(MemoryEntry memory)
         {
             return memory.AgeString;
         }
         
-        /// <summary>
-        /// 获取记忆类型标签
-        /// </summary>
         public static string GetMemoryTypeTag(MemoryType type)
         {
             switch (type)

@@ -19,7 +19,6 @@ namespace Ustas.RimAI.Communication.Memory.Debug
 
 internal void DrawMemoryPanel(Rect rect)
         {
-            // 面板标题
             Widgets.DrawBoxSolid(rect, new Color(0.15f, 0.15f, 0.18f, 0.8f));
             
             Rect titleRect = new Rect(rect.x + 5f, rect.y + 5f, rect.width - 10f, 25f);
@@ -42,7 +41,6 @@ internal void DrawMemoryPanel(Rect rect)
             
             float yPos = rect.y + 35f;
             
-            // 记忆统计
             if (selectedPawn != null)
             {
                 var memoryComp = selectedPawn.TryGetComp<FourLayerMemoryComp>();
@@ -54,7 +52,6 @@ internal void DrawMemoryPanel(Rect rect)
                 }
             }
             
-            // 记忆预览内容
             Rect previewRect = new Rect(rect.x + 5f, yPos, rect.width - 10f, rect.yMax - yPos - 10f);
             DrawMemoryPreviewContent(previewRect);
         }
@@ -66,7 +63,6 @@ internal void DrawMemoryStats(Rect rect, FourLayerMemoryComp memoryComp)
             float x = rect.x + 5f;
             float lineHeight = 22f;
             
-            // 第一行 - 记忆层级统计
             GUI.color = new Color(0.7f, 0.7f, 1f);
             Widgets.Label(new Rect(x, rect.y + 3f, 100f, lineHeight), "RimTalk_Preview_MemoryLayers".Translate());
             GUI.color = Color.white;
@@ -87,7 +83,6 @@ internal void DrawMemoryStats(Rect rect, FourLayerMemoryComp memoryComp)
             Widgets.Label(new Rect(x, rect.y + 3f, 120f, lineHeight), 
                 $"CLPA: {memoryComp.ArchiveMemories.Count}");
             
-            // 第二行 - 注入配置
             var settings = RimTalkMemoryPatchMod.Settings;
             if (settings != null)
             {

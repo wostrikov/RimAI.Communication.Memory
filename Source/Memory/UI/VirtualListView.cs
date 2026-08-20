@@ -5,10 +5,6 @@ using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// 虚拟化列表视图 - 只渲染可见项，提升大列表性能
-    /// ★ v3.3.19: 性能优化 - 1000+项列表仍能流畅滚动
-    /// </summary>
     public class VirtualListView<T> where T : class
     {
         private List<T> items = new List<T>();
@@ -16,12 +12,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
         private Action<Rect, T, int> drawItem;
         private Vector2 scrollPosition;
 
-        // 布局缓存
         private readonly List<float> itemOffsets = new List<float>();
         private readonly List<float> itemHeights = new List<float>();
         private float totalHeight = 0f;
 
-        // 配置
         public float ItemSpacing { get; set; } = 5f;
         public Vector2 ScrollPosition
         {
@@ -29,7 +23,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             set => scrollPosition = value;
         }
 
-        // ? 新增：空列表提示文本（可自定义）
         public string EmptyLabel { get; set; } = "No items to display";
 
         public VirtualListView(Func<T, float> getItemHeight, Action<Rect, T, int> drawItem)
@@ -38,18 +31,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
             this.drawItem = drawItem ?? throw new ArgumentNullException(nameof(drawItem));
         }
 
-        /// <summary>
-        /// 设置列表数据
-        /// </summary>
         public void SetItems(List<T> newItems)
         {
             items = newItems ?? new List<T>();
             RebuildLayout();
         }
 
-        /// <summary>
-        /// 重建布局缓存
-        /// </summary>
         private void RebuildLayout()
         {
             itemOffsets.Clear();
@@ -65,14 +52,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
 
-        /// <summary>
-        /// 绘制列表（虚拟化渲染）
-        /// </summary>
         public void Draw(Rect rect)
         {
             if (items.Count == 0)
             {
-                // 空列表提示
                 Text.Anchor = TextAnchor.MiddleCenter;
                 GUI.color = new Color(0.6f, 0.6f, 0.6f);
                 Widgets.Label(rect, EmptyLabel);
@@ -85,13 +68,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             Widgets.BeginScrollView(rect, ref scrollPosition, viewRect);
 
-            // 计算可见范围
             float visibleTop = scrollPosition.y;
             float visibleBottom = visibleTop + rect.height;
 
             GetVisibleIndexRange(visibleTop, visibleBottom, out int startIndex, out int endIndex);
 
-            // 只渲染可见项
             for (int i = startIndex; i <= endIndex; i++)
             {
                 float itemTop = itemOffsets[i];
@@ -103,9 +84,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.EndScrollView();
         }
 
-        /// <summary>
-        /// 查找Y范围内的项索引（用于拖拽选择）
-        /// </summary>
         public List<int> FindItemsInRange(float minY, float maxY)
         {
             var indices = new List<int>();
@@ -113,7 +91,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (items.Count == 0)
                 return indices;
 
-            // 使用二分查找快速定位候选区间，然后线性扫描可交叉部分
             int start = FindFirstIndexAtOrBefore(minY);
             if (start < 0) start = 0;
 
@@ -134,9 +111,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return indices;
         }
 
-        /// <summary>
-        /// 获取渲染统计信息（用于调试）
-        /// </summary>
         public string GetRenderStats(float viewportHeight)
         {
             if (items.Count == 0)
@@ -167,7 +141,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (endIndex < startIndex) endIndex = startIndex;
         }
 
-        // 找到“可能包含 y 的项”（项底部 >= y）的最小 index
         private int FindFirstIndexAtOrBefore(float y)
         {
             int low = 0;
@@ -197,7 +170,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return result;
         }
 
-        // 找到“可能包含 y 的项”（项顶部 <= y）的最大 index
         private int FindLastIndexAtOrAfter(float y)
         {
             int low = 0;

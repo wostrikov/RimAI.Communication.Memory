@@ -8,10 +8,6 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory - Actions 批量操作部分
-    /// 包含总结、归档、删除等批量操作逻辑
-    /// </summary>
     internal sealed class MemoryTabActions : MemoryTabCollaborator
     {
         internal MemoryTabActions(MainTabWindow_Memory owner) : base(owner) { }
@@ -23,7 +19,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (Owner.currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
                 return;
             
-            // ? 修复：同时收集 ABM 和 SCM（只排除总结过的记忆）
             var abmMemories = targetMemories
                 .Where(m => m.Layer == MemoryLayer.Active && m.CanBeSummarized)
                 .ToList();
@@ -68,14 +63,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         "daily_summary"
                     );
                     
-                    // ? 总结后清空ABM（因为已经总结过了）
                     foreach (var abm in abmMemories)
                     {
                         Owner.currentMemoryComp.ActiveMemories.Remove(abm);
                     }
                     
                     Owner.selectedMemories.Clear();
-                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.filtersDirty = true;
                     Messages.Message("RimTalk_MindStream_SummarizedN".Translate(scmMemories.Count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
@@ -86,7 +80,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             if (Owner.currentMemoryComp == null || targetMemories == null || targetMemories.Count == 0)
                 return;
             
-            // ? 修复：排除总结过的记忆
             var elsMemories = targetMemories
                 .Where(m => m.Layer == MemoryLayer.EventLog && m.CanBeSummarized)
                 .ToList();
@@ -110,7 +103,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     );
                     
                     Owner.selectedMemories.Clear();
-                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.filtersDirty = true;
                     Messages.Message("RimTalk_MindStream_ArchivedN".Translate(elsMemories.Count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
@@ -133,7 +126,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                     
                     Owner.selectedMemories.Clear();
-                    Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after modifying memories
+                    Owner.filtersDirty = true;
                     Messages.Message("RimTalk_MindStream_DeletedN".Translate(count), MessageTypeDefOf.PositiveEvent, false);
                 }
             ));
@@ -166,25 +159,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        /* 废弃代码，暂时先不删而是注释掉，之后再善后
-        internal void ArchiveAll()
-        {
-            int count = 0;
-            foreach (var map in Find.Maps)
-            {
-                foreach (var pawn in map.mapPawns.FreeColonists)
-                {
-                    var comp = pawn.TryGetComp<PawnMemoryComp>();
-                    if (comp != null && comp.GetEventLogMemoryCount() > 0)
-                    {
-                        comp.ManualArchive(); // 此方法高度危险，完全没有正确处理固定的记忆
-                        count++;
-                    }
-                }
-            }
-            
-            Messages.Message("RimTalk_MindStream_ArchivedForN".Translate(count), MessageTypeDefOf.PositiveEvent, false);
-        }
-        */
+        
     }
 }

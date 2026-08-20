@@ -7,9 +7,6 @@ using RimWorld;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// 标签测试工具弹窗
-    /// </summary>
     public class Dialog_TagTest : Window
     {
         private string testTag = "";
@@ -35,30 +32,25 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             float y = 0f;
             
-            // 标题
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect(0f, y, inRect.width, 35f), 
                 CommonKnowledgeTranslationKeys.TagTestTitle.Translate());
             Text.Font = GameFont.Small;
             y += 40f;
             
-            // ========== 输入区域 =========
             
-            // 测试标签输入
             Widgets.Label(new Rect(0f, y, inRect.width, 22f), 
                 CommonKnowledgeTranslationKeys.TagTestInputTag.Translate());
             y += 22f;
             testTag = Widgets.TextField(new Rect(0f, y, inRect.width, 28f), testTag);
             y += 32f;
             
-            // 对话内容输入
             Widgets.Label(new Rect(0f, y, inRect.width, 22f), 
                 CommonKnowledgeTranslationKeys.TagTestInputContext.Translate());
             y += 22f;
             testContext = Widgets.TextArea(new Rect(0f, y, inRect.width, 50f), testContext);
             y += 54f;
             
-            // Pawn 选择
             Widgets.Label(new Rect(0f, y, inRect.width, 22f), 
                 CommonKnowledgeTranslationKeys.TagTestSelectPawn.Translate());
             y += 22f;
@@ -73,7 +65,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             y += 32f;
             
-            // 测试按钮和清除按钮
             float buttonWidth = (inRect.width - 10f) / 2f;
             if (Widgets.ButtonText(new Rect(0f, y, buttonWidth, 32f), "Перевірити"))
             {
@@ -90,11 +81,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             y += 40f;
             
-            // ========== 分隔线 =========
             Widgets.DrawLineHorizontal(0f, y, inRect.width);
             y += 15f;
             
-            // ========== 结果区域（始终显示，未测试时显示提示）==========
             float resultAreaHeight = inRect.height - y;
             Rect resultRect = new Rect(0f, y, inRect.width, resultAreaHeight);
             
@@ -119,15 +108,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
         private void DrawResultArea(Rect rect)
         {
-            float y = rect.y; // 使用绝对坐标
+            float y = rect.y;
             
-            // 匹配结果标题
             Text.Font = GameFont.Small;
             Widgets.Label(new Rect(rect.x, y, rect.width, 25f), 
                 CommonKnowledgeTranslationKeys.TagTestResult.Translate());
             y += 25f;
             
-            // 匹配结果
             Text.Font = GameFont.Medium;
             if (testResult)
             {
@@ -145,16 +132,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Text.Font = GameFont.Small;
             y += 35f;
             
-            // 实际匹配文本标题
             Widgets.Label(new Rect(rect.x, y, rect.width, 25f), 
                 CommonKnowledgeTranslationKeys.TagTestMatchText.Translate());
             y += 25f;
             
-            // 实际匹配文本内容（可滚动）
             float scrollAreaHeight = rect.yMax - y;
             Rect scrollOuterRect = new Rect(rect.x, y, rect.width, scrollAreaHeight);
             
-            // 计算内容高度
             Text.Font = GameFont.Tiny;
             float contentHeight = Text.CalcHeight(testMatchText, rect.width - 20f);
             Text.Font = GameFont.Small;
@@ -163,11 +147,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             Widgets.BeginScrollView(scrollOuterRect, ref scrollPosition, scrollViewRect);
             
-            // 绘制匹配文本背景
             Rect textBoxRect = new Rect(5f, 5f, scrollViewRect.width - 10f, contentHeight + 10f);
             Widgets.DrawBoxSolid(textBoxRect, new Color(0.1f, 0.1f, 0.1f, 0.8f));
             
-            // 绘制匹配文本
             Rect textRect = textBoxRect.ContractedBy(5f);
             Text.Font = GameFont.Tiny;
             GUI.color = new Color(0.9f, 0.9f, 0.9f);
@@ -182,13 +164,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             
-            // 无 Pawn 选项
             options.Add(new FloatMenuOption(
                 CommonKnowledgeTranslationKeys.TagTestNoPawn.Translate(),
                 delegate { testPawn = null; }
             ));
             
-            // 当前地图的所有 Pawn
             if (Find.CurrentMap != null)
             {
                 var allPawns = Find.CurrentMap.mapPawns.AllPawns
@@ -204,7 +184,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         label += $" ({pawn.Faction.Name})";
                     }
                     
-                    Pawn localPawn = pawn; // 避免闭包问题
+                    Pawn localPawn = pawn;
                     options.Add(new FloatMenuOption(label, delegate { testPawn = localPawn; }));
                 }
             }
@@ -220,13 +200,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return;
             }
             
-            // 创建临时常识条目
             var tempEntry = new CommonKnowledgeEntry(testTag, "Тестовий вміст")
             {
                 matchMode = KeywordMatchMode.Any
             };
             
-            // 构建匹配文本
             System.Text.StringBuilder matchTextBuilder = new System.Text.StringBuilder();
             matchTextBuilder.Append(testContext);
             
@@ -238,11 +216,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             testMatchText = matchTextBuilder.ToString();
             
-            // 测试匹配
             testResult = TestTagMatch(testMatchText, tempEntry);
             testExecuted = true;
             
-            // 显示详细的匹配文本信息
             Log.Message($"[Тест тегу] Тег: {testTag}");
             Log.Message($"[Тест тегу] Діалог: {testContext}");
             Log.Message($"[Тест тегу] Pawn: {(testPawn != null ? testPawn.LabelShort : "немає")}");
@@ -250,9 +226,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Log.Message($"[Тест тегу] Результат: {(testResult ? "збіг" : "немає збігу")}");
         }
 
-        /// <summary>
-        /// 构建完整的 Pawn 信息文本（与 CommonKnowledgeLibrary 保持一致）
-        /// </summary>
         private string BuildPawnInfoText(Pawn pawn)
         {
             if (pawn == null)
@@ -262,14 +235,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             try
             {
-                // 1. 名字
                 if (!string.IsNullOrEmpty(pawn.Name?.ToStringShort))
                 {
                     sb.Append(pawn.Name.ToStringShort);
                     sb.Append(" ");
                 }
 
-                // 2. 年龄段
                 if (pawn.RaceProps != null && pawn.RaceProps.Humanlike)
                 {
                     float ageYears = pawn.ageTracker.AgeBiologicalYearsFloat;
@@ -292,17 +263,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
 
-                // 3. 性别
                 sb.Append(pawn.gender.GetLabel());
                 sb.Append(" ");
 
-                // 4. 种族
                 if (pawn.def != null)
                 {
                     sb.Append(pawn.def.label);
                     sb.Append(" ");
                     
-                    // 亚种信息（Biotech DLC）
                     try
                     {
                         if (pawn.genes != null && pawn.genes.Xenotype != null)
@@ -315,10 +283,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
                             }
                         }
                     }
-                    catch { /* 兼容性：没有Biotech DLC时跳过 */ }
+                    catch { }
                 }
 
-                // 4.5. 身份（殖民者/囚犯/奴隶/访客）
                 if (pawn.IsColonist)
                 {
                     sb.Append("殖民者 ");
@@ -341,7 +308,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     sb.Append(" ");
                 }
 
-                // 5. 特性（所有特性）
                 if (pawn.story?.traits != null)
                 {
                     foreach (var trait in pawn.story.traits.allTraits)
@@ -354,7 +320,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
 
-                // 6. 技能（所有技能，带等级）
                 if (pawn.skills != null)
                 {
                     foreach (var skillRecord in pawn.skills.skills)
@@ -364,14 +329,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         
                         int level = skillRecord.Level;
                         
-                        // 只输出有一定等级的技能（>=5级）
                         if (level >= 5)
                         {
                             sb.Append(skillRecord.def.label);
                             sb.Append(level);
                             sb.Append(" ");
                             
-                            // 高等级技能额外标记
                             if (level >= 15)
                             {
                                 sb.Append(skillRecord.def.label);
@@ -386,7 +349,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
 
-                // 7. 健康状况
                 if (pawn.health != null)
                 {
                     if (pawn.health.hediffSet.GetInjuredParts().Any())
@@ -399,7 +361,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
 
-                // 8. 关系（前5个相关Pawn）
                 if (pawn.relations != null)
                 {
                     var relatedPawns = pawn.relations.RelatedPawns.Take(5);
@@ -413,7 +374,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
 
-                // 9. 成年背景（使用完整标题）
                 if (pawn.story?.Adulthood != null)
                 {
                     string backstoryTitle = pawn.story.Adulthood.TitleFor(pawn.gender);
@@ -424,7 +384,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     }
                 }
                 
-                // 10. 童年背景（使用完整标题）
                 if (pawn.story?.Childhood != null)
                 {
                     string childhoodTitle = pawn.story.Childhood.TitleFor(pawn.gender);

@@ -5,19 +5,14 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// AI 总结提示词编辑对话框
-    /// </summary>
     public class Dialog_PromptEditor : Window
     {
         private RimTalkMemoryPatchSettings settings;
         
-        // 临时编辑变量
         private string editDailySummary;
         private string editDeepArchive;
         private int editMaxTokens;
         
-        // 默认提示词（从 IndependentAISummarizer 复制）
         private const string DEFAULT_DAILY_SUMMARY = 
             "Підсумок спогадів колоніста {0}\n\n" +
             "Список спогадів\n" +
@@ -49,7 +44,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             absorbInputAroundWindow = true;
             closeOnClickedOutside = false;
             
-            // 初始化编辑变量
             editDailySummary = string.IsNullOrEmpty(settings.dailySummaryPrompt) 
                 ? DEFAULT_DAILY_SUMMARY 
                 : settings.dailySummaryPrompt;
@@ -73,19 +67,16 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.Label(descRect, "RimTalk_PromptEditor_Desc".Translate());
             GUI.color = Color.white;
             
-            // 内容区域
             float contentY = 60f;
-            float contentHeight = inRect.height - contentY - 50f; // 留出底部按钮空间
+            float contentHeight = inRect.height - contentY - 50f;
             Rect contentRect = new Rect(0f, contentY, inRect.width, contentHeight);
             
             DrawContent(contentRect);
             
-            // 底部按钮
             float buttonY = inRect.height - 40f;
             float buttonWidth = 120f;
             float spacing = 10f;
             
-            // 恢复默认按钮（左侧）
             Rect resetRect = new Rect(0f, buttonY, buttonWidth, 35f);
             if (Widgets.ButtonText(resetRect, "RimTalk_PromptEditor_ResetDefault".Translate()))
             {
@@ -100,7 +91,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 ));
             }
             
-            // 取消和保存按钮（右侧）
             float rightX = inRect.width - buttonWidth;
             Rect saveRect = new Rect(rightX, buttonY, buttonWidth, 35f);
             if (Widgets.ButtonText(saveRect, "RimTalk_Save".Translate()))
@@ -124,7 +114,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.BeginScrollView(rect, ref scrollPosition, viewRect);
             listing.Begin(viewRect);
             
-            // 每日总结提示词
             Text.Font = GameFont.Small;
             GUI.color = new Color(0.8f, 0.9f, 1f);
             listing.Label("RimTalk_PromptEditor_DailySummary".Translate());
@@ -143,7 +132,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             listing.GapLine();
             listing.Gap(10f);
             
-            // 深度归档提示词
             GUI.color = new Color(0.8f, 0.9f, 1f);
             listing.Label("RimTalk_PromptEditor_DeepArchive".Translate());
             GUI.color = Color.white;
@@ -161,7 +149,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             listing.GapLine();
             listing.Gap(10f);
             
-            // Max Tokens 滑块
             GUI.color = new Color(0.8f, 0.9f, 1f);
             listing.Label("RimTalk_PromptEditor_MaxTokens".Translate());
             GUI.color = Color.white;
@@ -174,7 +161,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             listing.Label("RimTalk_PromptEditor_MaxTokensLabel".Translate(editMaxTokens));
             editMaxTokens = (int)listing.Slider(editMaxTokens, 100, 8000);
             
-            // 提示信息
             listing.Gap(10f);
             GUI.color = new Color(1f, 0.9f, 0.6f);
             listing.Label("RimTalk_PromptEditor_Tips".Translate());
@@ -190,8 +176,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         
         private void SaveAndClose()
         {
-            // 保存到设置
-            // 如果与默认值相同，保存为空字符串（表示使用默认）
             settings.dailySummaryPrompt = (editDailySummary == DEFAULT_DAILY_SUMMARY) 
                 ? "" 
                 : editDailySummary;
@@ -202,7 +186,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 
             settings.summaryMaxTokens = editMaxTokens;
             
-            // 保存设置
             settings.Write();
             
             Messages.Message("RimTalk_PromptEditor_Saved".Translate(), MessageTypeDefOf.PositiveEvent, false);

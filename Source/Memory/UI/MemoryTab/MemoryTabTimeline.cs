@@ -8,10 +8,6 @@ using System;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory - Timeline 时间线绘制部分
-    /// 包含时间线、记忆卡片绘制和拖拽选择
-    /// </summary>
     internal sealed class MemoryTabTimeline : MemoryTabCollaborator
     {
         internal MemoryTabTimeline(MainTabWindow_Memory owner) : base(owner) { }
@@ -26,7 +22,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.DrawMenuSection(rect);
             Rect innerRect = rect.ContractedBy(5f);
             
-            // 使用缓存的数据 (已在 DoWindowContents 中刷新)
             var memories = Owner.cachedMemories;
             float totalHeight = Owner.cachedTotalHeight;
             
@@ -38,15 +33,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
             // Draw timeline
             Widgets.BeginScrollView(innerRect, ref Owner.timelineScrollPosition, viewRect, true);
             
-            // ? 高性能虚拟化：二分查找 + 提前退出
-            // 添加缓冲区以确保滚动平滑
             float minVisibleY = Owner.timelineScrollPosition.y - 200f;
             float maxVisibleY = Owner.timelineScrollPosition.y + innerRect.height + 200f;
             
             int startIndex = 0;
             if (Owner.cachedCardYPositions.Count > 0)
             {
-                // 使用二分查找快速定位第一个可见元素
                 int binaryResult = Owner.cachedCardYPositions.BinarySearch(minVisibleY);
                 if (binaryResult >= 0)
                 {
@@ -54,8 +46,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 }
                 else
                 {
-                    // 如果没找到精确匹配，BinarySearch返回按位取反的下一个较大元素索引
-                    // 我们取它的前一个作为起始点
                     startIndex = Mathf.Max(0, (~binaryResult) - 1);
                 }
             }
@@ -64,7 +54,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             {
                 float y = Owner.cachedCardYPositions[i];
                 
-                // 优化：一旦超出可见范围，立即停止绘制
                 if (y > maxVisibleY)
                 {
                     break;
@@ -77,7 +66,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 DrawMemoryCard(cardRect, memory);
             }
             
-            // ? 修复：在EndScrollView之前绘制选择框，使其在正确的坐标系中
             if (Owner.isDragging)
             {
                 DrawSelectionBox();
@@ -101,7 +89,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             if (Owner.currentMemoryComp == null) return;
             
-            // 获取当前状态
             int currentCount = Owner.currentMemoryComp.ActiveMemories.Count + 
                              Owner.currentMemoryComp.SituationalMemories.Count + 
                              Owner.currentMemoryComp.EventLogMemories.Count + 
@@ -109,7 +96,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             int currentTick = Find.TickManager.TicksGame;
             
-            // 检查是否需要刷新
             bool needRefresh = false;
             
             if (Owner.selectedPawn != Owner.lastSelectedPawn) needRefresh = true;
@@ -119,7 +105,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             else if (Owner.showELS != Owner.lastShowELS) needRefresh = true;
             else if (Owner.showCLPA != Owner.lastShowCLPA) needRefresh = true;
             else if (Owner.filterType != Owner.lastFilterType) needRefresh = true;
-            else if (currentTick - Owner.lastRefreshTick > 60) needRefresh = true; // 每秒强制刷新一次以防内容变化
+            else if (currentTick - Owner.lastRefreshTick > 60) needRefresh = true;
             
             if (needRefresh)
             {
@@ -129,7 +115,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         
         internal void RefreshCache(int currentCount, int currentTick)
         {
-            // 更新状态记录
             Owner.lastSelectedPawn = Owner.selectedPawn;
             Owner.lastMemoryCount = currentCount;
             Owner.lastShowABM = Owner.showABM;
@@ -139,10 +124,8 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Owner.lastFilterType = Owner.filterType;
             Owner.lastRefreshTick = currentTick;
             
-            // 重新获取过滤后的列表
             Owner.cachedMemories = Parts.Utilities.GetFilteredMemories();
             
-            // 重新计算高度和位置
             Owner.cachedCardHeights.Clear();
             Owner.cachedCardYPositions.Clear();
             Owner.cachedTotalHeight = 0f;
@@ -195,7 +178,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             Rect innerRect = rect.ContractedBy(8f);
             
-            // ? 计算按钮区域
             float buttonSize = 24f;
             float buttonSpacing = 4f;
             
@@ -216,7 +198,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 {
                     Owner.currentMemoryComp.PinMemory(memory.Id, memory.IsPinned);
                 }
-                // ? v3.3.32: No need to mark dirty for pin/unpin as it doesn't affect filtering
                 Event.current.Use();
             }
             TooltipHandler.TipRegion(pinButtonRect, memory.IsPinned ? "RimTalk_MindStream_Unpin".Translate() : "RimTalk_MindStream_Pin".Translate());
@@ -233,16 +214,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 if (Owner.currentMemoryComp != null)
                 {
                     Find.WindowStack.Add(new Dialog_EditMemory(memory, Owner.currentMemoryComp));
-                    // ? v3.3.32: Mark dirty when opening edit dialog
-                    // User might change layer or type which affects filtering
                     Owner.filtersDirty = true;
                 }
                 Event.current.Use();
             }
             TooltipHandler.TipRegion(editButtonRect, "RimTalk_MindStream_Edit".Translate());
             
-            // ⭐ 点击选择现在由 DoWindowContents 的 MouseUp 统一处理
-            // 不再使用 ButtonInvisible（它会和拖拽框选冲突）
             
             // Content area (avoid button overlap)
             Rect contentRect = new Rect(innerRect.x, innerRect.y, innerRect.width - (buttonSize * 2 + buttonSpacing + 8f), innerRect.height);
@@ -347,33 +324,27 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             Event e = Event.current;
             
-            // 左键按下：记录起始位置
             if (e.type == EventType.MouseDown && e.button == 0 && listRect.Contains(e.mousePosition))
             {
                 Owner.isMouseDown = true;
                 Owner.mouseDownScreenPos = e.mousePosition;
                 Owner.dragStartPos = e.mousePosition - listRect.position;
                 Owner.dragCurrentPos = Owner.dragStartPos;
-                // ⭐ 不 Use 事件，不设 Owner.isDragging，等超过阈值再设
             }
             
-            // 鼠标移动中：判断是否超过拖拽阈值
             if (Owner.isMouseDown && e.type == EventType.MouseDrag && e.button == 0)
             {
                 float distance = Vector2.Distance(Owner.mouseDownScreenPos, e.mousePosition);
                 
                 if (!Owner.isDragging && distance >= MainTabWindow_Memory.DRAG_THRESHOLD)
                 {
-                    // 超过阈值，正式进入框选模式
                     Owner.isDragging = true;
                 }
                 
                 if (Owner.isDragging)
                 {
-                    // ⭐ 在viewport坐标系中
                     Owner.dragCurrentPos = e.mousePosition - listRect.position;
                     
-                    // 转换为content坐标（加上scroll offset）
                     Rect selectionBoxViewport = GetSelectionBox();
                     Rect selectionBoxContent = new Rect(
                         selectionBoxViewport.x, 

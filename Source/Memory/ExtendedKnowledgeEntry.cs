@@ -5,20 +5,14 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 扩展的常识条目
-    /// 添加两个新属性：
-    /// - canBeExtracted: 是否允许被提取内容（用于常识链）
-    /// - canBeMatched: 是否允许被匹配
-    /// </summary>
     public static class ExtendedKnowledgeEntry
     {
         private static Dictionary<string, ExtendedProperties> extendedProps = new Dictionary<string, ExtendedProperties>();
 
         public class ExtendedProperties
         {
-            public bool canBeExtracted = false;  // 默认允许被提取
-            public bool canBeMatched = false;    // 默认允许被匹配
+            public bool canBeExtracted = false; 
+            public bool canBeMatched = false;   
         }
 
         public static ExtendedProperties GetExtendedProperties(CommonKnowledgeEntry entry)
@@ -90,7 +84,6 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (Scribe.mode == LoadSaveMode.Saving)
             {
-                // 保存时：从字典中提取数据
                 keys = new List<string>(extendedProps.Keys);
                 canBeExtractedList = new List<bool>();
                 canBeMatchedList = new List<bool>();
@@ -102,14 +95,13 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
 
-            // 序列化（保存和加载都会执行）
+            // Serialization / save-load constraint — keep field identity stable.
             Scribe_Collections.Look(ref keys, "extendedKnowledgeKeys", LookMode.Value);
             Scribe_Collections.Look(ref canBeExtractedList, "canBeExtractedList", LookMode.Value);
             Scribe_Collections.Look(ref canBeMatchedList, "canBeMatchedList", LookMode.Value);
 
             if (Scribe.mode == LoadSaveMode.LoadingVars || Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                // 加载时：恢复到字典中
                 if (keys != null && canBeExtractedList != null && canBeMatchedList != null)
                 {
                     extendedProps.Clear();

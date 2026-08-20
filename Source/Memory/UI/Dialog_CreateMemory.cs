@@ -5,9 +5,6 @@ using RimWorld;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// 手动创建记忆的对话框
-    /// </summary>
     public class Dialog_CreateMemory : Window
     {
         private readonly Pawn pawn;
@@ -32,7 +29,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
             this.targetLayer = targetLayer;
             this.memoryType = memoryType;
             
-            this.doCloseButton = false; // ⭐ 禁用默认关闭按钮，使用自定义按钮
+            this.doCloseButton = false;
             this.doCloseX = true;
             this.forcePause = true;
             this.absorbInputAroundWindow = true;
@@ -43,7 +40,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             float yPos = 0f;
             
-            // 标题
             Text.Font = GameFont.Medium;
             string layerName = GetLayerDisplayName(targetLayer);
             string typeName = GetTypeDisplayName(memoryType);
@@ -55,7 +51,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.DrawLineHorizontal(0f, yPos, inRect.width);
             yPos += 10f;
 
-            // 记忆内容
             Rect contentLabelRect = new Rect(0f, yPos, inRect.width, 24f);
             Widgets.Label(contentLabelRect, "RimTalk_Memory_Content".Translate());
             yPos += 26f;
@@ -64,7 +59,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             contentText = GUI.TextArea(contentRect, contentText);
             yPos += 105f;
 
-            // 标签（可选）
             Rect tagsLabelRect = new Rect(0f, yPos, inRect.width, 24f);
             Widgets.Label(tagsLabelRect, "RimTalk_Memory_TagsOptional".Translate());
             yPos += 26f;
@@ -73,7 +67,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             tagsText = Widgets.TextField(tagsRect, tagsText);
             yPos += 35f;
 
-            // 备注（可选）
             Rect notesLabelRect = new Rect(0f, yPos, inRect.width, 24f);
             Widgets.Label(notesLabelRect, "RimTalk_Memory_NotesOptional".Translate());
             yPos += 26f;
@@ -82,7 +75,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             notesText = Widgets.TextField(notesRect, notesText);
             yPos += 35f;
 
-            // 重要性滑块
             Rect importanceLabelRect = new Rect(0f, yPos, inRect.width, 24f);
             Widgets.Label(importanceLabelRect, "RimTalk_Memory_ImportanceLabel".Translate(importance.ToString("F2")));
             yPos += 26f;
@@ -91,7 +83,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             importance = Widgets.HorizontalSlider(importanceRect, importance, 0.1f, 1.0f, true);
             yPos += 30f;
 
-            // 固定复选框
             Rect pinnedRect = new Rect(0f, yPos, inRect.width, 30f);
             Widgets.CheckboxLabeled(pinnedRect, "RimTalk_Memory_PinMemory".Translate(), ref isPinned);
             yPos += 35f;
@@ -99,11 +90,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Widgets.DrawLineHorizontal(0f, yPos, inRect.width);
             yPos += 10f;
 
-            // ⭐ 操作按钮 - 确保在底部可见
             float buttonWidth = (inRect.width - 10f) / 2f;
-            float buttonY = inRect.height - 40f; // 固定在底部
+            float buttonY = inRect.height - 40f;
             
-            // 保存按钮
             Rect saveButtonRect = new Rect(0f, buttonY, buttonWidth, 35f);
             if (Widgets.ButtonText(saveButtonRect, "RimTalk_Knowledge_Save".Translate()))
             {
@@ -118,7 +107,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 }
             }
             
-            // 取消按钮
             Rect cancelButtonRect = new Rect(buttonWidth + 10f, buttonY, buttonWidth, 35f);
             if (Widgets.ButtonText(cancelButtonRect, "RimTalk_Knowledge_Cancel".Translate()))
             {
@@ -137,7 +125,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 importance: importance
             );
 
-            // 添加标签
             if (!string.IsNullOrWhiteSpace(tagsText))
             {
                 string[] tags = tagsText.Split(',');
@@ -151,19 +138,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 }
             }
 
-            // 添加备注
             if (!string.IsNullOrWhiteSpace(notesText))
             {
                 newMemory.Notes = notesText.Trim();
             }
 
-            // 设置固定状态
             newMemory.IsPinned = isPinned;
 
-            // 添加"手动添加"标签
             newMemory.AddTag("手动添加");
 
-            // 根据目标层级添加到相应的记忆列表
             switch (targetLayer)
             {
                 case MemoryLayer.Active:

@@ -14,9 +14,6 @@ namespace Ustas.RimAI.Communication.Memory
         }
     }
 
-    /// <summary>
-    /// 兼容层，确保旧数据不会丢失
-    /// </summary>
     public class PawnMemoryComp : FourLayerMemoryComp
     {
 

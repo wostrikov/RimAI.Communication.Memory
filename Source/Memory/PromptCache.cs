@@ -6,27 +6,19 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 提示词缓存系统 - 缓存记忆和常识注入结果
-    /// 避免每次对话都重新计算，显著提升性能
-    /// </summary>
     public class PromptCache : IExposable
     {
-        /// <summary>
-        /// 缓存条目
-        /// </summary>
         public class CacheEntry : IExposable
         {
-            public string memoryPrompt;       // 记忆注入结果
-            public string knowledgePrompt;    // 常识注入结果
-            public string fullPrompt;         // 完整提示词
-            public int timestamp;             // 创建时间
-            public int lastUsedTick;          // 最后使用时间
-            public int useCount;              // 使用次数
+            public string memoryPrompt;      
+            public string knowledgePrompt;   
+            public string fullPrompt;        
+            public int timestamp;            
+            public int lastUsedTick;         
+            public int useCount;             
             
-            // 缓存失效条件
-            public int pawnMemoryCount;       // Pawn记忆数量（用于检测记忆变化）
-            public int knowledgeCount;        // 常识库条目数（用于检测常识变化）
+            public int pawnMemoryCount;      
+            public int knowledgeCount;       
             
             public CacheEntry()
             {
@@ -45,27 +37,16 @@ namespace Ustas.RimAI.Communication.Memory
                 this.knowledgeCount = knowledgeCount;
             }
             
-            /// <summary>
-            /// 检查缓存是否仍然有效
-            /// ? v3.3.4: 放宽失效条件，提高缓存命中率
-            /// </summary>
             public bool IsValid(int currentMemoryCount, int currentKnowledgeCount, int currentTick, int expireTicks)
             {
-                // ? 优化1：放宽记忆变化阈值（±5条内不失效）
-                // 原因：增加1-2条记忆不应导致整个提示词失效
-                // 记忆注入是动态选择的，微小变化影响很小
                 int memoryDiff = Math.Abs(pawnMemoryCount - currentMemoryCount);
                 if (memoryDiff > 5)
                     return false;
                 
-                // ? 优化2：放宽常识变化阈值（±10条内不失效）
-                // 原因：常识库变化更不应导致缓存失效
-                // 常识库是全局共享的，单个常识变化影响极小
                 int knowledgeDiff = Math.Abs(knowledgeCount - currentKnowledgeCount);
                 if (knowledgeDiff > 10)
                     return false;
                 
-                // 时间失效检查
                 if (currentTick - timestamp > expireTicks)
                     return false;
                 
@@ -85,15 +66,12 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        // 缓存字典：Key = pawnId_contextHash
         private Dictionary<string, CacheEntry> cache = new Dictionary<string, CacheEntry>();
         
-        // 统计
         private int totalHits = 0;
         private int totalMisses = 0;
         private int totalInvalidations = 0;
         
-        // 配置
         private int MaxCacheSize => RimTalkMemoryPatchMod.Settings.promptCacheSize;
         private int ExpireMinutes => RimTalkMemoryPatchMod.Settings.promptCacheExpireMinutes;
         
@@ -107,9 +85,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        /// <summary>
-        /// 尝试从缓存获取提示词
-        /// </summary>
         public CacheEntry TryGet(Pawn pawn, string context, out bool needsRegeneration)
         {
             needsRegeneration = true;
@@ -121,17 +96,15 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (cache.TryGetValue(cacheKey, out var entry))
             {
-                // 检查缓存是否仍然有效
                 var memoryComp = pawn.TryGetComp<FourLayerMemoryComp>();
                 int currentMemoryCount = GetMemoryCount(memoryComp);
                 int currentKnowledgeCount = GetKnowledgeCount();
                 
                 int currentTick = Find.TickManager.TicksGame;
-                int expireTicks = ExpireMinutes * 2500; // 分钟转tick
+                int expireTicks = ExpireMinutes * 2500;
                 
                 if (entry.IsValid(currentMemoryCount, currentKnowledgeCount, currentTick, expireTicks))
                 {
-                    // 缓存有效！
                     entry.lastUsedTick = currentTick;
                     entry.useCount++;
                     totalHits++;
@@ -146,7 +119,6 @@ namespace Ustas.RimAI.Communication.Memory
                 }
                 else
                 {
-                    // 缓存失效
                     cache.Remove(cacheKey);
                     totalInvalidations++;
                     
@@ -161,9 +133,6 @@ namespace Ustas.RimAI.Communication.Memory
             return null;
         }
         
-        /// <summary>
-        /// 添加到缓存
-        /// </summary>
         public void Add(Pawn pawn, string context, string memoryPrompt, string knowledgePrompt, string fullPrompt)
         {
             if (!RimTalkMemoryPatchMod.Settings.enablePromptCache || pawn == null)
@@ -178,7 +147,6 @@ namespace Ustas.RimAI.Communication.Memory
             var entry = new CacheEntry(memoryPrompt, knowledgePrompt, fullPrompt, memoryCount, knowledgeCount);
             cache[cacheKey] = entry;
             
-            // LRU淘汰
             if (cache.Count > MaxCacheSize)
             {
                 EvictLRU();
@@ -190,9 +158,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        /// <summary>
-        /// 使缓存失效（当记忆或常识变化时调用）
-        /// </summary>
         public void InvalidateForPawn(Pawn pawn)
         {
             if (pawn == null) return;
@@ -210,9 +175,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        /// <summary>
-        /// 清空所有缓存
-        /// </summary>
         public void Clear()
         {
             int count = cache.Count;
@@ -224,9 +186,6 @@ namespace Ustas.RimAI.Communication.Memory
             Log.Message($"[Prompt Cache] ??? Cleared {count} cached prompts");
         }
         
-        /// <summary>
-        /// 定期清理过期缓存
-        /// </summary>
         public void CleanExpired()
         {
             int currentTick = Find.TickManager.TicksGame;
@@ -248,21 +207,16 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        /// <summary>
-        /// 获取统计信息
-        /// </summary>
         public string GetStats()
         {
             return $"Cached: {cache.Count}/{MaxCacheSize}, Hits: {totalHits}, Misses: {totalMisses}, " +
                    $"Invalidations: {totalInvalidations}, Hit Rate: {HitRate:P1}";
         }
         
-        // === 私有辅助方法 ===
         
         private string GenerateCacheKey(Pawn pawn, string context)
         {
-            // 使用pawnId + 上下文hash
-            // 注意：不包含具体内容，因为提示词结构相同即可复用
+            // Non-obvious edge case — read carefully before changing. (pawnId hash)
             string contextHash = GetStableHash(context).ToString();
             return $"{pawn.ThingID}_{contextHash}";
         }
@@ -284,7 +238,6 @@ namespace Ustas.RimAI.Communication.Memory
         private int GetStableHash(string text)
         {
             if (string.IsNullOrEmpty(text)) return 0;
-            // 简单的hash，只取前100字符避免过长文本
             string sample = text.Length > 100 ? text.Substring(0, 100) : text;
             return sample.GetHashCode();
         }
@@ -293,7 +246,6 @@ namespace Ustas.RimAI.Communication.Memory
         {
             if (cache.Count == 0) return;
             
-            // 线性查找最少使用的条目
             string lruKey = null;
             int minUseCount = int.MaxValue;
             int minLastUsedTick = int.MaxValue;
@@ -322,10 +274,6 @@ namespace Ustas.RimAI.Communication.Memory
         
         private int EstimateComputeCost()
         {
-            // 估算重新计算的CPU时间
-            // 记忆注入: ~5-10ms
-            // 常识注入: ~3-5ms
-            // 总计: ~8-15ms
             return UnityEngine.Random.Range(8, 15);
         }
         

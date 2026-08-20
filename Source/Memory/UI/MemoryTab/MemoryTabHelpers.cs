@@ -6,17 +6,10 @@ using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory 辅助方法（部分类）
-    /// </summary>
     internal sealed class MemoryTabHelpers : MemoryTabCollaborator
     {
         internal MemoryTabHelpers(MainTabWindow_Memory owner) : base(owner) { }
 
-        /// <summary>
-        /// ⭐ 通用记忆聚合方法 - 支持AI总结
-        /// ⭐ v3.3.2.35: 修复时间戳继承和插入位置问题
-        /// </summary>
         internal void AggregateMemories(
             List<MemoryEntry> memories,
             MemoryLayer targetLayer,
@@ -24,7 +17,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             List<MemoryEntry> targetList,
             string promptTemplate)
         {
-            // ⭐ 修复：过滤掉已总结记忆（不应该被总结）（memories在输入前就已经过滤过了，这一步其实是多余的，但先留着吧）
             var memoriesToSummarize = memories.Where(m => m.CanBeSummarized).ToList();
 
             if (memoriesToSummarize.Count == 0)
@@ -36,17 +28,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return;
             }
 
-            // 修复分组总结的bug
             var byType = memoriesToSummarize.GroupBy(m => MemoryType.Conversation);
 
             foreach (var typeGroup in byType)
             {
                 var items = typeGroup.ToList();
 
-                // ⭐ 修复：使用被总结记忆中最晚（最新）的timestamp
                 int latestTimestamp = items.Max(m => m.GameTick);
 
-                // 创建聚合条目
                 var aggregated = new MemoryEntry(
                     content: targetLayer == MemoryLayer.Archive
                         ? CreateArchiveSummary(items, typeGroup.Key)
@@ -56,10 +45,8 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     importance: items.Average(m => m.Importance) + (targetLayer == MemoryLayer.Archive ? 0.3f : 0.2f)
                 );
 
-                // ⭐ 修复：覆盖默认的timestamp（MemoryEntry构造函数会自动设置为当前时间）
                 aggregated.GameTick = latestTimestamp;
 
-                // 合并元数据
                 aggregated.keywords.AddRange(items.SelectMany(m => m.keywords).Distinct());
                 aggregated.tags.AddRange(items.SelectMany(m => m.tags).Distinct());
                 aggregated.AddTag(targetLayer == MemoryLayer.Archive ? "手动归档" : "选中总结");
@@ -68,7 +55,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     aggregated.AddTag($"源自{items.Count}条ELS");
                 }
 
-                // ⭐ AI总结（如果可用）
                 var settings = RimTalkMemoryPatchMod.Settings;
                 if (settings.useAISummarization && AI.IndependentAISummarizer.IsAvailable())
                 {
@@ -93,7 +79,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     aggregated.Notes = $"AI {(targetLayer == MemoryLayer.Archive ? "深度归档" : "总结")}正在后台处理中...";
                 }
 
-                // ⭐ 修复：根据时间戳插入到正确位置，而不是总是插入到开头
                 InsertMemoryByTimestamp(targetList, aggregated);
             }
 
@@ -102,26 +87,19 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 if (memory != null) memory.IsSummarized = true;
             }
 
-            // ⭐ 修复：只从源列表中移除非固定记忆
             sourceList.RemoveAll(m => m == null || !m.IsPinned);
         }
 
-        /// <summary>
-        /// ⭐ 新方法：根据时间戳将记忆插入到正确的位置（保持列表按时间降序排序）
-        /// </summary>
         internal void InsertMemoryByTimestamp(List<MemoryEntry> list, MemoryEntry entry)
         {
-            // 如果列表为空，直接添加
             if (list.Count == 0)
             {
                 list.Add(entry);
                 return;
             }
 
-            // 使用二分查找找到插入位置（降序排列，新的在前）
             int insertIndex = list.FindIndex(m => m.GameTick < entry.GameTick);
 
-            // 如果没找到（所有记忆都比新记忆新），添加到末尾
             if (insertIndex == -1)
             {
                 list.Add(entry);
@@ -132,9 +110,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
 
-        /// <summary>
-        /// 创建简单总结（用于手动总结时的占位符）
-        /// </summary>
         internal string CreateSimpleSummary(List<MemoryEntry> memories, MemoryType type)
         {
             if (memories == null || memories.Count == 0)
@@ -201,9 +176,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return sb.Length > 0 ? sb.ToString() : $"{type}记忆{memories.Count}条";
         }
 
-        /// <summary>
-        /// 创建归档摘要（用于手动归档时的占位符）
-        /// </summary>
         internal string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type)
         {
             if (memories == null || memories.Count == 0)

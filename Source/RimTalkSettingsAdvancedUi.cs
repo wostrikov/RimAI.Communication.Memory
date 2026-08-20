@@ -54,7 +54,6 @@ internal void DrawDynamicInjectionSettings(Listing_Standard listing)
                 
                 listing.Gap();
                 
-                // ⭐ v4.0: ABM 注入轮数设置
                 listing.Label("RimTalk_Settings_MaxABMInjectionRoundsLabel".Translate(maxABMInjectionRounds));
                 maxABMInjectionRounds = (int)listing.Slider(maxABMInjectionRounds, 1, 10);
                 GUI.color = Color.gray;
@@ -63,7 +62,6 @@ internal void DrawDynamicInjectionSettings(Listing_Standard listing)
                 
                 listing.Gap();
                 
-                // ⭐ 是否注入玩家发言
                 listing.CheckboxLabeled("RimTalk_Settings_IsPlayerDialogueInject".Translate(), ref Owner.IsPlayerDialogueInject);
                 GUI.color = Color.gray;
                 listing.Label("  " + "RimTalk_Settings_IsPlayerDialogueInjectDesc".Translate());
@@ -71,8 +69,6 @@ internal void DrawDynamicInjectionSettings(Listing_Standard listing)
                 
                 listing.Gap();
 
-                // ⭐ 是否启用轮次记忆
-                // 防呆设计：拨动开关时会自动调整ABM注入轮数
                 bool oldIsActive = IsRoundMemoryActive;
                 listing.CheckboxLabeled("RimTalk_Settings_IsRoundMemoryActive".Translate(), ref Owner.IsRoundMemoryActive);
                 GUI.color = Color.gray;
@@ -80,15 +76,12 @@ internal void DrawDynamicInjectionSettings(Listing_Standard listing)
                 GUI.color = Color.white;
                 if (oldIsActive != IsRoundMemoryActive)
                 {
-                    // 如果开关状态发生了改变，即时改变ABM注入轮数
                     if (IsRoundMemoryActive)
                     {
-                        // 开关被【打开】时，设为默认值3
                         maxABMInjectionRounds = 3;
                     }
                     else
                     {
-                        // 开关被【关闭】时，设为0
                         maxABMInjectionRounds = 0;
                     }
                 }
@@ -100,15 +93,12 @@ internal void DrawDynamicInjectionSettings(Listing_Standard listing)
                 
                 listing.Label("RimTalk_Settings_MaxInjectedKnowledgeLabel".Translate(maxInjectedKnowledge));
                 
-                // 滑条和输入框组合
                 Rect knowledgeSliderRect = listing.GetRect(28f);
                 Rect sliderRect = new Rect(knowledgeSliderRect.x, knowledgeSliderRect.y, knowledgeSliderRect.width - 70f, 28f);
                 Rect inputRect = new Rect(knowledgeSliderRect.xMax - 60f, knowledgeSliderRect.y, 60f, 24f);
                 
-                // 滑条
                 maxInjectedKnowledge = (int)Widgets.HorizontalSlider(sliderRect, maxInjectedKnowledge, 0f, 100f, true);
                 
-                // 输入框
                 string knowledgeInput = maxInjectedKnowledge.ToString();
                 knowledgeInput = Widgets.TextField(inputRect, knowledgeInput);
                 if (int.TryParse(knowledgeInput, out int parsedKnowledge))
@@ -179,22 +169,18 @@ internal void DrawExperimentalFeaturesSettings(Listing_Standard listing)
             listing.Gap();
             listing.GapLine();
             
-            // ⭐ v4.0: 知识匹配源选择（动态从 RimTalk 获取 Mustache 变量）
             SettingsUIDrawers.DrawKnowledgeMatchingSourcesSettings(listing, Owner);
             
-            // ⭐ 常识链设置
             SettingsUIDrawers.DrawKnowledgeChainingSettings(listing, Owner);
         }
 
 internal void DrawVectorEnhancementSettings(Listing_Standard listing)
         {
-            // ⭐ SiliconFlow向量服务设置
             SettingsUIDrawers.DrawSiliconFlowSettings(listing, Owner);
         }
 
 internal void DrawPromptNormalizationSettings(Listing_Standard listing)
         {
-            // ⭐ 使用辅助类绘制
             SettingsUIDrawers.DrawPromptNormalizationSettings(listing, Owner);
         }
     }

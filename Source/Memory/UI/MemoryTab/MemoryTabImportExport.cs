@@ -9,19 +9,12 @@ using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory - ImportExport 导入导出部分
-    /// 包含记忆导入导出功能
-    /// </summary>
     internal sealed class MemoryTabImportExport : MemoryTabCollaborator
     {
         internal MemoryTabImportExport(MainTabWindow_Memory owner) : base(owner) { }
 
         // ==================== Import/Export ====================
         
-        /// <summary>
-        /// 导出记忆到XML文件
-        /// </summary>
         internal void ExportMemories()
         {
             if (Owner.selectedPawn == null || Owner.currentMemoryComp == null)
@@ -42,18 +35,16 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 
                 string fullPath = System.IO.Path.Combine(savePath, fileName);
                 
-                // 收集所有记忆
                 var allMemories = new List<MemoryEntry>();
                 allMemories.AddRange(Owner.currentMemoryComp.ActiveMemories);
                 allMemories.AddRange(Owner.currentMemoryComp.SituationalMemories);
                 allMemories.AddRange(Owner.currentMemoryComp.EventLogMemories);
                 allMemories.AddRange(Owner.currentMemoryComp.ArchiveMemories);
                 
-                // ? 修复：使用临时变量存储属性值
                 string pawnId = Owner.selectedPawn.ThingID;
                 string pawnName = Owner.selectedPawn.Name.ToStringShort;
                 
-                // 使用Verse的XML序列化
+                // Serialization / save-load constraint — keep field identity stable. (Verse XML)
                 Scribe.saver.InitSaving(fullPath, "MemoryExport");
                 Scribe_Values.Look(ref pawnId, "pawnId");
                 Scribe_Values.Look(ref pawnName, "pawnName");
@@ -65,7 +56,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 
                 RimAiLog.Info(RimAiLogCategory.Memory, $"[RimAI.Memory] Exported {allMemories.Count} memories to: {fullPath}");
                 
-                // ? 导出成功后询问是否打开文件夹
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                     "RimTalk_Memory_OpenExportFolder".Translate(),
                     delegate
@@ -84,9 +74,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
         }
         
-        /// <summary>
-        /// 从XML文件导入记忆
-        /// </summary>
         internal void ImportMemories()
         {
             if (Owner.selectedPawn == null || Owner.currentMemoryComp == null)
@@ -111,16 +98,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return;
             }
             
-            // 创建文件选择菜单
             List<FloatMenuOption> options = new List<FloatMenuOption>();
             
-            // ? 添加"打开文件夹"选项
             options.Add(new FloatMenuOption("RimTalk_Memory_OpenFolder".Translate(), delegate
             {
                 System.Diagnostics.Process.Start(savePath);
             }));
             
-            // 分隔线（用空选项实现）
             options.Add(new FloatMenuOption("─────────────────────", null));
             
             foreach (var file in files.OrderByDescending(f => MemorySidecarStorage.GetLastWriteTime(f)))
@@ -138,9 +122,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Find.WindowStack.Add(new FloatMenu(options));
         }
         
-        /// <summary>
-        /// 从指定文件导入记忆
-        /// </summary>
         internal void ImportFromFile(string filePath)
         {
             try
@@ -162,7 +143,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     return;
                 }
                 
-                // 确认导入
                 Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
                     "RimTalk_Memory_ImportConfirm".Translate(pawnName, importedMemories.Count, Owner.selectedPawn.Name.ToStringShort),
                     delegate
@@ -171,17 +151,14 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         
                         foreach (var memory in importedMemories)
                         {
-                            // 根据层级添加到对应列表
                             switch (memory.Layer)
                             {
                                 case MemoryLayer.Active:
-                                    // ⭐ v4.0: ABM 无容量限制
                                     Owner.currentMemoryComp.ActiveMemories.Add(memory);
                                     imported++;
                                     break;
                                     
                                 case MemoryLayer.Situational:
-                                    // ⭐ v4.0: SCM 已废弃，但仍支持导入旧数据
                                     if (Owner.currentMemoryComp.SituationalMemories.Count < RimTalkMemoryPatchMod.Settings.maxSituationalMemories)
                                     {
                                         Owner.currentMemoryComp.SituationalMemories.Add(memory);
@@ -207,7 +184,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                             }
                         }
                         
-                        Owner.filtersDirty = true; // ? v3.3.32: Mark cache dirty after importing memories
+                        Owner.filtersDirty = true;
                         
                         Messages.Message("RimTalk_Memory_ImportSuccess".Translate(imported, importedMemories.Count), 
                             MessageTypeDefOf.PositiveEvent, false);

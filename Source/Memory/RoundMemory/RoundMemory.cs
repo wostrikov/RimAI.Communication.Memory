@@ -8,23 +8,15 @@ using Verse;
 namespace Ustas.RimAI.Communication.Memory
 {
 
-    // 轮次记忆
-    // 表面是Pawn的记忆（继承MemoryEntry），实际是编剧（LLM）的记忆
     public class RoundMemory : MemoryEntry, IExposable
     {
-        // 唯一编号
-        // 此处本应使用父类的 Id，但父类的 Id 的设计哲学是分布式控制（每个记忆自己生成唯一ID）而轮次记忆则是绑定存档的集中式控制
-        // 因此在此处单独设置一个字段来存储RoundMemory的唯一ID
         public long RoundMemoryUniqueID = -1;
-        // 时间
         private long AbsTick = -1;
-        // 地点
         private PlanetTile planetTile = PlanetTile.Invalid;
         public bool IsHomeMap = false;
-        // 人物
         public HashSet<Pawn> Pawns = new();
 
-        public override bool CanBeSummarized => true; // 总是可以被总结
+        public override bool CanBeSummarized => true;
 
         public RoundMemory() { }
         public RoundMemory(HashSet<Pawn> pawns, string content = null) : base(
@@ -34,16 +26,12 @@ namespace Ustas.RimAI.Communication.Memory
             importance: 0.5f
             )
         {
-            // 构建参与者集合，可能为空集合
             Pawns = pawns ?? new();
             Pawns.RemoveWhere(p => p is null);
 
-            // 构建唯一ID和时间
             RoundMemoryUniqueID = RoundMemoryManager.GetNewRoundMemoryId();
             AbsTick = Find.TickManager?.TicksAbs ?? -1;
 
-            // 构建地点
-            // 因为RimTalk的问题，这里获取地点的方式很蛋疼，没辙
             if (Pawns.Count == 0)
             {
                 Log.Warning("[RoundMemory] Під час створення RoundMemory не знайдено учасників діалогу");
@@ -52,13 +40,9 @@ namespace Ustas.RimAI.Communication.Memory
             planetTile = Pawns.FirstOrDefault()?.Tile ?? PlanetTile.Invalid;
             IsHomeMap = Pawns.Select(p => p.Map).FirstOrDefault(m => m is not null)?.IsPlayerHome ?? false;
 
-            // 显式显示参与者名单（可选：并在构建时就初始化内容）
             Content = $"[{"RimTalk_Memory_Participants".Translate()}: {GetParticipantsRoster()}]{(content is null ? string.Empty : $"\n{content}")}";
         }
 
-        /// <summary>
-        /// 添加一行内容到轮次记忆的末尾，自动换行
-        /// </summary>
         public void AppendLine(string line)
         {
             if (string.IsNullOrWhiteSpace(line)) return;
@@ -67,20 +51,15 @@ namespace Ustas.RimAI.Communication.Memory
         }
 
 
-        // 计算并返回历史的日期时间字符串
         public string GetDateAndTime()
         {
-            // 若信息缺失，返回未知
             if (!planetTile.Valid || AbsTick == -1) return "RimTalk_Memory_UnknownDate".Translate();
 
-            // 若位置获取异常，则使用默认值
             var location = Find.WorldGrid?.LongLatOf(planetTile) ?? Vector2.zero;
 
-            // 使用本体方法得到日期，RimTalk方法得到时间
             return $"{GenDate.DateFullStringAt(AbsTick, location)} {GetInGameHour12HString(AbsTick, location)}";
         }
 
-        // 考虑未来将此方法放在一个公共工具类中
         private static string GetInGameHour12HString(long absTicks, Vector2 longLat)
         {
             int hour24 = GenDate.HourOfDay(absTicks, longLat.x);
@@ -90,7 +69,6 @@ namespace Ustas.RimAI.Communication.Memory
             return $"{hour12}{arg}";
         }
 
-        // 返回历史参与者名单，逗号分隔
         public string GetParticipantsRoster()
         {
             return string.Join(", ", Pawns
@@ -99,12 +77,10 @@ namespace Ustas.RimAI.Communication.Memory
             );
         }
 
-        // 存档读写
         public override void ExposeData()
         {
             base.ExposeData();
 
-            // 保存/加载字段
             Scribe_Values.Look(ref RoundMemoryUniqueID, "RoundMemoryUniqueID", -1);
 
             Scribe_Values.Look(ref AbsTick, "AbsTick", -1);
@@ -114,13 +90,11 @@ namespace Ustas.RimAI.Communication.Memory
 
             Scribe_Collections.Look(ref Pawns, "Pawns", LookMode.Reference);
 
-            // 确保集合不为 null
             if (Pawns is null)
             {
                 Log.Warning($"[RoundMemory] ExposeData: для RoundMemory з tick={AbsTick} список Pawns порожній");
                 Pawns = new();
             }
-            // 清理Pawns中的null条目
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 Pawns.RemoveWhere(p => p is null);
@@ -129,7 +103,7 @@ namespace Ustas.RimAI.Communication.Memory
 
         public string GetUniqueLoadID()
         {
-            return $"RoundMemory_{RoundMemoryUniqueID}"; // 考虑进一步唯一化？
+            return $"RoundMemory_{RoundMemoryUniqueID}";
         }
     }
 

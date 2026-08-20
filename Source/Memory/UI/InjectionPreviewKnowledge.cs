@@ -19,7 +19,6 @@ namespace Ustas.RimAI.Communication.Memory.Debug
 
 internal void DrawKnowledgePanel(Rect rect)
         {
-            // 面板标题
             Widgets.DrawBoxSolid(rect, new Color(0.15f, 0.15f, 0.15f, 0.8f));
             
             Rect titleRect = new Rect(rect.x + 5f, rect.y + 5f, rect.width - 10f, 25f);
@@ -43,7 +42,6 @@ internal void DrawKnowledgePanel(Rect rect)
             float yPos = rect.y + 35f;
             float contentWidth = rect.width - 10f;
             
-            // 1. 匹配源选择区域
             Rect matchSourceHeaderRect = new Rect(rect.x + 5f, yPos, contentWidth, 25f);
             GUI.color = new Color(0.8f, 0.9f, 1f);
             
@@ -65,14 +63,12 @@ internal void DrawKnowledgePanel(Rect rect)
                 yPos += matchSourceHeight + 5f;
             }
             
-            // 2. 解析结果区域（可滚动，高度自适应）
             Rect parsedTitleRect = new Rect(rect.x + 5f, yPos, contentWidth, 25f);
             GUI.color = new Color(0.9f, 1f, 0.8f);
             Widgets.Label(parsedTitleRect, "RimTalk_Preview_ParsedMatchText".Translate());
             GUI.color = Color.white;
             yPos += 28f;
             
-            // ⭐ 增加高度到 180f，并支持滚动
             float parsedTextHeight = 180f;
             Rect parsedTextRect = new Rect(rect.x + 5f, yPos, contentWidth, parsedTextHeight);
             Widgets.DrawBoxSolid(parsedTextRect, new Color(0.1f, 0.1f, 0.1f, 0.5f));
@@ -87,7 +83,6 @@ internal void DrawKnowledgePanel(Rect rect)
             }
             else
             {
-                // ⭐ 使用滚动视图显示完整内容
                 Rect innerRect = parsedTextRect.ContractedBy(5f);
                 float textHeight = Text.CalcHeight(parsedMatchText, innerRect.width - 20f);
                 Rect viewRect = new Rect(0f, 0f, innerRect.width - 20f, Mathf.Max(textHeight + 10f, innerRect.height));
@@ -100,7 +95,6 @@ internal void DrawKnowledgePanel(Rect rect)
             }
             yPos += parsedTextHeight + 5f;
             
-            // 3. 匹配到的常识区域
             Rect matchedTitleRect = new Rect(rect.x + 5f, yPos, contentWidth, 25f);
             GUI.color = new Color(1f, 0.9f, 0.7f);
             string matchedTitle = "RimTalk_Preview_MatchedKnowledge".Translate(matchedKnowledge.Count);
@@ -145,18 +139,14 @@ internal void DrawMatchingSourceSelector(Rect rect)
                 
                 Rect checkboxRect = new Rect(col * columnWidth, row * lineHeight, columnWidth - 5f, lineHeight);
                 
-                // ⭐ 从Settings读取选中状态
                 bool isSelected = settings.knowledgeMatchingSources.Contains(source.name);
-                // 使用 [P] 标记 Pawn 属性变量（RimWorld 不支持 emoji）
                 string label = source.isPawnProperty ? $"[P] {source.name}" : source.name;
                 
-                // 使用tooltip显示描述
                 TooltipHandler.TipRegion(checkboxRect, source.description);
                 
                 bool newSelected = isSelected;
                 Widgets.CheckboxLabeled(checkboxRect, label, ref newSelected);
                 
-                // ⭐ 修改同步到Settings
                 if (newSelected != isSelected)
                 {
                     if (newSelected)
@@ -169,7 +159,6 @@ internal void DrawMatchingSourceSelector(Rect rect)
                         settings.knowledgeMatchingSources.Remove(source.name);
                     }
                     
-                    // 立即刷新解析结果
                     Owner.RefreshParsedMatchText();
                 }
                 
@@ -205,16 +194,13 @@ internal void DrawMatchedKnowledgeList(Rect rect)
                 var ks = matchedKnowledge[i];
                 Rect entryRect = new Rect(0f, i * entryHeight, viewRect.width, entryHeight - 5f);
                 
-                // 背景
                 Widgets.DrawBoxSolid(entryRect, new Color(0.15f, 0.18f, 0.15f, 0.4f));
                 
-                // 标签和评分
                 GUI.color = new Color(0.9f, 0.9f, 0.6f);
                 string headerText = $"[{i + 1}] [{ks.Entry.tag}] " + "RimTalk_Preview_Score".Translate(ks.Score.ToString("F2"));
                 Widgets.Label(new Rect(entryRect.x + 5f, entryRect.y + 2f, entryRect.width - 10f, 20f), headerText);
                 GUI.color = Color.white;
                 
-                // 内容
                 GUI.color = new Color(0.85f, 0.85f, 0.85f);
                 string contentPreview = ks.Entry.content.Length > 100 
                     ? ks.Entry.content.Substring(0, 100) + "..." 

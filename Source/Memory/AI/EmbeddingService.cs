@@ -8,48 +8,23 @@ using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
-    /// <summary>
-    /// 向量嵌入服务 - 支持Gemini和DeepSeek
-    /// v3.1.0 实验性功能
-    /// 
-    /// 用途：
-    /// - 语义相似度计算（比关键词匹配更准确）
-    /// - 归档记忆摘要
-    /// - 长期记忆检索
-    /// 
-    /// 成本估算：
-    /// - DeepSeek: ?0.0002/1K tokens (~$0.00003)
-    /// - Gemini: $0.00001/1K tokens
-    /// 
-    /// 使用建议：
-    /// - 仅对重要记忆（importance > 0.7）使用
-    /// - 缓存结果，避免重复计算
-    /// - 月成本控制在 $0.01 以内
-    /// </summary>
     public static class EmbeddingService
     {
-        // 嵌入缓存（内存缓存，重启后清空）
         private static Dictionary<string, float[]> embeddingCache = new Dictionary<string, float[]>();
-        private const int MAX_CACHE_SIZE = 500; // 最多缓存500个向量
+        private const int MAX_CACHE_SIZE = 500;
         
-        // 配置
         private static bool isInitialized = false;
         private static string apiKey = "";
         private static string apiUrl = "";
         private static string provider = "";
         private static int embeddingDimension = 1024; // DeepSeek: 1024, Gemini: 768
         
-        /// <summary>
-        /// 初始化Embedding服务
-        /// ? v3.3.2.27: VectorDB已移除，始终返回未初始化状态
-        /// </summary>
         public static void Initialize()
         {
             if (isInitialized) return;
             
             try
             {
-                // ? v3.3.2.27: enableSemanticEmbedding已移除，始终不初始化
                 Log.Message("[Embedding] v3.3.2.27: semantic embedding вилучено; використовується SuperKeywordEngine");
                 return;
             }
@@ -60,19 +35,11 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 检查服务是否可用
-        /// ? v3.3.2.27: VectorDB已移除，始终返回false
-        /// </summary>
         public static bool IsAvailable()
         {
-            return false; // v3.3.2.27: 语义嵌入功能已移除
+            return false;
         }
         
-        /// <summary>
-        /// 获取文本的嵌入向量（带缓存）
-        /// ? v3.3.2: 减少日志输出频率
-        /// </summary>
         public static async Task<float[]> GetEmbeddingAsync(string text)
         {
             if (!IsAvailable()) return null;
@@ -80,15 +47,12 @@ namespace Ustas.RimAI.Communication.Memory.AI
             if (string.IsNullOrEmpty(text))
                 return null;
             
-            // 生产缓存键
             string cacheKey = GenerateCacheKey(text);
             
-            // 检查缓存
             lock (embeddingCache)
             {
                 if (embeddingCache.TryGetValue(cacheKey, out float[] cachedVector))
                 {
-                    // ? v3.3.2: 只在DevMode下且随机1%概率输出，避免刷屏
                     if (Prefs.DevMode && UnityEngine.Random.value < 0.01f)
                     {
                         Log.Message($"[Embedding] Cache hit ({embeddingCache.Count}/{MAX_CACHE_SIZE})");
@@ -97,31 +61,25 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 }
             }
             
-            // ? v3.3.2: 降低API调用日志频率
             if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
             {
                 Log.Message($"[Embedding] API call: {text.Substring(0, Math.Min(30, text.Length))}...");
             }
             
-            // 调用API
             float[] embedding = await CallEmbeddingAPIAsync(text);
             
             if (embedding != null)
             {
-                // 缓存结果
                 lock (embeddingCache)
                 {
-                    // 限制缓存大小
                     if (embeddingCache.Count >= MAX_CACHE_SIZE)
                     {
-                        // 移除最旧的50个
                         var toRemove = embeddingCache.Keys.Take(50).ToList();
                         foreach (var key in toRemove)
                         {
                             embeddingCache.Remove(key);
                         }
                         
-                        // ? v3.3.2: 降低日志输出
                         if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                             Log.Message($"[Embedding] Cache cleanup: {toRemove.Count} removed, {embeddingCache.Count} remain");
                     }
@@ -133,9 +91,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return embedding;
         }
         
-        /// <summary>
-        /// 批量获取嵌入向量
-        /// </summary>
         public static async Task<Dictionary<string, float[]>> GetEmbeddingsBatchAsync(List<string> texts)
         {
             var results = new Dictionary<string, float[]>();
@@ -143,7 +98,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             if (!IsAvailable() || texts == null || texts.Count == 0)
                 return results;
             
-            // 分批处理（每批最多20个）
             const int BATCH_SIZE = 20;
             
             for (int i = 0; i < texts.Count; i += BATCH_SIZE)
@@ -166,19 +120,15 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     }
                 }
                 
-                // 避免频率限制
                 if (i + BATCH_SIZE < texts.Count)
                 {
-                    await Task.Delay(100); // 延迟100ms
+                    await Task.Delay(100);
                 }
             }
             
             return results;
         }
         
-        /// <summary>
-        /// 计算余弦相似度
-        /// </summary>
         public static float CosineSimilarity(float[] vectorA, float[] vectorB)
         {
             if (vectorA == null || vectorB == null)
@@ -207,9 +157,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return dotProduct / (float)(Math.Sqrt(magnitudeA) * Math.Sqrt(magnitudeB));
         }
         
-        /// <summary>
-        /// 调用Embedding API
-        /// </summary>
         private static async Task<float[]> CallEmbeddingAPIAsync(string text)
         {
             try
@@ -230,12 +177,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 调用OpenAI风格的Embedding API (DeepSeek, OpenAI)
-        /// </summary>
         private static async Task<float[]> CallOpenAIStyleEmbeddingAsync(string text)
         {
-            // ? 添加API Key验证
             if (string.IsNullOrEmpty(apiKey))
             {
                 Log.Error("[Embedding] API Key is empty! Please configure it in Mod Settings.");
@@ -253,9 +196,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
             request.Method = "POST";
             request.ContentType = "application/json";
             request.Headers["Authorization"] = $"Bearer {apiKey}";
-            request.Timeout = 10000; // 10秒超时
+            request.Timeout = 10000;
             
-            // 构建请求体
             string model = provider == "DeepSeek" ? "deepseek-embedding" : "text-embedding-ada-002";
             string jsonRequest = BuildOpenAIEmbeddingRequest(text, model);
             
@@ -303,9 +245,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 调用Gemini Embedding API
-        /// </summary>
         private static async Task<float[]> CallGeminiEmbeddingAsync(string text)
         {
             var request = (HttpWebRequest)WebRequest.Create(apiUrl);
@@ -313,7 +252,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             request.ContentType = "application/json";
             request.Timeout = 10000;
             
-            // Gemini请求格式
             string jsonRequest = BuildGeminiEmbeddingRequest(text);
             
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequest);
@@ -332,9 +270,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 构建OpenAI风格的请求
-        /// </summary>
         private static string BuildOpenAIEmbeddingRequest(string text, string model)
         {
             string escapedText = text.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n");
@@ -348,9 +283,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return sb.ToString();
         }
         
-        /// <summary>
-        /// 构建Gemini请求
-        /// </summary>
         private static string BuildGeminiEmbeddingRequest(string text)
         {
             string escapedText = text.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n");
@@ -367,14 +299,10 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return sb.ToString();
         }
         
-        /// <summary>
-        /// 解析OpenAI风格的响应
-        /// </summary>
         private static float[] ParseOpenAIEmbeddingResponse(string responseText)
         {
             try
             {
-                // 简单的JSON解析（提取embedding数组）
                 int embeddingStart = responseText.IndexOf("\"embedding\":");
                 if (embeddingStart == -1)
                     return null;
@@ -407,14 +335,10 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 解析Gemini响应
-        /// </summary>
         private static float[] ParseGeminiEmbeddingResponse(string responseText)
         {
             try
             {
-                // Gemini返回格式: {"embedding":{"values":[...]}}
                 int valuesStart = responseText.IndexOf("\"values\":");
                 if (valuesStart == -1)
                     return null;
@@ -447,19 +371,12 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 生成缓存键
-        /// </summary>
         private static string GenerateCacheKey(string text)
         {
-            // 使用MD5哈希（简化版）
             int hash = text.GetHashCode();
             return $"{provider}_{hash}";
         }
         
-        /// <summary>
-        /// 清空缓存
-        /// </summary>
         public static void ClearCache()
         {
             lock (embeddingCache)
@@ -470,9 +387,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 获取缓存统计
-        /// </summary>
         public static EmbeddingCacheStats GetCacheStats()
         {
             lock (embeddingCache)
@@ -488,24 +402,17 @@ namespace Ustas.RimAI.Communication.Memory.AI
             }
         }
         
-        /// <summary>
-        /// 获取EmbeddingService实例（静态访问）
-        /// </summary>
         public static EmbeddingServiceWrapper GetInstance()
         {
-            // 返回包装器实例
             return new EmbeddingServiceWrapper();
         }
         
-        /// <summary>
-        /// 同步版本的GetEmbedding（用于向量库注入）
-        /// </summary>
         public static float[] GetEmbedding(string text)
         {
             try
             {
                 var task = GetEmbeddingAsync(text);
-                task.Wait(5000); // 等待最多5秒
+                task.Wait(5000);
                 return task.Result;
             }
             catch (Exception ex)
@@ -516,9 +423,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
         }
     }
     
-    /// <summary>
-    /// EmbeddingService包装器，用于实例模式访问
-    /// </summary>
     public class EmbeddingServiceWrapper
     {
         public float[] GetEmbedding(string text)
@@ -532,9 +436,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
         }
     }
     
-    /// <summary>
-    /// Embedding缓存统计信息
-    /// </summary>
     public class EmbeddingCacheStats
     {
         public int CachedCount;

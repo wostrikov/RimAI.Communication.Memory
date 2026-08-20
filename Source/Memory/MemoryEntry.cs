@@ -7,18 +7,11 @@ using Verse;
 namespace Ustas.RimAI.Communication.Memory
 {
 
-    /// <summary>
-    /// 记忆条目
-    /// 本质是超长期储存单元，可能出现跨存档甚至跨版本的情况
-    /// 因此其字段应当尽可能由基本类型构成
-    /// </summary>
     public class MemoryEntry : IExposable
     {
-        // 基本信息
-        public string Id;                   // 唯一ID
-        // 更应当存储 AbsTick，无奈屎山已经堆起来了
-        public int GameTick = -1;           // 时间戳（单位 tick）
-        public string Content;              // 内容
+        public string Id;                  
+        public int GameTick = -1;          
+        public string Content;             
 
         // Presentation-only migration for metadata emitted by older builds.
         // The semantic conversation body remains byte-for-byte unchanged in the save.
@@ -34,15 +27,10 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        // 分类
-        public MemoryType Type;             // 类型
-        public MemoryLayer Layer;           // 层级
+        public MemoryType Type;            
+        public MemoryLayer Layer;          
 
-        // 重要性和活跃度
-        private float _importance = -1;       // 重要性 (0-1)
-        /// <summary>
-        /// 重要性，set 时自动收束到0-1
-        /// </summary>
+        private float _importance = -1;      
         public float Importance
         {
             get => _importance;
@@ -51,24 +39,19 @@ namespace Ustas.RimAI.Communication.Memory
                 _importance = Math.Clamp(value, 0f, 1f);
             }
         }
-        public float Activity = -1;         // 活跃度 (随时间衰减)
+        public float Activity = -1;        
 
-        // 关联信息
-        public string relatedPawnId;        // 相关小人ID
-        public string relatedPawnName;      // 相关小人名字
-        public string location;             // 地点
-        public List<string> tags = new();   // 标签（中文）
-        public List<string> keywords = new();   // 关键词
+        public string relatedPawnId;       
+        public string relatedPawnName;     
+        public string location;            
+        public List<string> tags = new();  
+        public List<string> keywords = new();  
 
-        // 元数据
-        public bool IsUserEdited = false;   // 是否被用户编辑过
-        public bool IsPinned = false;       // 是否固定（不会被删除）
-        public bool IsSummarized = false;   // 是否已被AI总结过，新生成的记忆默认为false
-        public string Notes;                // 用户备注
+        public bool IsUserEdited = false;  
+        public bool IsPinned = false;      
+        public bool IsSummarized = false;  
+        public string Notes;               
 
-        /// <summary>
-        /// 获取层级名称（中文）
-        /// </summary>
         public string LayerName => Layer switch
         {
             MemoryLayer.Active => "RimTalk_MemoryLayer_Active".Translate(),
@@ -78,9 +61,6 @@ namespace Ustas.RimAI.Communication.Memory
             _ => "RimTalk_Memory_Unknown".Translate()
         };
 
-        /// <summary>
-        /// 获取类型名称（中文）
-        /// </summary>
         public string TypeName => Type switch
         {
             MemoryType.Conversation => "RimTalk_MemoryType_Conversation".Translate(),
@@ -93,15 +73,8 @@ namespace Ustas.RimAI.Communication.Memory
             _ => "RimTalk_Memory_Unknown".Translate()
         };
 
-        /// <summary>
-        /// 是否可以被总结
-        /// </summary>
         public virtual bool CanBeSummarized => !IsSummarized;
 
-        /// <summary>
-        /// 获取记忆年龄描述
-        /// 根据年龄大小返回相对描述（如“刚刚”、“一天前”）或具体日期（如“5501年春1日”）
-        /// </summary>
         public string AgeString => (Find.TickManager?.TicksGame - GameTick) switch
         {
             null or < 0 => "RimTalk_MemoryAge_Invalid".Translate(),
@@ -130,7 +103,6 @@ namespace Ustas.RimAI.Communication.Memory
             Importance = importance;
             relatedPawnName = relatedPawn;
 
-            // 自动添加类型标签
             AddTypeTag();
         }
         private void AddTypeTag()
@@ -148,8 +120,6 @@ namespace Ustas.RimAI.Communication.Memory
             });
         }
 
-        // 存档读写
-        // label 更应当用 PascalCase，但此处屎山已成
         public virtual void ExposeData()
         {
             Scribe_Values.Look(ref Id, "id");
@@ -170,17 +140,13 @@ namespace Ustas.RimAI.Communication.Memory
 
             Scribe_Values.Look(ref IsUserEdited, "isUserEdited", false);
             Scribe_Values.Look(ref IsPinned, "isPinned", false);
-            Scribe_Values.Look(ref IsSummarized, "IsSummarized", true); // 旧存档中的记忆默认为true以向后兼容
+            Scribe_Values.Look(ref IsSummarized, "IsSummarized", true);
             Scribe_Values.Look(ref Notes, "notes");
 
-            // 集合型字段应当在读档后进行防空处理
             tags ??= new();
             keywords ??= new();
         }
 
-        /// <summary>
-        /// 添加标签（中文）
-        /// </summary>
         public void AddTag(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag) || tags.Contains(tag)) return;
@@ -188,9 +154,6 @@ namespace Ustas.RimAI.Communication.Memory
             tags.Add(tag);
         }
 
-        /// <summary>
-        /// 移除标签
-        /// </summary>
         public void RemoveTag(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag)) return;
@@ -198,9 +161,6 @@ namespace Ustas.RimAI.Communication.Memory
             tags.Remove(tag);
         }
 
-        /// <summary>
-        /// 添加关键词
-        /// </summary>
         public void AddKeyword(string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword) || keywords.Contains(keyword)) return;
@@ -208,9 +168,6 @@ namespace Ustas.RimAI.Communication.Memory
             keywords.Add(keyword);
         }
 
-        /// <summary>
-        /// 移除关键词
-        /// </summary>
         public void RemoveKeyword(string keyword)
         {
             if (string.IsNullOrWhiteSpace(keyword)) return;
@@ -218,34 +175,24 @@ namespace Ustas.RimAI.Communication.Memory
             keywords.Remove(keyword);
         }
 
-        /// <summary>
-        /// 衰减活跃度
-        /// </summary>
         public void Decay(float rate)
         {
-            if (IsPinned) return; // 固定的记忆不衰减
+            if (IsPinned) return;
 
             Activity *= (1f - rate);
         }
 
-        /// <summary>
-        /// 计算检索分数（用于相关性排序）
-        /// </summary>
         public float CalculateRetrievalScore(string context, List<string> contextKeywords)
         {
             float score = 0f;
 
-            // 时间因子（越新越好）
             float timeFactor = (float)Math.Exp(-(float)(Find.TickManager.TicksGame - GameTick) / GenDate.TicksPerDay);
             score += timeFactor * 0.3f;
 
-            // 重要性因子
             score += Importance * 0.3f;
 
-            // 活跃度因子
             score += Activity * 0.2f;
 
-            // 相关性因子（关键词匹配）
             if (contextKeywords != null && contextKeywords.Count > 0)
             {
                 int matchCount = 0;
@@ -257,7 +204,6 @@ namespace Ustas.RimAI.Communication.Memory
                 score += relevance * 0.2f;
             }
 
-            // 固定/编辑过的记忆优先级更高
             if (IsPinned) score += 0.3f;
             if (IsUserEdited) score += 0.2f;
 
@@ -265,9 +211,6 @@ namespace Ustas.RimAI.Communication.Memory
         }
     }
 
-    /// <summary>
-    /// 记忆查询参数
-    /// </summary>
     public class MemoryQuery
     {
         public MemoryLayer? layer;

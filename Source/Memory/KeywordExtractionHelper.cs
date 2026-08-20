@@ -6,15 +6,8 @@ using RimWorld;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 关键词提取辅助类
-    /// ★ v3.3.20: 拆分复杂的Pawn关键词提取逻辑
-    /// </summary>
     public static class KeywordExtractionHelper
     {
-        /// <summary>
-        /// 提取角色关键词（带详细信息）
-        /// </summary>
         public static PawnKeywordInfo ExtractPawnKeywords(List<string> keywords, Verse.Pawn pawn)
         {
             var info = new PawnKeywordInfo
@@ -27,34 +20,24 @@ namespace Ustas.RimAI.Communication.Memory
 
             try
             {
-                // 1. 名字
                 ExtractNameKeywords(pawn, keywords, info);
                 
-                // 2. 年龄段
                 ExtractAgeKeywords(pawn, keywords, info);
                 
-                // 3. 性别
                 ExtractGenderKeywords(pawn, keywords, info);
                 
-                // 4. 种族
                 ExtractRaceKeywords(pawn, keywords, info);
                 
-                // 4.5. 身份
                 ExtractIdentityKeywords(pawn, keywords, info);
                 
-                // 5. 特质
                 ExtractTraitKeywords(pawn, keywords, info);
                 
-                // 6. 技能
                 ExtractSkillKeywords(pawn, keywords, info);
                 
-                // 7. 健康状况
                 ExtractHealthKeywords(pawn, keywords, info);
                 
-                // 8. 关系
                 ExtractRelationshipKeywords(pawn, keywords, info);
                 
-                // 9-10. 背景
                 ExtractBackstoryKeywords(pawn, keywords, info);
 
                 info.TotalCount = info.NameKeywords.Count + info.AgeKeywords.Count + info.GenderKeywords.Count + 
@@ -70,7 +53,6 @@ namespace Ustas.RimAI.Communication.Memory
             return info;
         }
         
-        // ==================== 私有提取方法 ====================
         
         private static void ExtractNameKeywords(Verse.Pawn pawn, List<string> keywords, PawnKeywordInfo info)
         {
@@ -120,7 +102,6 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 AddAndRecord(pawn.def.label, keywords, info.RaceKeywords);
                 
-                // 亚种信息（Biotech DLC）
                 try
                 {
                     if (pawn.genes != null && pawn.genes.Xenotype != null)
@@ -132,7 +113,7 @@ namespace Ustas.RimAI.Communication.Memory
                         }
                     }
                 }
-                catch { /* 兼容性：没有Biotech DLC时跳过 */ }
+                catch { }
             }
         }
         
@@ -185,17 +166,13 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     int level = skillRecord.Level;
                     
-                    // 只提取有一定等级的技能（>=5级）
                     if (level >= 5)
                     {
-                        // 添加技能名
                         AddAndRecord(skillRecord.def.label, keywords, info.SkillKeywords);
                         
-                        // 添加技能名+等级
                         string skillWithLevel = skillRecord.def.label + level;
                         AddAndRecord(skillWithLevel, keywords, info.SkillKeywords);
                         
-                        // 添加等级标记
                         if (level >= 15)
                         {
                             AddAndRecord(skillRecord.def.label + "精通", keywords, info.SkillLevelKeywords);
@@ -241,7 +218,6 @@ namespace Ustas.RimAI.Communication.Memory
         
         private static void ExtractBackstoryKeywords(Verse.Pawn pawn, List<string> keywords, PawnKeywordInfo info)
         {
-            // 使用完整标题而不是缩写
             if (pawn.story?.Adulthood != null)
             {
                 string backstoryTitle = pawn.story.Adulthood.TitleFor(pawn.gender);
@@ -261,9 +237,6 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        /// <summary>
-        /// 添加关键词并记录（避免重复）
-        /// </summary>
         private static void AddAndRecord(string keyword, List<string> allKeywords, List<string> categoryKeywords)
         {
             if (string.IsNullOrEmpty(keyword))

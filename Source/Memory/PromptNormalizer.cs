@@ -7,15 +7,8 @@ using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 提示词规范化器 - 在发送给AI前自动替换/规范化提示词
-    /// v3.3.2.37: 支持正则表达式替换规则
-    /// v5.1: 线程安全重构（不可变快照模式）
-    /// </summary>
     public static class PromptNormalizer
     {
-        // ⭐ v5.1: 使用不可变快照保证线程安全。
-        // UpdateRules 原子替换整个引用，Normalize 读取本地快照，无需加锁。
         private static volatile NormalizerSnapshot _snapshot = new NormalizerSnapshot(
             new List<RimTalkMemoryPatchSettings.ReplacementRule>(),
             new Dictionary<string, Regex>());
@@ -34,9 +27,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
 
-        /// <summary>
-        /// 更新替换规则列表（线程安全：原子替换快照）
-        /// </summary>
+        // Threading/concurrency constraint — do not race this state. (summary summary)
         public static void UpdateRules(List<RimTalkMemoryPatchSettings.ReplacementRule> rules)
         {
             var newRules = rules == null
@@ -59,19 +50,16 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
 
-            // 原子替换：Normalize 读到的要么是旧快照，要么是新快照，不会读到中间状态
             _snapshot = new NormalizerSnapshot(newRules, newCache);
         }
 
-        /// <summary>
-        /// 规范化提示词文本（线程安全）
-        /// </summary>
+        // Threading/concurrency constraint — do not race this state. (summary summary)
         public static string Normalize(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return text;
 
-            // 取本地引用，整个调用期间使用同一快照，避免 UpdateRules 并发时的竞态
+            // Threading/concurrency constraint — do not race this state. (UpdateRules)
             var snap = _snapshot;
             if (snap.Rules.Count == 0)
                 return text;
@@ -100,9 +88,6 @@ namespace Ustas.RimAI.Communication.Memory
             return result;
         }
 
-        /// <summary>
-        /// 获取当前激活的规则数量
-        /// </summary>
         public static int GetActiveRuleCount()
         {
             return _snapshot.Rules.Count;

@@ -31,7 +31,7 @@ namespace Ustas.RimAI.Communication.Memory
         public override void DoWindowContents(Rect inRect)
         {
             Listing_Standard listing = new Listing_Standard();
-            Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 2200f); // ⭐ 增加高度
+            Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 2200f);
             Widgets.BeginScrollView(inRect, ref scrollPos, viewRect);
             listing.Begin(viewRect);
 
@@ -55,7 +55,6 @@ namespace Ustas.RimAI.Communication.Memory
 
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryTypesSection".Translate(), ref RimTalkMemoryPatchSettings.expandMemoryTypes, delegate { settings.DrawMemoryTypesSettings(listing); });
             
-            // ⭐ 添加向量增强设置
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_VectorEnhancementSection".Translate(), ref RimTalkMemoryPatchSettings.expandVectorEnhancement, delegate { settings.DrawVectorEnhancementSettings(listing); });
             
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_ExperimentalSection".Translate(), ref RimTalkMemoryPatchSettings.expandExperimentalFeatures, delegate { settings.DrawExperimentalFeaturesSettings(listing); });

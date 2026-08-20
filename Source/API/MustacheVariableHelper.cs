@@ -8,10 +8,6 @@ using Ustas.RimAI.Communication.Prompt;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
-    /// <summary>
-    /// 辅助类：从 RimTalk 获取可用的变量列表
-    /// ⭐ v6.0: 直接调用 RimTalk 的 VariableDefinitions.GetScribanVariables() API
-    /// </summary>
     public static class MustacheVariableHelper
     {
         #region 缓存
@@ -27,10 +23,6 @@ namespace Ustas.RimAI.Communication.Memory.API
 
         #region 公共 API
         
-        /// <summary>
-        /// 获取 RimTalk 的所有内置变量（分类）
-        /// 直接调用 VariableDefinitions.GetScribanVariables()
-        /// </summary>
         public static Dictionary<string, List<(string name, string description)>> GetBuiltinVariables()
         {
             if (_cachedVariables != null) return _cachedVariables;
@@ -49,10 +41,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             return _cachedVariables;
         }
         
-        /// <summary>
-        /// 获取按分类组织的匹配源变量
-        /// 返回结构: Dictionary[分类名] = List[(变量名, 描述, 是否Pawn属性)]
-        /// </summary>
         public static Dictionary<string, List<(string name, string description, bool isPawnProperty)>> GetCategorizedMatchingSources()
         {
             var result = new Dictionary<string, List<(string, string, bool)>>();
@@ -64,17 +52,14 @@ namespace Ustas.RimAI.Communication.Memory.API
                 
                 foreach (var v in category.Value)
                 {
-                    // 过滤掉不适合匹配的变量
                     if (v.name == "json.format" || v.name == "chat.history" || v.name.StartsWith("#"))
                         continue;
                     
-                    // ⭐ 过滤掉 knowledge 变量，防止自己匹配自己导致无限递归
                     if (v.name == "knowledge" || v.name.StartsWith("knowledge."))
                         continue;
                     
-                    // 判断是否是 Pawn 属性
                     bool isPawn = v.name.StartsWith("pawn.") && !v.name.StartsWith("pawn.memory");
-                    string varName = isPawn ? v.name.Substring(5) : v.name; // 去掉 "pawn." 前缀
+                    string varName = isPawn ? v.name.Substring(5) : v.name;
                     
                     items.Add((varName, v.description, isPawn));
                 }
@@ -88,9 +73,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             return result;
         }
         
-        /// <summary>
-        /// 检查属性是否是 Pawn 属性
-        /// </summary>
         public static bool IsPawnProperty(string propertyName)
         {
             if (string.IsNullOrEmpty(propertyName)) return false;
@@ -106,7 +88,7 @@ namespace Ustas.RimAI.Communication.Memory.API
                     {
                         if (v.name.StartsWith("pawn.") && !v.name.StartsWith("pawn.memory"))
                         {
-                            _cachedPawnProperties.Add(v.name.Substring(5)); // 去掉 "pawn." 前缀
+                            _cachedPawnProperties.Add(v.name.Substring(5));
                         }
                     }
                 }
@@ -115,10 +97,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             return _cachedPawnProperties.Contains(propertyName);
         }
         
-        /// <summary>
-        /// 获取 Pawn 的属性值
-        /// 通过 ScribanParser 渲染 pawn.xxx 变量
-        /// </summary>
         public static bool TryGetPawnPropertyValue(string propertyName, Pawn pawn, out string value)
         {
             value = null;
@@ -150,9 +128,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
         
-        /// <summary>
-        /// 清除缓存
-        /// </summary>
         public static void ClearCache()
         {
             _cachedVariables = null;
@@ -163,9 +138,6 @@ namespace Ustas.RimAI.Communication.Memory.API
         
         #region 内部方法
         
-        /// <summary>
-        /// 转换反射返回的 Dictionary 结果
-        /// </summary>
         private static Dictionary<string, List<(string, string)>> ConvertDictionaryResult(object result)
         {
             var converted = new Dictionary<string, List<(string, string)>>();
@@ -173,13 +145,11 @@ namespace Ustas.RimAI.Communication.Memory.API
             
             try
             {
-                // 尝试直接转换
                 if (result is Dictionary<string, List<(string, string)>> typedResult)
                 {
                     return typedResult;
                 }
                 
-                // 使用反射遍历 Dictionary
                 if (result is System.Collections.IDictionary dict)
                 {
                     foreach (var key in dict.Keys)

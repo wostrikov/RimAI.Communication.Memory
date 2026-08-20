@@ -6,9 +6,6 @@ using System.Linq;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// 记忆编辑对话框 - 四层记忆系统
-    /// </summary>
     public class Dialog_EditMemory : Window
     {
         private MemoryEntry memory;
@@ -16,7 +13,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
         private string editedContent;
         private string editedNotes;
         private Vector2 scrollPosition;
-        private Vector2 contentScrollPosition; // 记忆内容滚动位置
+        private Vector2 contentScrollPosition;
         private List<string> availableTags;
         private string newTagInput = "";
 
@@ -29,7 +26,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             this.editedContent = memory.Content;
             this.editedNotes = memory.Notes ?? "";
             
-            // 初始化可用标签列表
             availableTags = new List<string>
             {
                 MemoryTags.开心, MemoryTags.悲伤, MemoryTags.愤怒, MemoryTags.焦虑, MemoryTags.平静,
@@ -53,7 +49,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             float curY = 45f;
 
-            // 记忆信息
             Rect infoRect = new Rect(0f, curY, inRect.width, 60f);
             GUI.color = Color.gray;
             Widgets.Label(new Rect(infoRect.x, infoRect.y, infoRect.width, 25f), 
@@ -63,26 +58,20 @@ namespace Ustas.RimAI.Communication.Memory.UI
             GUI.color = Color.white;
             curY += 65f;
 
-            // 内容编辑
             Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Вміст:");
             curY += 25f;
             
-            // 内容区域扩大并增加滑条
-            // 外层的固定显示区域
             Rect contentRect = new Rect(0f, curY, inRect.width, 150f);
 
-            // 计算内层区域高度和显示区域
             float textHeight = Mathf.Max(contentRect.height, Text.CalcHeight(editedContent, contentRect.width - 20f) + 10f);
             Rect viewRect = new Rect(0f, 0f, contentRect.width - 20f, textHeight);
 
-            // 使用 ScrollView 包裹 TextArea
             Widgets.BeginScrollView(contentRect, ref contentScrollPosition, viewRect);
             editedContent = Widgets.TextArea(viewRect, editedContent);
             Widgets.EndScrollView();
 
             curY += 155f;
 
-            // 备注编辑
             Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Примітки:");
             curY += 25f;
             
@@ -90,14 +79,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
             editedNotes = Widgets.TextArea(notesRect, editedNotes);
             curY += 65f;
 
-            // 标签管理
             Widgets.Label(new Rect(0f, curY, inRect.width, 25f), "Мітки:");
             curY += 25f;
 
             DrawTagsSection(new Rect(0f, curY, inRect.width, 100f));
             curY += 105f;
 
-            // 固定选项
             Rect pinnedRect = new Rect(0f, curY, inRect.width, 30f);
             bool wasPinned = memory.IsPinned;
             Widgets.CheckboxLabeled(pinnedRect, "Закріпити цей спогад (він не видалятиметься й не згасатиме)", ref memory.IsPinned);
@@ -110,18 +97,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
             curY += 35f;
 
-            // 底部按钮
             float buttonWidth = 120f;
             float buttonY = inRect.height - 40f;
             
-            // 保存按钮
             if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth * 2 - 10f, buttonY, buttonWidth, 35f), "Зберегти"))
             {
                 SaveChanges();
                 Close();
             }
 
-            // 取消按钮
             if (Widgets.ButtonText(new Rect(inRect.width - buttonWidth, buttonY, buttonWidth, 35f), "Скасувати"))
             {
                 Close();
@@ -135,18 +119,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             float curY = 0f;
 
-            // 当前标签（可移除）
             if (memory.tags != null && memory.tags.Any())
             {
                 foreach (var tag in memory.tags.ToList())
                 {
                     Rect tagRect = new Rect(0f, curY, viewRect.width, 22f);
                     
-                    // 标签名称
                     Rect labelRect = new Rect(tagRect.x + 5f, tagRect.y, tagRect.width - 70f, tagRect.height);
                     Widgets.Label(labelRect, $"✓ {tag}");
                     
-                    // 移除按钮
                     Rect removeRect = new Rect(tagRect.xMax - 60f, tagRect.y, 55f, 22f);
                     if (Widgets.ButtonText(removeRect, "Прибрати"))
                     {
@@ -161,7 +142,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 curY += 10f;
             }
 
-            // 可用标签（可添加）
             foreach (var tag in availableTags)
             {
                 if (memory.tags != null && memory.tags.Contains(tag))
@@ -169,13 +149,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
                 Rect tagRect = new Rect(0f, curY, viewRect.width, 22f);
                 
-                // 标签名称
                 Rect labelRect = new Rect(tagRect.x + 5f, tagRect.y, tagRect.width - 70f, tagRect.height);
                 GUI.color = Color.gray;
                 Widgets.Label(labelRect, tag);
                 GUI.color = Color.white;
                 
-                // 添加按钮
                 Rect addRect = new Rect(tagRect.xMax - 60f, tagRect.y, 55f, 22f);
                 if (Widgets.ButtonText(addRect, "Додати"))
                 {
@@ -185,7 +163,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 curY += 25f;
             }
 
-            // 自定义标签输入
             curY += 5f;
             Widgets.DrawLineHorizontal(0f, curY, viewRect.width);
             curY += 10f;
@@ -211,7 +188,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             memoryComp.EditMemory(memory.Id, editedContent, editedNotes);
             
-            // 添加用户编辑标签
             if (!memory.tags.Contains(MemoryTags.用户编辑))
             {
                 memory.AddTag(MemoryTags.用户编辑);

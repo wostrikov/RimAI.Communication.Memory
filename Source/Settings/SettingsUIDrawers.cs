@@ -9,13 +9,8 @@ using System.Collections.Generic;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 设置UI绘制辅助类 - 拆分UI代码以减少主文件大小
-    /// ★ v3.3.20: 模块化设置界面
-    /// </summary>
     public static class SettingsUIDrawers
     {
-        // ==================== AI配置绘制 ====================
         
         public static void DrawAIProviderSelection(Listing_Standard listing, RimTalkMemoryPatchSettings settings)
         {
@@ -24,7 +19,6 @@ namespace Ustas.RimAI.Communication.Memory
             listing.Label("  " + "RimTalk_Settings_CurrentProvider".Translate(settings.independentProvider));
             GUI.color = Color.white;
             
-            // 提供商选择按钮
             Rect providerHeaderRect = listing.GetRect(25f);
             Widgets.DrawBoxSolid(providerHeaderRect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
             Widgets.Label(providerHeaderRect.ContractedBy(5f), "RimTalk_Settings_SelectProvider".Translate());
@@ -32,7 +26,6 @@ namespace Ustas.RimAI.Communication.Memory
             Rect providerButtonRect1 = listing.GetRect(30f);
             float buttonWidth = (providerButtonRect1.width - 20f) / 3f;
             
-            // 第一行：OpenAI, DeepSeek, Player2
             DrawProviderButton(new Rect(providerButtonRect1.x, providerButtonRect1.y, buttonWidth, 30f), 
                 "OpenAI", settings, "OpenAI", "", "https://api.openai.com/v1/responses",
                 new Color(0.5f, 1f, 0.5f));
@@ -45,7 +38,6 @@ namespace Ustas.RimAI.Communication.Memory
                 "Player2", settings, "Player2", "", Player2Endpoints.ChatCompletions(Player2EndpointKind.CloudGame),
                 new Color(1f, 0.8f, 0.5f));
             
-            // 第二行：Google, Custom
             Rect providerButtonRect2 = listing.GetRect(30f);
             
             DrawProviderButton(new Rect(providerButtonRect2.x, providerButtonRect2.y, buttonWidth, 30f),
@@ -59,7 +51,6 @@ namespace Ustas.RimAI.Communication.Memory
             GUI.color = Color.white;
             listing.Gap();
             
-            // 提供商说明
             DrawProviderDescription(listing, settings.independentProvider);
         }
         
@@ -110,18 +101,11 @@ namespace Ustas.RimAI.Communication.Memory
             GUI.color = Color.white;
         }
         
-        // ==================== 匹配源选择设置绘制 ====================
         
-        // 缓存从 RimTalk 获取的分类变量列表
         private static Dictionary<string, List<(string name, string description, bool isPawnProperty)>> _cachedCategorizedSources = null;
         
-        // 滚动位置
         private static Vector2 _matchingSourcesScrollPosition = Vector2.zero;
         
-        /// <summary>
-        /// v4.1: 绘制知识匹配源选择 UI
-        /// 使用独立的 ScrollView 绘制，通过 GUI.BeginGroup 实现嵌套
-        /// </summary>
         public static void DrawKnowledgeMatchingSourcesSettings(Listing_Standard listing, RimTalkMemoryPatchSettings settings)
         {
             GUI.color = new Color(0.8f, 1f, 0.8f);
@@ -133,7 +117,6 @@ namespace Ustas.RimAI.Communication.Memory
             GUI.color = Color.white;
             listing.Gap();
             
-            // 刷新按钮
             Rect refreshRect = listing.GetRect(25f);
             if (Widgets.ButtonText(new Rect(refreshRect.x, refreshRect.y, 120f, 25f), "RimTalk_Settings_RefreshList".Translate()))
             {
@@ -142,10 +125,8 @@ namespace Ustas.RimAI.Communication.Memory
                 Messages.Message("RimTalk_Settings_ListRefreshed".Translate(), MessageTypeDefOf.NeutralEvent);
             }
             
-            // 获取分类数据
             var categorizedSources = GetCachedCategorizedSources();
             
-            // 统计信息
             int totalVars = categorizedSources.Sum(c => c.Value.Count);
             int pawnProps = categorizedSources.Sum(c => c.Value.Count(v => v.isPawnProperty));
             Rect countRect = new Rect(refreshRect.x + 130f, refreshRect.y, 250f, 25f);
@@ -160,7 +141,6 @@ namespace Ustas.RimAI.Communication.Memory
                 settings.knowledgeMatchingSources = new List<string> { "dialogue", "context" };
             }
             
-            // 计算内容高度
             float rowHeight = 22f;
             float categoryHeaderHeight = 26f;
             float contentHeight = 0f;
@@ -170,16 +150,13 @@ namespace Ustas.RimAI.Communication.Memory
                 contentHeight += category.Value.Count * rowHeight + 2f;
             }
             
-            // 固定显示区域高度，使用内部 ScrollView
             float displayHeight = Mathf.Min(contentHeight + 10f, 320f);
             Rect outerRect = listing.GetRect(displayHeight);
             Widgets.DrawBoxSolid(outerRect, new Color(0.12f, 0.12f, 0.12f, 0.5f));
             
-            // 使用 GUI.BeginGroup 创建独立的绘制区域
             Rect innerRect = outerRect.ContractedBy(5f);
             Rect viewRect = new Rect(0f, 0f, innerRect.width - 16f, contentHeight);
             
-            // 开始 ScrollView
             Widgets.BeginScrollView(innerRect, ref _matchingSourcesScrollPosition, viewRect);
             
             float curY = 0f;
@@ -187,7 +164,6 @@ namespace Ustas.RimAI.Communication.Memory
             
             foreach (var category in categorizedSources)
             {
-                // 分类标题
                 Rect headerRect = new Rect(0f, curY, width, categoryHeaderHeight - 2f);
                 Widgets.DrawBoxSolid(headerRect, new Color(0.2f, 0.25f, 0.3f, 0.8f));
                 GUI.color = new Color(0.9f, 0.95f, 1f);
@@ -195,7 +171,6 @@ namespace Ustas.RimAI.Communication.Memory
                 GUI.color = Color.white;
                 curY += categoryHeaderHeight;
                 
-                // 绘制该分类下的变量
                 foreach (var variable in category.Value)
                 {
                     bool isSelected = settings.knowledgeMatchingSources.Contains(variable.name);
@@ -203,22 +178,18 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     Rect rowRect = new Rect(0f, curY, width, rowHeight - 2f);
                     
-                    // 高亮选中行
                     if (isSelected)
                     {
                         Widgets.DrawBoxSolid(rowRect, new Color(0.2f, 0.4f, 0.2f, 0.3f));
                     }
                     
-                    // 鼠标悬停高亮
                     if (Mouse.IsOver(rowRect))
                     {
                         Widgets.DrawHighlight(rowRect);
                     }
                     
-                    // 复选框
                     Widgets.Checkbox(new Vector2(8f, curY + 1f), ref newValue);
                     
-                    // Pawn 属性标记
                     float nameStartX = 32f;
                     if (variable.isPawnProperty)
                     {
@@ -232,12 +203,10 @@ namespace Ustas.RimAI.Communication.Memory
                         nameStartX += 50f;
                     }
                     
-                    // 变量名
                     GUI.color = isSelected ? new Color(0.5f, 1f, 0.5f) : new Color(0.9f, 0.9f, 0.7f);
                     Widgets.Label(new Rect(nameStartX, curY + 1f, 140f, 20f), variable.name);
                     GUI.color = Color.white;
                     
-                    // 描述
                     Text.Font = GameFont.Tiny;
                     GUI.color = Color.gray;
                     string shortDesc = variable.description.Length > 30
@@ -247,13 +216,11 @@ namespace Ustas.RimAI.Communication.Memory
                     Text.Font = GameFont.Small;
                     GUI.color = Color.white;
                     
-                    // 工具提示
                     string tooltip = variable.isPawnProperty
                         ? "RimTalk_Settings_PawnPropertyTooltip".Translate(variable.name, variable.description)
                         : "RimTalk_Settings_VariableTooltip".Translate(variable.name, variable.description);
                     TooltipHandler.TipRegion(rowRect, tooltip);
                     
-                    // 更新选择状态
                     if (newValue != isSelected)
                     {
                         if (newValue)
@@ -284,7 +251,6 @@ namespace Ustas.RimAI.Communication.Memory
             
             listing.Gap();
             
-            // 显示当前选择统计
             int selectedPawnProps = settings.knowledgeMatchingSources.Count(s =>
                 categorizedSources.Any(c => c.Value.Any(v => v.name == s && v.isPawnProperty)));
             int selectedOther = settings.knowledgeMatchingSources.Count - selectedPawnProps;
@@ -292,7 +258,6 @@ namespace Ustas.RimAI.Communication.Memory
             GUI.color = new Color(0.7f, 0.9f, 1f);
             listing.Label("RimTalk_Settings_SelectedCount".Translate(settings.knowledgeMatchingSources.Count, selectedPawnProps, selectedOther));
             
-            // 显示选择的变量名
             string selectedStr = settings.knowledgeMatchingSources.Count <= 4
                 ? string.Join(", ", settings.knowledgeMatchingSources)
                 : $"{string.Join(", ", settings.knowledgeMatchingSources.Take(3))}... (+{settings.knowledgeMatchingSources.Count - 3})";
@@ -304,9 +269,6 @@ namespace Ustas.RimAI.Communication.Memory
             listing.GapLine();
         }
         
-        /// <summary>
-        /// 获取缓存的分类变量列表
-        /// </summary>
         private static Dictionary<string, List<(string name, string description, bool isPawnProperty)>> GetCachedCategorizedSources()
         {
             if (_cachedCategorizedSources == null)
@@ -316,11 +278,9 @@ namespace Ustas.RimAI.Communication.Memory
             return _cachedCategorizedSources;
         }
         
-        // ==================== 常识链设置绘制 ====================
         
         public static void DrawKnowledgeChainingSettings(Listing_Standard listing, RimTalkMemoryPatchSettings settings)
         {
-            // 常识链设置（实验性功能）
             listing.CheckboxLabeled("RimTalk_Settings_EnableKnowledgeChaining".Translate(), ref settings.enableKnowledgeChaining);
             if (settings.enableKnowledgeChaining)
             {
@@ -336,18 +296,15 @@ namespace Ustas.RimAI.Communication.Memory
             listing.Gap();
         }
         
-        // ==================== 提示词规范化设置绘制 ====================
         
         public static void DrawPromptNormalizationSettings(Listing_Standard listing, RimTalkMemoryPatchSettings settings)
         {
-            // 背景框
             Rect sectionRect = listing.GetRect(300f);
             Widgets.DrawBoxSolid(sectionRect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
             
             Listing_Standard inner = new Listing_Standard();
             inner.Begin(sectionRect.ContractedBy(10f));
             
-            // 标题
             Text.Font = GameFont.Small;
             GUI.color = new Color(1f, 0.9f, 0.7f);
             inner.Label("RimTalk_Settings_ReplacementRulesList".Translate());
@@ -355,36 +312,29 @@ namespace Ustas.RimAI.Communication.Memory
             
             inner.Gap(5f);
             
-            // 规则列表
             if (settings.normalizationRules == null)
             {
                 settings.normalizationRules = new System.Collections.Generic.List<RimTalkMemoryPatchSettings.ReplacementRule>();
             }
             
-            // 绘制每条规则
             for (int i = 0; i < settings.normalizationRules.Count; i++)
             {
                 var rule = settings.normalizationRules[i];
                 
                 Rect ruleRect = inner.GetRect(30f);
                 
-                // 启用复选框
                 Rect checkboxRect = new Rect(ruleRect.x, ruleRect.y, 24f, 24f);
                 Widgets.Checkbox(checkboxRect.position, ref rule.isEnabled);
                 
-                // 模式输入框
                 Rect patternRect = new Rect(ruleRect.x + 30f, ruleRect.y, 200f, 25f);
                 rule.pattern = Widgets.TextField(patternRect, rule.pattern ?? "");
                 
-                // 箭头
                 Rect arrowRect = new Rect(ruleRect.x + 235f, ruleRect.y, 30f, 25f);
                 Widgets.Label(arrowRect, " → ");
                 
-                // 替换输入框
                 Rect replacementRect = new Rect(ruleRect.x + 270f, ruleRect.y, 150f, 25f);
                 rule.replacement = Widgets.TextField(replacementRect, rule.replacement ?? "");
                 
-                // 删除按钮
                 Rect deleteRect = new Rect(ruleRect.x + 430f, ruleRect.y, 30f, 25f);
                 GUI.color = new Color(1f, 0.3f, 0.3f);
                 if (Widgets.ButtonText(deleteRect, "×"))
@@ -397,7 +347,6 @@ namespace Ustas.RimAI.Communication.Memory
                 inner.Gap(3f);
             }
             
-            // 添加新规则按钮
             Rect addButtonRect = inner.GetRect(30f);
             if (Widgets.ButtonText(addButtonRect, "RimTalk_Settings_AddNewRule".Translate()))
             {
@@ -406,13 +355,11 @@ namespace Ustas.RimAI.Communication.Memory
             
             inner.Gap(5f);
             
-            // 统计信息
             int enabledCount = settings.normalizationRules.Count(r => r.isEnabled);
             GUI.color = Color.gray;
             inner.Label("RimTalk_Settings_EnabledRulesCount".Translate(enabledCount, settings.normalizationRules.Count));
             GUI.color = Color.white;
             
-            // 示例提示
             inner.Gap(3f);
             GUI.color = new Color(0.7f, 0.9f, 1f);
             inner.Label("RimTalk_Settings_RuleExample".Translate());
@@ -422,7 +369,6 @@ namespace Ustas.RimAI.Communication.Memory
             inner.End();
         }
         
-        // ==================== 向量增强设置绘制 ====================
         
         public static void DrawSiliconFlowSettings(Listing_Standard listing, RimTalkMemoryPatchSettings settings)
         {

@@ -16,10 +16,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         public RimTalkMemoryPatchSettings() { Parts = new RimTalkMemoryPatchSettingsParts(this); }
 
-        // ⭐ 提示词规范化规则
-        /// <summary>
-        /// 替换规则定义
-        /// </summary>
         public class ReplacementRule : IExposable
         {
             public string pattern = "";
@@ -43,40 +39,30 @@ namespace Ustas.RimAI.Communication.Memory
             }
         }
         
-        // ⭐ 提示词规范化规则列表（功能保留，默认为空）
         public List<ReplacementRule> normalizationRules = new List<ReplacementRule>();
 
-        // ⭐ v4.0: 三层记忆容量配置（移除 SCM）
-        // maxActiveMemories 已废弃，ABM 无容量限制
-        // 恢复为可选项
         public int maxActiveMemories = 6;
-        // maxSituationalMemories 仅用于兼容旧存档显示
         public int maxSituationalMemories = 20;
         public int maxEventLogMemories = 50;
 
-        public bool IsPlayerDialogueInject = true; // 是否注入玩家发言
-        public bool IsRoundMemoryActive = true; // 是否启用轮次记忆
+        public bool IsPlayerDialogueInject = true;
+        public bool IsRoundMemoryActive = true;
 
-        // ⭐ v4.0: ABM 注入轮数配置
-        public int maxABMInjectionRounds = 3;  // 默认注入最近3轮对话
+        public int maxABMInjectionRounds = 3; 
         
-        // 衰减速率设置
         public float scmDecayRate = 0.01f;
         public float elsDecayRate = 0.005f;
         public float clpaDecayRate = 0.001f;
         
-        // 总结设置
         public bool enableDailySummarization = true;
         public int summarizationHour = 0;
         public bool useAISummarization = true;
         public int maxSummaryLength = 80;
         
-        // CLPA 归档设置
         public bool enableAutoArchive = true;
         public int archiveIntervalDays = 7;
         public int maxArchiveMemories = 50;
 
-        // AI 配置
         public bool useRimTalkAIConfig = true;
         public string independentApiKey = "";
         public string independentApiUrl = "";
@@ -84,53 +70,41 @@ namespace Ustas.RimAI.Communication.Memory
         public string independentProvider = "OpenAI";
         public bool enablePromptCaching = true;
         
-        // AI 总结提示词配置
-        public string dailySummaryPrompt = "";  // 空字符串表示使用默认
-        public string deepArchivePrompt = "";   // 空字符串表示使用默认
-        public int summaryMaxTokens = 8000;  // ⭐ v3.4.0: 调整默认值为 8000
+        public string dailySummaryPrompt = ""; 
+        public string deepArchivePrompt = "";  
+        public int summaryMaxTokens = 8000; 
 
-        // UI 设置
         public bool enableMemoryUI = true;
         
-        // 记忆类型开关
         public bool enableActionMemory = true;
         public bool enableConversationMemory = true;
         
-        // Pawn状态常识自动生成
         public bool enablePawnStatusKnowledge = false;
         
-        // 事件记录常识自动生成
         public bool enableEventRecordKnowledge = false;
 
-        // 对话缓存设置
         public bool enableConversationCache = true;
         public int conversationCacheSize = 200;
         public int conversationCacheExpireDays = 14;
         
-        // 提示词缓存设置
         public bool enablePromptCache = true;
         public int promptCacheSize = 100;
         public int promptCacheExpireMinutes = 60;
 
-        // 动态注入设置
         public bool useDynamicInjection = true;
         public int maxInjectedMemories = 10;
         public int maxInjectedKnowledge = 5;
         
-        // 动态注入权重配置
         public float weightTimeDecay = 0.3f;
         public float weightImportance = 0.3f;
         public float weightKeywordMatch = 0.4f;
         
-        // 注入阈值设置
         public float memoryScoreThreshold = 0.15f;
         public float knowledgeScoreThreshold = 0.1f;
         
-        // 自适应阈值设置
         public bool enableAdaptiveThreshold = false;
         public bool autoApplyAdaptiveThreshold = false;
         
-        // 主动记忆召回
         public bool enableProactiveRecall = false;
         public float recallTriggerChance = 0.15f;
         
@@ -145,21 +119,18 @@ namespace Ustas.RimAI.Communication.Memory
         public string embeddingModel = "BAAI/bge-m3";
         
         // Knowledge Matching Settings
-        public bool enableKnowledgeChaining = false; // ⭐ 默认改为false
+        public bool enableKnowledgeChaining = false;
         public int maxChainingRounds = 2;
         
-        // v4.1: 知识匹配源选择（用于选择哪些 Mustache 变量用于匹配）
-        // 默认勾选 Pawn 的核心属性：fullname、role、age、gender、backstory、traits、skills、relations
         public List<string> knowledgeMatchingSources = new List<string> { "prompt", "fullname", "role", "age", "gender", "backstory", "traits", "skills", "relations" };
 
-        // UI折叠状态
         internal static bool expandDynamicInjection = true;
         internal static bool expandMemoryCapacity = false;
         internal static bool expandDecayRates = false;
         internal static bool expandSummarization = false;
         internal static bool expandAIConfig = true;
         internal static bool expandMemoryTypes = false;
-        internal static bool expandVectorEnhancement = true; // ⭐ 恢复向量增强折叠状态
+        internal static bool expandVectorEnhancement = true;
         internal static bool expandExperimentalFeatures = true;
         
         internal static Vector2 scrollPosition = Vector2.zero;
@@ -168,28 +139,23 @@ namespace Ustas.RimAI.Communication.Memory
         {
             base.ExposeData();
             
-            // ⭐ 序列化提示词规范化规则
+            // Serialization / save-load constraint — keep field identity stable.
             Scribe_Collections.Look(ref normalizationRules, "normalizationRules", LookMode.Deep);
             
-            // ⭐ 兼容性：如果加载后为 null，初始化为空列表
             if (Scribe.mode == LoadSaveMode.PostLoadInit && normalizationRules == null)
             {
                 normalizationRules = new List<ReplacementRule>();
             }
             
-            // ⭐ v4.0: maxActiveMemories 已废弃，保留序列化key以兼容旧存档（读取后忽略）
             int _legacyMaxActive = 6;
             Scribe_Values.Look(ref _legacyMaxActive, "fourLayer_maxActiveMemories", 6);
             
             Scribe_Values.Look(ref maxSituationalMemories, "fourLayer_maxSituationalMemories", 20);
             Scribe_Values.Look(ref maxEventLogMemories, "fourLayer_maxEventLogMemories", 50);
             
-            // ⭐ v4.0: ABM 注入轮数
-            Scribe_Values.Look(ref maxABMInjectionRounds, "fourLayer_maxABMInjectionRounds", 0); // 默认不注入 ABM 以向后兼容
+            Scribe_Values.Look(ref maxABMInjectionRounds, "fourLayer_maxABMInjectionRounds", 0);
             
-            // ⭐ 是否注入玩家发言
             Scribe_Values.Look(ref IsPlayerDialogueInject, "fourLayer_isPlayerDialogueInject", true);
-            // 是否启用轮次记忆
             Scribe_Values.Look(ref IsRoundMemoryActive, "fourLayer_IsRoundMemoryActive", false);
 
             Scribe_Values.Look(ref scmDecayRate, "fourLayer_scmDecayRate", 0.01f);
@@ -214,7 +180,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             Scribe_Values.Look(ref dailySummaryPrompt, "ai_dailySummaryPrompt", "");
             Scribe_Values.Look(ref deepArchivePrompt, "ai_deepArchivePrompt", "");
-            Scribe_Values.Look(ref summaryMaxTokens, "ai_summaryMaxTokens", 8000);  // ⭐ v3.4.0: 与字段默认值同步
+            Scribe_Values.Look(ref summaryMaxTokens, "ai_summaryMaxTokens", 8000); 
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
@@ -264,19 +230,16 @@ namespace Ustas.RimAI.Communication.Memory
             Scribe_Values.Look(ref embeddingModel, "vector_embeddingModel", "BAAI/bge-m3");
 
             // Knowledge Matching
-            Scribe_Values.Look(ref enableKnowledgeChaining, "knowledge_enableKnowledgeChaining", false); // ⭐ 默认改为false
+            Scribe_Values.Look(ref enableKnowledgeChaining, "knowledge_enableKnowledgeChaining", false);
             Scribe_Values.Look(ref maxChainingRounds, "knowledge_maxChainingRounds", 2);
             
-            // ⭐ v4.0: 知识匹配源
             Scribe_Collections.Look(ref knowledgeMatchingSources, "knowledgeMatchingSources", LookMode.Value);
             
-            // 兼容性：如果加载后为 null 或空，初始化为默认值
             if (Scribe.mode == LoadSaveMode.PostLoadInit && (knowledgeMatchingSources == null || knowledgeMatchingSources.Count == 0))
             {
                 knowledgeMatchingSources = new List<string> { "prompt", "fullname", "role", "age", "gender", "backstory", "traits", "skills", "relations" };
             }
 
-            // ⭐ v5.1: 清除 knowledge 变量，防止自己匹配自己导致无限递归
             if (Scribe.mode == LoadSaveMode.PostLoadInit && knowledgeMatchingSources != null)
             {
                 int removedCount = knowledgeMatchingSources.RemoveAll(s =>
@@ -310,9 +273,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         
         
-        /// <summary>
-        /// 验证 AI 配置
-        /// </summary>
         
 
         
@@ -323,9 +283,6 @@ namespace Ustas.RimAI.Communication.Memory
 
         
         
-        /// <summary>
-        /// ✦ 绘制提示词规范化设置 UI
-        /// </summary>
     
         #region Cluster forwards
         public void DoSettingsWindowContents(Rect inRect) => Parts.MainUi.DoSettingsWindowContents(inRect);
@@ -432,7 +389,7 @@ internal void DrawQuickActionButtons(Listing_Standard listing)
 
             Rect rowRect = listing.GetRect(60f);
             float spacing = 10f;
-            float buttonWidth = (rowRect.width - spacing * 2f) / 3f; // ⭐ 改回3个按钮
+            float buttonWidth = (rowRect.width - spacing * 2f) / 3f;
             float buttonHeight = rowRect.height;
 
             DrawActionButton(new Rect(rowRect.x, rowRect.y, buttonWidth, buttonHeight), "RimTalk_Settings_KnowledgeLibrary".Translate(), "RimTalk_Settings_KnowledgeLibraryTip".Translate(), delegate
@@ -440,7 +397,6 @@ internal void DrawQuickActionButtons(Listing_Standard listing)
                 OpenCommonKnowledgeDialog();
             });
 
-            // ⭐ 恢复"提示词替换"按钮
             DrawActionButton(new Rect(rowRect.x + buttonWidth + spacing, rowRect.y, buttonWidth, buttonHeight), "RimTalk_Settings_PromptReplacement".Translate(), "RimTalk_Settings_PromptReplacementTip".Translate(), delegate
             {
                 Find.WindowStack.Add(new PromptNormalizationWindow(Owner));
@@ -476,12 +432,10 @@ internal void DrawAIConfigSettings(Listing_Standard listing)
             
             listing.Gap();
             
-            // ⭐ v3.3.20: 使用辅助类绘制提供商选择
             SettingsUIDrawers.DrawAIProviderSelection(listing, Owner);
             
             listing.Gap();
             
-            // API 配置
             listing.Label("RimTalk_Settings_APIKey".Translate() + ":");
             if (independentProvider == "OpenAI")
             {
@@ -501,7 +455,6 @@ internal void DrawAIConfigSettings(Listing_Standard listing)
             
             listing.Gap();
             
-            // ⭐ 修改：Prompt Caching 选项 - 仅DeepSeek和OpenAI可切换
             bool canToggleCaching = (independentProvider == "OpenAI" || independentProvider == "DeepSeek");
             
             if (canToggleCaching)
@@ -510,7 +463,6 @@ internal void DrawAIConfigSettings(Listing_Standard listing)
             }
             else
             {
-                // 其他提供商强制关闭缓存
                 enablePromptCaching = false;
                 GUI.color = Color.gray;
                 bool disabledCache = false;
@@ -558,14 +510,12 @@ internal void DrawAIConfigSettings(Listing_Standard listing)
             
             listing.Gap();
             
-            // 配置验证按钮
             Rect validateButtonRect = listing.GetRect(35f);
             if (Widgets.ButtonText(validateButtonRect, "RimTalk_Settings_ValidateConfig".Translate()))
             {
                 ValidateAIConfig();
             }
             
-            // 提示信息
             GUI.color = Color.gray;
             listing.Label("RimTalk_Settings_ValidateConfigTip".Translate());
             GUI.color = Color.white;
@@ -599,7 +549,6 @@ internal void ValidateAIConfig()
             
             Messages.Message("RimTalk_Settings_Validating".Translate(), MessageTypeDefOf.NeutralEvent);
             
-            // 强制重新初始化 AI Summarizer
             System.Threading.Tasks.Task.Run(() =>
             {
                 try

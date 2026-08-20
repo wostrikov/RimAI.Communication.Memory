@@ -58,10 +58,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
         public override Vector2 RequestedTabSize => new Vector2(1200f, 700f);
 
-        /// <summary>
-        /// 使 UI 缓存失效，强制下次绘制时刷新。
-        /// 当外部修改了记忆数据时调用此方法。
-        /// </summary>
         public void InvalidateCache()
         {
             lastMemoryCount = -1;
@@ -95,7 +91,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             
             currentMemoryComp = memoryComp;
             
-            // ? 在绘制任何子组件之前刷新缓存
             Parts.Timeline.CheckAndRefreshCache();
             
             // Left Control Panel
@@ -113,8 +108,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             {
                 if (isMouseDown && !isDragging)
                 {
-                    // ⭐ 没有进入拖拽模式 → 当作单击处理
-                    // 找到鼠标下方的记忆卡片
                     float timelineX2 = CONTROL_PANEL_WIDTH + SPACING;
                     float timelineWidth2 = inRect.width - timelineX2;
                     Rect timelineRect2 = new Rect(timelineX2, contentY, timelineWidth2, contentHeight);
@@ -124,7 +117,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     {
                         float mouseContentY = Event.current.mousePosition.y - innerRect2.y + timelineScrollPosition.y;
                         
-                        // 在缓存的 Y 位置中查找点击的卡片
                         MemoryEntry clickedMemory = null;
                         for (int i = 0; i < cachedMemories.Count; i++)
                         {

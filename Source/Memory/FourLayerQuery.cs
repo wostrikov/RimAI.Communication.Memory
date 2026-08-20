@@ -17,13 +17,11 @@ public List<MemoryEntry> RetrieveMemories(MemoryQuery query)
         {
             var results = new List<MemoryEntry>();
 
-            // ⭐ v4.0: ABM 无容量限制，返回所有匹配的
             var abmCandidates = activeMemories
                 .Where(m => MatchesQuery(m, query))
                 .OrderByDescending(m => m.GameTick);
             results.AddRange(abmCandidates);
 
-            // ⭐ v4.0: SCM 仅兼容旧存档（不再生成新的）
             if (situationalMemories.Count > 0)
             {
                 var scmCandidates = situationalMemories
@@ -36,7 +34,6 @@ public List<MemoryEntry> RetrieveMemories(MemoryQuery query)
 
             if (query.includeContext && results.Count < query.maxCount)
             {
-                // ⭐ v3.3.2.29: ELS 候选 - 确定性排序（分数降序 + ID 升序）
                 var elsCandidates = eventLogMemories
                     .Where(m => MatchesQuery(m, query))
                     .OrderByDescending(m => m.CalculateRetrievalScore(null, query.keywords))
@@ -47,7 +44,6 @@ public List<MemoryEntry> RetrieveMemories(MemoryQuery query)
 
             if (query.layer == MemoryLayer.Archive)
             {
-                // ⭐ v3.3.2.29: CLPA 候选 - 确定性排序（重要性降序 + ID 升序）
                 var clpaCandidates = archiveMemories
                     .Where(m => MatchesQuery(m, query))
                     .OrderByDescending(m => m.Importance)

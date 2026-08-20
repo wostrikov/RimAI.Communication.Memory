@@ -8,17 +8,13 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory
 {
-    /// <summary>
-    /// 常识库管理器
-    /// </summary>
     public class CommonKnowledgeLibrary : IExposable
     {
         private List<CommonKnowledgeEntry> entries = new List<CommonKnowledgeEntry>();
         
-        // 向量数据存储（仅用于序列化）
-        // 使用字符串格式存储向量，避免 Scribe 嵌套列表序列化问题
+        // Serialization / save-load constraint — keep field identity stable. (Scribe)
         private List<string> vectorIds;
-        private List<string> vectorDataSerialized; // 序列化后的向量数据（逗号分隔的浮点数）
+        private List<string> vectorDataSerialized;  // Serialization / save-load constraint — keep field identity stable.
         private List<string> vectorHashes;
 
         public List<CommonKnowledgeEntry> Entries => entries;
@@ -27,10 +23,9 @@ namespace Ustas.RimAI.Communication.Memory
         {
             Scribe_Collections.Look(ref entries, "commonKnowledge", LookMode.Deep);
 
-            // ⭐ 序列化扩展属性（允许被提取、允许被匹配）
+            // Serialization / save-load constraint — keep field identity stable.
             ExtendedKnowledgeEntry.ExposeData();
 
-            // 保存向量数据
             if (Scribe.mode == LoadSaveMode.Saving)
             {
                 if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
@@ -41,7 +36,6 @@ namespace Ustas.RimAI.Communication.Memory
                         VectorDB.VectorService.Instance.ExportVectorsForSave(
                             out vectorIds, out vectorData, out vectorHashes);
                         
-                        // 将 List<List<float>> 转换为 List<string>
                         vectorDataSerialized = new List<string>();
                         if (vectorData != null)
                         {
@@ -68,7 +62,7 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
             
-            // 序列化向量数据（使用字符串格式）
+            // Serialization / save-load constraint — keep field identity stable.
             Scribe_Collections.Look(ref vectorIds, "vectorIds", LookMode.Value);
             Scribe_Collections.Look(ref vectorDataSerialized, "vectorDataSerialized", LookMode.Value);
             Scribe_Collections.Look(ref vectorHashes, "vectorHashes", LookMode.Value);
@@ -77,17 +71,14 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 if (entries == null) entries = new List<CommonKnowledgeEntry>();
                 
-                // 向量数据恢复和同步
                 if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
                 {
                     try
                     {
-                        // 先恢复向量数据（如果存在）
                         if (vectorIds != null && vectorDataSerialized != null && vectorHashes != null && vectorIds.Count > 0)
                         {
                             Log.Message($"[RimAI.Memory] Restoring {vectorIds.Count} vectors from save...");
                             
-                            // 将 List<string> 转换回 List<List<float>>
                             var vectorData = new List<List<float>>();
                             foreach (var serialized in vectorDataSerialized)
                             {
@@ -117,7 +108,6 @@ namespace Ustas.RimAI.Communication.Memory
                             Log.Message("[RimAI.Memory] No saved vectors found, will perform full sync.");
                         }
                         
-                        // 再进行增量同步（只处理新增/修改的条目）
                         Log.Message("[RimAI.Memory] Syncing knowledge library to vector database...");
                         VectorDB.VectorService.Instance.SyncKnowledgeLibrary(this);
                     }
@@ -135,7 +125,6 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 entries.Add(entry);
                 
-                // 向量同步
                 if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
                 {
                     try
@@ -165,7 +154,6 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 entries.Remove(entry);
                 
-                // 向量同步
                 if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
                 {
                     try
@@ -178,7 +166,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
                 
-                // 清理扩展属性（如果存在）
                 ExtendedKnowledgeEntry.CleanupDeletedEntries(this);
             }
         }
@@ -187,7 +174,6 @@ namespace Ustas.RimAI.Communication.Memory
         {
             entries.Clear();
             
-            // 向量同步
             if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
             {
                 try
@@ -230,7 +216,6 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
             
-            // 向量同步
             if (RimTalkMemoryPatchMod.Settings.enableVectorEnhancement)
             {
                 try
@@ -280,9 +265,6 @@ namespace Ustas.RimAI.Communication.Memory
             if (string.IsNullOrEmpty(content))
                 return null;
 
-            // 解析标签部分（支持新旧格式）
-            // 旧格式: [标签|重要性]
-            // 新格式: [标签|重要性|匹配模式|允许提取|允许匹配]
             string[] parts = tagPart.Split('|');
             
             string tag = parts.Length > 0 ? parts[0].Trim() : "通用";
@@ -291,7 +273,6 @@ namespace Ustas.RimAI.Communication.Memory
             bool canBeExtracted = false;
             bool canBeMatched = false;
 
-            // 解析重要性（第2个字段）
             if (parts.Length > 1)
             {
                 string importanceStr = parts[1].Trim();
@@ -303,7 +284,6 @@ namespace Ustas.RimAI.Communication.Memory
                 importance = Math.Max(0f, Math.Min(1f, importance));
             }
 
-            // 解析匹配模式（第3个字段，新格式）
             if (parts.Length > 2)
             {
                 string matchModeStr = parts[2].Trim();
@@ -314,7 +294,6 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
 
-            // 解析允许提取（第4个字段，新格式）
             if (parts.Length > 3)
             {
                 string canBeExtractedStr = parts[3].Trim();
@@ -324,7 +303,6 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
 
-            // 解析允许匹配（第5个字段，新格式）
             if (parts.Length > 4)
             {
                 string canBeMatchedStr = parts[4].Trim();
@@ -334,14 +312,12 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
 
-            // 创建条目
             var entry = new CommonKnowledgeEntry(tag, content) 
             { 
                 importance = importance,
                 matchMode = matchMode
             };
 
-            // 设置扩展属性
             ExtendedKnowledgeEntry.SetCanBeExtracted(entry, canBeExtracted);
             ExtendedKnowledgeEntry.SetCanBeMatched(entry, canBeMatched);
 
@@ -386,17 +362,14 @@ namespace Ustas.RimAI.Communication.Memory
 
             var settings = RimTalkMemoryPatchMod.Settings;
             
-            // 构建完整的匹配文本（上下文 + 完整Pawn信息）
             StringBuilder matchTextBuilder = new StringBuilder();
             matchTextBuilder.Append(context);
             
-            // 提取完整的 Pawn 信息文本（不切碎）
             if (currentPawn != null)
             {
                 matchTextBuilder.Append(" ");
                 matchTextBuilder.Append(BuildCompletePawnInfoText(currentPawn));
                 
-                // 同时记录关键词信息（用于UI显示）
                 var tempKeywords = new List<string>();
                 var pawnInfo = KeywordExtractionHelper.ExtractPawnKeywords(tempKeywords, currentPawn);
                 keywordInfo.PawnInfo = pawnInfo;
@@ -417,7 +390,6 @@ namespace Ustas.RimAI.Communication.Memory
 
             var allMatchedEntries = new HashSet<CommonKnowledgeEntry>();
             
-            // 多轮匹配（常识链）
             int maxRounds = settings.enableKnowledgeChaining ? settings.maxChainingRounds : 1;
             
             for (int round = 0; round < maxRounds; round++)
@@ -449,7 +421,6 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 KnowledgeMatchType matchType = KnowledgeMatchType.Keyword;
                 
-                // 标签匹配：0.5分 + 重要性
                 float matchTypeScore = 0.5f;
                 float finalScore = matchTypeScore + entry.importance;
                 
@@ -473,13 +444,9 @@ namespace Ustas.RimAI.Communication.Memory
                 });
             }
 
-            // 向量增强检索 (已移至 Patch_GenerateAndProcessTalkAsync 异步处理)
-            // CommonKnowledgeLibrary 仅负责标签匹配
 
-            // 排序
             scoredEntries.Sort((a, b) => b.Score.CompareTo(a.Score));
             
-            // 限制数量
             for (int i = 0; i < scoredEntries.Count; i++)
             {
                 var detail = allScores.FirstOrDefault(d => d.Entry == scoredEntries[i].Entry);
@@ -598,9 +565,6 @@ namespace Ustas.RimAI.Communication.Memory
             return sb.ToString();
         }
 
-        /// <summary>
-        /// 构建完整的 Pawn 信息文本（不切碎，完整保留所有信息）
-        /// </summary>
         private string BuildCompletePawnInfoText(Verse.Pawn pawn)
         {
             if (pawn == null)
@@ -610,14 +574,12 @@ namespace Ustas.RimAI.Communication.Memory
 
             try
             {
-                // 1. 名字
                 if (!string.IsNullOrEmpty(pawn.Name?.ToStringShort))
                 {
                     sb.Append(pawn.Name.ToStringShort);
                     sb.Append(" ");
                 }
 
-                // 2. 年龄段
                 if (pawn.RaceProps != null && pawn.RaceProps.Humanlike)
                 {
                     float ageYears = pawn.ageTracker.AgeBiologicalYearsFloat;
@@ -640,17 +602,14 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
 
-                // 3. 性别
                 sb.Append(pawn.gender.GetLabel());
                 sb.Append(" ");
 
-                // 4. 种族
                 if (pawn.def != null)
                 {
                     sb.Append(pawn.def.label);
                     sb.Append(" ");
                     
-                    // 亚种信息（Biotech DLC）
                     try
                     {
                         if (pawn.genes != null && pawn.genes.Xenotype != null)
@@ -663,10 +622,9 @@ namespace Ustas.RimAI.Communication.Memory
                             }
                         }
                     }
-                    catch { /* 兼容性：没有Biotech DLC时跳过 */ }
+                    catch { }
                 }
 
-                // 4.5. 身份（殖民者/囚犯/奴隶/访客）
                 if (pawn.IsColonist)
                 {
                     sb.Append("殖民者 ");
@@ -689,7 +647,6 @@ namespace Ustas.RimAI.Communication.Memory
                     sb.Append(" ");
                 }
 
-                // 5. 特性（所有特性）
                 if (pawn.story?.traits != null)
                 {
                     foreach (var trait in pawn.story.traits.allTraits)
@@ -702,7 +659,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
 
-                // 6. 技能（所有技能，带等级）
                 if (pawn.skills != null)
                 {
                     foreach (var skillRecord in pawn.skills.skills)
@@ -712,14 +668,12 @@ namespace Ustas.RimAI.Communication.Memory
                         
                         int level = skillRecord.Level;
                         
-                        // 只输出有一定等级的技能（>=5级）
                         if (level >= 5)
                         {
                             sb.Append(skillRecord.def.label);
                             sb.Append(level);
                             sb.Append(" ");
                             
-                            // 高等级技能额外标记
                             if (level >= 15)
                             {
                                 sb.Append(skillRecord.def.label);
@@ -734,7 +688,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
 
-                // 7. 健康状况
                 if (pawn.health != null)
                 {
                     if (pawn.health.hediffSet.GetInjuredParts().Any())
@@ -747,7 +700,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
 
-                // 8. 关系（前5个相关Pawn）
                 if (pawn.relations != null)
                 {
                     var relatedPawns = pawn.relations.RelatedPawns.Take(5);
@@ -761,7 +713,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
 
-                // 9. 成年背景（使用完整标题）
                 if (pawn.story?.Adulthood != null)
                 {
                     string backstoryTitle = pawn.story.Adulthood.TitleFor(pawn.gender);
@@ -772,7 +723,6 @@ namespace Ustas.RimAI.Communication.Memory
                     }
                 }
                 
-                // 10. 童年背景（使用完整标题）
                 if (pawn.story?.Childhood != null)
                 {
                     string childhoodTitle = pawn.story.Childhood.TitleFor(pawn.gender);

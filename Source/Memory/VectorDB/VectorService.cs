@@ -13,10 +13,6 @@ using RimWorld;
 
 namespace Ustas.RimAI.Communication.Memory.VectorDB
 {
-    /// <summary>
-    /// 向量检索引擎 - 云端版
-    /// 负责调用云端 Embedding API、文本向量化、相似度计算
-    /// </summary>
     public class VectorService
     {
     // RimAI.composition: ROOT_OWNED_SINGLETON — constructed and bound by MemoryComposition.Start.
@@ -24,10 +20,10 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
     private static readonly object _instanceLock = new object();
     
     private Dictionary<string, float[]> _loreVectors = new Dictionary<string, float[]>();
-    private Dictionary<string, string> _contentHashes = new Dictionary<string, string>(); // 内容哈希值缓存
+    private Dictionary<string, string> _contentHashes = new Dictionary<string, string>();
     private HttpClient _httpClient;
     private bool _isInitialized = false;
-    private bool _isSyncing = false; // 是否正在同步
+    private bool _isSyncing = false;
 
     /// <summary>
     /// Process-lifetime instance. Prefer access after <see cref="MemoryComposition.Start"/>.
@@ -86,9 +82,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             }
         }
 
-        /// <summary>
-        /// 异步查找最佳匹配的知识条目
-        /// </summary>
         public async Task<List<(string id, float similarity)>> FindBestLoreIdsAsync(string userMessage, int topK = 5, float threshold = 0.7f)
         {
             var results = new List<(string id, float similarity)>();
@@ -106,7 +99,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     return results;
                 }
 
-                // 异步获取查询向量
                 float[] queryVector = await GetEmbeddingAsync(userMessage).ConfigureAwait(false);
                 if (queryVector == null || queryVector.Length == 0)
                 {
@@ -141,10 +133,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             }
         }
 
-        /// <summary>
-        /// 同步版本（已废弃，仅用于向后兼容）
-        /// 注意：此方法会阻塞调用线程，建议使用 FindBestLoreIdsAsync
-        /// </summary>
+        // Threading/concurrency constraint — do not race this state. (summary FindBestLoreIdsAsync summary)
         [Obsolete("Use FindBestLoreIdsAsync instead to avoid blocking")]
         public List<(string id, float similarity)> FindBestLoreIds(string userMessage, int topK = 5, float threshold = 0.7f)
         {
@@ -153,26 +142,24 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
         
         public void SyncKnowledgeLibrary(CommonKnowledgeLibrary library)
         {
-            // 在后台任务中运行，避免阻塞主线程
+            // Threading/concurrency constraint — do not race this state.
             Task.Run(async () => 
             {
                 try
                 {
                     if (!_isInitialized) return;
                     if (library == null || library.Entries == null) return;
-                    if (_isSyncing) return; // 防止重复同步
+                    if (_isSyncing) return;
 
                     _isSyncing = true;
 
                     var entriesToProcess = library.Entries.Where(e => e != null && e.isEnabled && !string.IsNullOrWhiteSpace(e.content)).ToList();
                     
-                    // 检测需要更新的条目
                     var entriesToUpdate = new List<CommonKnowledgeEntry>();
                     var entriesToRemove = new List<string>();
                     
                     lock (_loreVectors)
                     {
-                        // 检查哪些条目需要更新
                         foreach (var entry in entriesToProcess)
                         {
                             string currentHash = ComputeHash(entry.content);
@@ -183,7 +170,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                             }
                         }
                         
-                        // 检查哪些条目需要删除（已不存在或被禁用）
                         var currentIds = new HashSet<string>(entriesToProcess.Select(e => e.id));
                         foreach (var id in _loreVectors.Keys.ToList())
                         {
@@ -201,7 +187,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                         return;
                     }
 
-                    // 显示开始同步的消息
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         Messages.Message($"Оновлення векторної бази… ({entriesToUpdate.Count} нових/змінених, {entriesToRemove.Count} видалених)", MessageTypeDefOf.NeutralEvent, false);
@@ -209,7 +194,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                     Log.Message($"[RimAI.Memory] VectorService: Syncing {entriesToUpdate.Count} updated entries, removing {entriesToRemove.Count} entries...");
 
-                    // 删除过期条目
                     lock (_loreVectors)
                     {
                         foreach (var id in entriesToRemove)
@@ -219,7 +203,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                         }
                     }
 
-                    // 批量处理更新
                     int batchSize = 10;
                     int syncedCount = 0;
 
@@ -243,13 +226,11 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                             syncedCount += batch.Count;
                         }
                         
-                        // 避免触发速率限制
                         await Task.Delay(200).ConfigureAwait(false);
                     }
 
                     Log.Message($"[RimAI.Memory] VectorService: Sync complete! {syncedCount}/{entriesToUpdate.Count} entries vectorized.");
                     
-                    // 显示完成消息
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         Messages.Message($"Векторну базу оновлено ({syncedCount} записів)", MessageTypeDefOf.PositiveEvent, false);
@@ -279,13 +260,12 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     if (!_isInitialized) return;
                     if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(content)) return;
 
-                    // 检查是否需要更新
                     string currentHash = ComputeHash(content);
                     lock (_loreVectors)
                     {
                         if (_contentHashes.ContainsKey(id) && _contentHashes[id] == currentHash)
                         {
-                            return; // 内容未变化，跳过
+                            return;
                         }
                     }
 
@@ -327,9 +307,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             }
         }
 
-        /// <summary>
-        /// 导出向量数据用于存档保存
-        /// </summary>
         public void ExportVectorsForSave(
             out List<string> ids, 
             out List<List<float>> vectors, 
@@ -351,9 +328,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             }
         }
 
-        /// <summary>
-        /// 从存档载入向量数据
-        /// </summary>
         public void ImportVectorsFromLoad(
             List<string> ids, 
             List<List<float>> vectors, 
@@ -384,9 +358,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             }
         }
 
-        /// <summary>
-        /// 计算内容的哈希值
-        /// </summary>
         private static string ComputeHash(string content)
         {
             if (string.IsNullOrEmpty(content))
@@ -417,7 +388,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
             {
                 var settings = RimTalkMemoryPatchMod.Settings;
                 
-                // 优先使用专用的 Embedding API Key，如果为空则使用通用 API Key
                 string apiKey = string.IsNullOrEmpty(settings.embeddingApiKey) 
                     ? settings.independentApiKey 
                     : settings.embeddingApiKey;
@@ -431,7 +401,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     return null;
                 }
 
-                // 构建请求体
                 var requestBody = new
                 {
                     input = texts,
@@ -440,7 +409,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                 string jsonBody = JsonConvert.SerializeObject(requestBody);
                 
-                // 详细日志：记录请求信息
                 Log.Message($"[RimAI.Memory] VectorService: Sending request to {apiUrl}");
                 Log.Message($"[RimAI.Memory] VectorService: Model: {model}");
                 Log.Message($"[RimAI.Memory] VectorService: Input count: {texts.Count}");
@@ -455,7 +423,6 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                     var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
                     
-                    // 详细日志：记录响应状态
                     Log.Message($"[RimAI.Memory] VectorService: Response status: {(int)response.StatusCode} {response.StatusCode}");
                     
                     if (!response.IsSuccessStatusCode)

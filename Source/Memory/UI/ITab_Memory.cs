@@ -17,8 +17,8 @@ namespace Ustas.RimAI.Communication.Memory.UI
         private readonly List<MemoryListEntry> cachedEntries = new List<MemoryListEntry>();
 
         private MemoryType? filterType = null;
-        private bool showShortTerm = true; // 默认显示短期记忆
-        private bool showLongTerm = true;  // 默认显示长期记忆
+        private bool showShortTerm = true;
+        private bool showLongTerm = true; 
 
         public ITab_Memory()
         {
@@ -38,7 +38,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
         protected override void FillTab()
         {
-            // Get selected pawn
             Pawn pawn = Find.Selector.SingleSelectedThing as Pawn;
             if (pawn == null) return;
 
@@ -58,7 +57,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Rect filterRect = new Rect(0f, 45f, rect.width, 30f);
             DrawFilterButtons(filterRect);
 
-            // Memory type toggle buttons (短期/长期切换)
             Rect toggleRect = new Rect(0f, 80f, rect.width, 30f);
             DrawMemoryTypeToggles(toggleRect);
 
@@ -75,21 +73,18 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
         private void DrawFilterButtons(Rect rect)
         {
-            // 动态按钮数量：1个“全部”+枚举中的记忆类型按钮（排除未实现 Observation）
             var types = System.Enum.GetValues(typeof(MemoryType)).Cast<MemoryType>()
-                .Where(t => t != MemoryType.Observation) // 过滤未实现类型
+                .Where(t => t != MemoryType.Observation)
                 .ToList();
-            int totalButtons = types.Count + 1; // 包含“全部”
+            int totalButtons = types.Count + 1;
             float buttonWidth = rect.width / totalButtons;
 
-            // 全部按钮
             Rect allRect = new Rect(rect.x, rect.y, buttonWidth, rect.height);
             if (Widgets.ButtonText(allRect, "RimTalk_Filter_All".Translate()))
             {
                 filterType = null;
             }
 
-            // 具体类型按钮
             for (int i = 0; i < types.Count; i++)
             {
                 MemoryType type = types[i];
@@ -106,13 +101,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             float buttonWidth = rect.width / 2f;
 
-            // 短期记忆按钮
             Rect shortTermRect = new Rect(rect.x, rect.y, buttonWidth - 2f, rect.height);
             string shortTermLabel = "RimTalk_ShortTermMemories".Translate() + (showShortTerm ? " ✓" : "");
             if (Widgets.ButtonText(shortTermRect, shortTermLabel))
             {
                 bool newShowShortTerm = !showShortTerm;
-                // 确保至少有一个被选中
                 if (!newShowShortTerm && !showLongTerm)
                 {
                     showLongTerm = true;
@@ -120,13 +113,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 showShortTerm = newShowShortTerm;
             }
 
-            // 长期记忆按钮
             Rect longTermRect = new Rect(rect.x + buttonWidth + 2f, rect.y, buttonWidth - 2f, rect.height);
             string longTermLabel = "RimTalk_LongTermMemories".Translate() + (showLongTerm ? " ✓" : "");
             if (Widgets.ButtonText(longTermRect, longTermLabel))
             {
                 bool newShowLongTerm = !showLongTerm;
-                // 确保至少有一个被选中
                 if (!newShowLongTerm && !showShortTerm)
                 {
                     showShortTerm = true;
@@ -139,7 +130,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             Text.Anchor = TextAnchor.MiddleLeft;
 
-            // 使用四层记忆架构的设置
             string stats = $"SCM: {memoryComp.SituationalMemories.Count}/{RimTalkMemoryPatchMod.Settings.maxSituationalMemories} | " +
                           $"ELS: {memoryComp.EventLogMemories.Count}/{RimTalkMemoryPatchMod.Settings.maxEventLogMemories}";
 
@@ -151,7 +141,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             cachedEntries.Clear();
 
-            // 根据切换按钮决定显示哪些记忆
             if (showShortTerm)
             {
                 foreach (var memory in memoryComp.SituationalMemories)
@@ -169,7 +158,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             if (showLongTerm)
             {
-                foreach (var memory in memoryComp.EventLogMemories) // 鉴于本类本质是废弃代码，故此处随便写了个 EventLogMemories
+                foreach (var memory in memoryComp.EventLogMemories)
                 {
                     if (filterType == null || memory.Type == filterType.Value)
                     {
@@ -208,10 +197,8 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             Widgets.Label(headerRect, header);
 
-            // Content - 固定高度，截断显示，但添加 Tooltip
             Text.Font = GameFont.Small;
 
-            // 截断到合适长度显示
             string displayText = memory.DisplayContent;
             if (!string.IsNullOrEmpty(displayText) && displayText.Length > 80)
             {
@@ -221,7 +208,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Rect contentRect = new Rect(innerRect.x, innerRect.y + 22f, innerRect.width, 40f);
             Widgets.Label(contentRect, displayText);
 
-            // 添加 Tooltip 显示完整内容
             if (Mouse.IsOver(contentRect))
             {
                 TooltipHandler.TipRegion(contentRect, memory.DisplayContent);

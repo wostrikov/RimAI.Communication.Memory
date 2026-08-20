@@ -34,7 +34,6 @@ namespace Ustas.RimAI.Communication.Memory
         {
             base.WriteSettings();
             
-            // 重新加载提示词规范化规则
             Memory.PromptNormalizer.UpdateRules(Settings.normalizationRules);
         }
     }

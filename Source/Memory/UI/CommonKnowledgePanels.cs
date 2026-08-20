@@ -297,7 +297,6 @@ internal void DrawEditPanel(Rect rect)
             // ⭐ Category dropdown (after tag)
             Widgets.Label(new Rect(rect.x, y, 100f, 25f), "Категорія:");
             string catLabel = CommonKnowledgeUIHelpers.GetExplicitCategoryLabel(editCategory);
-            // 显示推断提示
             if (editCategory == KnowledgeEntryCategory.None && !string.IsNullOrEmpty(editTag))
             {
                 var inferred = CommonKnowledgeUIHelpers.GetEntryCategory(
@@ -337,7 +336,6 @@ internal void DrawEditPanel(Rect rect)
                 : $"Pawn #{editTargetPawnId}";
             if (Widgets.ButtonText(new Rect(rect.x + 100f, y, rect.width - 100f, 25f), pawnLabel))
             {
-                // ⭐ 使用辅助方法显示Pawn选择菜单
                 CommonKnowledgeUIHelpers.ShowPawnSelectionMenu(pawnId => editTargetPawnId = pawnId);
             }
             y += 35f;

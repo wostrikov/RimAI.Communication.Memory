@@ -8,10 +8,6 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// 常识库管理窗口 - Library Style with Drag Multi-Select
-    /// ★ v3.3.19: 完全重构 - 图书馆风格布局 + 拖拽多选支持 + 代码拆分
-    /// </summary>
     public class Dialog_CommonKnowledge : Window
     {
         internal Dialog_CommonKnowledgeParts Parts;
@@ -25,16 +21,15 @@ namespace Ustas.RimAI.Communication.Memory.UI
         
         // Drag selection
         internal bool isDragging = false;
-        internal bool isMouseDown = false;           // ⭐ 左键已按下但尚未判定为拖拽
+        internal bool isMouseDown = false;          
         internal Vector2 dragStartPos = Vector2.zero;
         internal Vector2 dragCurrentPos = Vector2.zero;
-        internal Vector2 mouseDownScreenPos = Vector2.zero; // ⭐ 按下时的屏幕坐标（用于阈值判定）
-        internal const float DRAG_THRESHOLD = 5f;    // ⭐ 拖拽判定阈值（像素）
+        internal Vector2 mouseDownScreenPos = Vector2.zero;
+        internal const float DRAG_THRESHOLD = 5f;   
         
-        // ⭐ 拖拽排序
-        internal bool isDragReordering = false;      // 是否处于拖拽排序模式
-        internal int dragReorderInsertIndex = -1;    // 插入位置索引
-        internal bool mouseDownOnSelected = false;   // 按下时是否在已选中条目上
+        internal bool isDragReordering = false;     
+        internal int dragReorderInsertIndex = -1;   
+        internal bool mouseDownOnSelected = false;  
         
         // UI State
         internal Vector2 listScrollPosition = Vector2.zero;
@@ -49,7 +44,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
         // Auto-generate settings (collapsed in sidebar)
         internal bool showAutoGenerateSettings = false;
         
-        // ⭐ 虚拟化列表
         internal VirtualListView<CommonKnowledgeEntry> virtualList;
         
         // Edit fields
@@ -80,12 +74,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
             this.absorbInputAroundWindow = true;
             this.forcePause = false;
             
-            // ⭐ 初始化虚拟化列表
             virtualList = new VirtualListView<CommonKnowledgeEntry>(
                 getItemHeight: (entry) => ENTRY_HEIGHT,
                 drawItem: (rect, entry, index) => DrawEntryRow(rect, entry)
             );
-            // 设置空列表提示
             virtualList.EmptyLabel = CommonKnowledgeTranslationKeys.SelectOrCreate.Translate();
         }
 
@@ -111,20 +103,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
         
         
 
-        /// <summary>
-        /// 执行拖拽排序：将选中的条目移动到 dragReorderInsertIndex 位置
-        /// 操作的是 library.Entries（主列表），不是 filteredEntries
-        /// </summary>
         
         
         
         
         
         
-        // ⭐ 重写：鼠标事件处理（左键点选 + 拖拽框选共存）
-        // MouseDown → 记录起始位置，不吞事件
-        // MouseDrag → 超过阈值才进入框选模式
-        // MouseUp → 未进入框选则当作单击
         
 
         // ==================== Right Panel ====================
@@ -326,12 +310,11 @@ internal void SaveEntry()
             
             if (lastSelectedEntry == null)
             {
-                // Create new - 只在创建时设置 isUserEdited
                 var newEntry = new CommonKnowledgeEntry(editTag, editContent)
                 {
                     importance = editImportance,
                     targetPawnId = editTargetPawnId,
-                    isUserEdited = true,  // ⭐ 新创建的条目标记为用户编辑
+                    isUserEdited = true, 
                     matchMode = editMatchMode,
                     category = editCategory
                 };
@@ -342,17 +325,13 @@ internal void SaveEntry()
             }
             else
             {
-                // Edit existing - 保存时不再修改 isUserEdited 标记
                 lastSelectedEntry.tag = editTag;
                 lastSelectedEntry.content = editContent;
                 lastSelectedEntry.importance = editImportance;
                 lastSelectedEntry.targetPawnId = editTargetPawnId;
-                // ⭐ 移除：不再每次保存都设置 isUserEdited = true
-                // lastSelectedEntry.isUserEdited = true;
                 lastSelectedEntry.matchMode = editMatchMode;
                 lastSelectedEntry.category = editCategory;
                 
-                // 清除缓存，确保新标签生效
                 lastSelectedEntry.InvalidateCache();
             }
             

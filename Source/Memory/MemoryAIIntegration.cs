@@ -11,10 +11,9 @@ namespace Ustas.RimAI.Communication.Memory
     /// </summary>
     public static class MemoryAIIntegration
     {
-        // 缓存已记录的对话，避免重复记录
         private static HashSet<string> recordedConversations = new HashSet<string>();
         private static int lastCleanupTick = 0;
-        private const int CleanupInterval = 2500; // 清理间隔：约1小时游戏时间
+        private const int CleanupInterval = 2500;
         
         /// <summary>
         /// Generate AI prompt with pawn's memory context
@@ -91,7 +90,6 @@ namespace Ustas.RimAI.Communication.Memory
                 return;
             }
             
-            // 清理旧的缓存（避免内存泄漏）
             if (Find.TickManager != null && Find.TickManager.TicksGame - lastCleanupTick > CleanupInterval)
             {
                 recordedConversations.Clear();
@@ -100,17 +98,13 @@ namespace Ustas.RimAI.Communication.Memory
                     Log.Message("[RimAI.Memory] Cleaned conversation cache");
             }
             
-            // 生成唯一ID（基于tick、参与者和内容hash）
             int tick = Find.TickManager?.TicksGame ?? 0;
             int contentHash = content?.GetHashCode() ?? 0;
             string speakerId = speaker?.ThingID ?? "null";
             string listenerId = listener?.ThingID ?? "null";
             
-            // 改进：使用排序后的ID对，避免A->B和B->A被认为是不同的对话
-            // 但是保持方向性（speaker在前）
             string conversationId = $"{tick}_{speakerId}_{listenerId}_{contentHash}";
             
-            // 如果已经记录过这次对话，跳过
             if (recordedConversations.Contains(conversationId))
             {
                 if (Prefs.DevMode)
@@ -118,10 +112,8 @@ namespace Ustas.RimAI.Communication.Memory
                 return;
             }
             
-            // 标记为已记录
             recordedConversations.Add(conversationId);
                 
-            // Record for speaker（说话者视角）
             var speakerMemory = speaker != null ? speaker.TryGetComp<PawnMemoryComp>() : null;
             if (speakerMemory != null)
             {
@@ -130,7 +122,6 @@ namespace Ustas.RimAI.Communication.Memory
                 speakerMemory.AddActiveMemory(memoryContent, MemoryType.Conversation, 0.6f, listenerName);
             }
 
-            // Record for listener（听者视角）- 只在listener存在且不是自己时记录
             if (listener != null && listener != speaker)
             {
                 var listenerMemory = listener.TryGetComp<PawnMemoryComp>();
@@ -142,7 +133,6 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
             
-            // 统一的日志输出（成功）
             string speakerLabel = speaker != null ? speaker.LabelShort : "Unknown";
             string listenerLabel = listener != null && listener != speaker ? listener.LabelShort : "self";
             string previewContent = content != null && content.Length > 50 ? content.Substring(0, 50) + "..." : content;

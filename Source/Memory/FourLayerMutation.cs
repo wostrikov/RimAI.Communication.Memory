@@ -19,7 +19,6 @@ public void EditMemory(string memoryId, string newContent, string notes = null)
             if (memory != null)
             {
                 memory.Content = newContent;
-                // ⭐ 修复：只在首次编辑时设置 isUserEdited，避免覆盖用户手动删除的标记
                 if (!memory.IsUserEdited)
                 {
                     memory.IsUserEdited = true;
@@ -34,14 +33,14 @@ public void PinMemory(string memoryId, bool pinned)
             var memory = Owner.FindMemoryById(memoryId);
             if (memory is RoundMemory roundMemory)
             {
-                PinRoundMemory(roundMemory, memoryId); // 已并入
+                PinRoundMemory(roundMemory, memoryId);
                 return;
             }
             if (memory != null)
             {
                 memory.IsPinned = pinned;
             }
-            if (memory?.Layer == MemoryLayer.Active && memory.IsPinned == true) // 固定ABM时自动转移至SCM
+            if (memory?.Layer == MemoryLayer.Active && memory.IsPinned == true)
             {
                 memory.Layer = MemoryLayer.Situational;
                 SituationalMemories?.Add(memory);
@@ -53,7 +52,6 @@ public void PinRoundMemory(RoundMemory roundMemory, string memoryId)
         {
             Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinning RoundMemory");
 
-            // 是 RoundMemory 类型，则创建一个新的 MemoryEntry 对象复制 RoundMemory
             var newMemory = new MemoryEntry(
             content: string.Empty,
             type: MemoryType.Conversation,
@@ -76,9 +74,8 @@ public void PinRoundMemory(RoundMemory roundMemory, string memoryId)
             DeleteMemory(memoryId);
             Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinned RoundMemory as MemoryEntry");
 
-            roundMemory.IsPinned = false; // 由于UI bug，这里强制回正一下
+            roundMemory.IsPinned = false;
 
-            // 刷新 UI 缓存
             FourLayerMemoryComp.GetMemoryWindowInstance()?.InvalidateCache();
             Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Refreshed Memory Window UI");
         }
@@ -155,7 +152,6 @@ public void AddActiveMemory(string content, MemoryType type, float importance = 
                 Owner.ExtractKeywords(memory);
                 activeMemories.Insert(0, memory);
 
-                // 开启轮次记忆时，ABM不再有容量限制，且不再自动转移到SCM
                 if (IsRoundMemoryEnabled) return;
 
                 int nonPinnedCount = activeMemories.Count((MemoryEntry m) => !m.IsPinned);

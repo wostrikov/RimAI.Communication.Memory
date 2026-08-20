@@ -21,7 +21,6 @@ public void DoWindowContents(Rect inRect)
         {
             float yPos = 0f;
 
-            // 标题
             Text.Font = GameFont.Medium;
             GUI.color = new Color(1f, 0.9f, 0.7f);
             Widgets.Label(new Rect(0f, yPos, 600f, 35f), "RimTalk_Preview_Title".Translate());
@@ -29,7 +28,6 @@ public void DoWindowContents(Rect inRect)
             Text.Font = GameFont.Small;
             yPos += 40f;
 
-            // Pawn选择器
             DrawPawnSelectors(new Rect(0f, yPos, inRect.width, 80f));
             yPos += 85f;
 
@@ -44,14 +42,12 @@ public void DoWindowContents(Rect inRect)
                 return;
             }
 
-            // 使用帮助按钮
             Rect helpButtonRect = new Rect(inRect.width - 240f, yPos, 110f, 30f);
             if (Widgets.ButtonText(helpButtonRect, "RimTalk_Preview_Help".Translate()))
             {
                 Owner.ShowHelpDialog();
             }
             
-            // 刷新按钮
             Rect refreshButtonRect = new Rect(inRect.width - 120f, yPos, 110f, 30f);
             if (Widgets.ButtonText(refreshButtonRect, "RimTalk_Preview_Refresh".Translate()))
             {
@@ -59,22 +55,18 @@ public void DoWindowContents(Rect inRect)
             }
             yPos += 35f;
 
-            // 主内容区域：左右两栏
             float contentHeight = inRect.height - yPos - 50f;
             float halfWidth = (inRect.width - 15f) / 2f;
             
-            // 左栏：常识部分
             Rect leftRect = new Rect(0f, yPos, halfWidth, contentHeight);
             Owner.DrawKnowledgePanel(leftRect);
             
-            // 右栏：记忆部分
             Rect rightRect = new Rect(halfWidth + 15f, yPos, halfWidth, contentHeight);
             Owner.DrawMemoryPanel(rightRect);
         }
 
 internal void DrawPawnSelectors(Rect rect)
         {
-            // 第一行：当前角色选择器
             GUI.color = new Color(0.8f, 0.9f, 1f);
             Widgets.Label(new Rect(rect.x, rect.y, 120f, 30f), "RimTalk_Preview_CurrentPawn".Translate());
             GUI.color = Color.white;
@@ -86,7 +78,6 @@ internal void DrawPawnSelectors(Rect rect)
                 ShowPawnSelectionMenu(isPrimary: true);
             }
 
-            // 显示选中殖民者的基本信息
             if (selectedPawn != null)
             {
                 GUI.color = Color.gray;
@@ -95,7 +86,6 @@ internal void DrawPawnSelectors(Rect rect)
                 GUI.color = Color.white;
             }
 
-            // 第二行：目标角色选择器
             float secondRowY = rect.y + 35f;
             GUI.color = new Color(1f, 0.9f, 0.8f);
             Widgets.Label(new Rect(rect.x, secondRowY, 120f, 30f), "RimTalk_Preview_TargetPawn".Translate());
@@ -108,7 +98,6 @@ internal void DrawPawnSelectors(Rect rect)
                 ShowPawnSelectionMenu(isPrimary: false);
             }
 
-            // 显示目标角色信息
             if (targetPawn != null)
             {
                 GUI.color = Color.gray;
@@ -116,7 +105,6 @@ internal void DrawPawnSelectors(Rect rect)
                 Widgets.Label(new Rect(rect.x + 340f, secondRowY + 5f, 250f, 30f), targetInfo);
                 GUI.color = Color.white;
                 
-                // 清除按钮
                 Rect clearButtonRect = new Rect(rect.x + 600f, secondRowY, 80f, 30f);
                 if (Widgets.ButtonText(clearButtonRect, "RimTalk_Preview_Clear".Translate()))
                 {

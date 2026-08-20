@@ -7,20 +7,12 @@ using Ustas.RimAI.Communication.Memory;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
-    /// <summary>
-    /// MainTabWindow_Memory - Utilities 辅助方法部分
-    /// 包含各种辅助方法和对话框
-    /// </summary>
     internal sealed class MemoryTabUtilities : MemoryTabCollaborator
     {
         internal MemoryTabUtilities(MainTabWindow_Memory owner) : base(owner) { }
 
         // ==================== Helper Methods ====================
         
-        /// <summary>
-        /// ? v3.3.32: Get filtered memories with caching
-        /// Returns cached list if available, otherwise rebuilds cache
-        /// </summary>
         internal List<MemoryEntry> GetFilteredMemories()
         {
             if (Owner.filtersDirty || Owner.cachedFilteredMemories == null)
@@ -32,10 +24,6 @@ namespace Ustas.RimAI.Communication.Memory.UI
             return Owner.cachedFilteredMemories;
         }
         
-        /// <summary>
-        /// ? v3.3.32: Rebuild filtered memories cache
-        /// This is the original GetFilteredMemories logic
-        /// </summary>
         internal void RebuildFilteredMemories()
         {
             if (Owner.currentMemoryComp == null)

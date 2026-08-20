@@ -46,13 +46,10 @@ public void DoWindowContents(Rect inRect)
             {
                 if (isMouseDown && isDragReordering && dragReorderInsertIndex >= 0)
                 {
-                    // ⭐ 拖拽排序完成：将选中条目移动到目标位置
                     Owner.ExecuteDragReorder();
                 }
                 else if (isMouseDown && !isDragging)
                 {
-                    // ⭐ 没有进入拖拽模式 → 当作单击处理
-                    // 找到鼠标下方的条目
                     float centerX2 = SIDEBAR_WIDTH + SPACING;
                     float centerWidth2 = showRightPanel ? 
                         (inRect.width - SIDEBAR_WIDTH - RIGHT_PANEL_WIDTH - SPACING * 3) : 
@@ -62,7 +59,6 @@ public void DoWindowContents(Rect inRect)
                     
                     if (innerRect2.Contains(Event.current.mousePosition))
                     {
-                        // 转换为 content 坐标
                         float mouseContentY = Event.current.mousePosition.y - innerRect2.y + listScrollPosition.y;
                         var filteredEntries2 = Owner.GetFilteredEntries();
                         int clickedIndex = (int)(mouseContentY / ENTRY_HEIGHT);
@@ -73,7 +69,6 @@ public void DoWindowContents(Rect inRect)
                         }
                         else
                         {
-                            // 点击空白区域，清除选择
                             selectedEntries.Clear();
                             lastSelectedEntry = null;
                         }
@@ -184,7 +179,6 @@ internal void DrawSidebar(Rect rect)
                 Rect categoryRect = new Rect(innerRect.x, y, innerRect.width, categoryHeight);
                 int categoryCount = Owner.GetCategoryCount(category);
                 
-                // ⭐ 使用辅助方法绘制分类按钮
                 if (CommonKnowledgeUIHelpers.DrawCategoryButton(categoryRect, category, isSelected, categoryCount))
                 {
                     currentCategory = category;
@@ -209,7 +203,6 @@ internal void DrawSidebar(Rect rect)
             if (showAutoGenerateSettings)
             {
                 Rect autoGenContentRect = new Rect(innerRect.x, y, innerRect.width, 120f);
-                // ⭐ 使用辅助方法绘制自动生成设置
                 CommonKnowledgeUIHelpers.DrawAutoGenerateSettings(
                     autoGenContentRect, 
                     Owner.GeneratePawnStatusKnowledge, 
@@ -218,9 +211,8 @@ internal void DrawSidebar(Rect rect)
                 y += 125f;
             }
             
-            // ⭐ 标签测试工具（按钮，点击弹窗）
             Rect tagTestButtonRect = new Rect(innerRect.x, y, innerRect.width, BUTTON_HEIGHT);
-            GUI.color = new Color(0.4f, 0.8f, 0.4f); // 浅绿色
+            GUI.color = new Color(0.4f, 0.8f, 0.4f);
             if (Widgets.ButtonText(tagTestButtonRect, "🔍 " + CommonKnowledgeTranslationKeys.TagTest.Translate()))
             {
                 Owner.ShowTagTestDialog();
@@ -228,11 +220,10 @@ internal void DrawSidebar(Rect rect)
             GUI.color = Color.white;
             y += BUTTON_HEIGHT + 10f;
             
-            // ⭐ 使用说明按钮（在统计信息上方）
-            float helpButtonY = innerRect.yMax - 100f; // 为统计信息留出60px + 间距
+            float helpButtonY = innerRect.yMax - 100f;
             Rect helpButtonRect = new Rect(innerRect.x, helpButtonY, innerRect.width, BUTTON_HEIGHT);
             
-            GUI.color = new Color(0.4f, 0.7f, 1f); // 浅蓝色
+            GUI.color = new Color(0.4f, 0.7f, 1f);
             if (Widgets.ButtonText(helpButtonRect, "📘 " + CommonKnowledgeTranslationKeys.Help.Translate()))
             {
                 Owner.ShowHelpDialog();

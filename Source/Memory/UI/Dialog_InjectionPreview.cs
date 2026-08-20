@@ -13,21 +13,10 @@ using Ustas.RimAI.Communication.Prompt;
 
 namespace Ustas.RimAI.Communication.Memory.Debug
 {
-    /// <summary>
-    /// 调试预览器 - 分析记忆和常识注入内容
-    /// v5.0 重构版
-    /// 
-    /// 主要功能:
-    /// 1. 常识部分: 匹配源选择、Scriban解析、被匹配常识显示
-    /// 2. 记忆部分: 保持现状
-    /// 
-    /// ⭐ 匹配源与 CommunicationSettings.knowledgeMatchingSources 同步
-    /// </summary>
     public class Dialog_InjectionPreview : Window
     {
         internal Dialog_InjectionPreviewParts Parts;
 
-        // ===== 状态字段 =====
         internal Pawn selectedPawn;
         internal Pawn targetPawn;
         internal Vector2 scrollPositionLeft;
@@ -35,16 +24,13 @@ namespace Ustas.RimAI.Communication.Memory.Debug
         internal Vector2 scrollPositionMatchSource;
         internal Vector2 scrollPositionParsedText;
         
-        // ===== 常识匹配源（与Settings同步）=====
         internal List<(string name, string description, bool isPawnProperty)> availableMatchingSources;
         internal string parsedMatchText = "";
         internal List<KnowledgeScore> matchedKnowledge = new List<KnowledgeScore>();
         
-        // ===== 记忆预览 =====
         internal string memoryPreviewText = "";
         internal int cachedMemoryCount = 0;
         
-        // ===== UI状态 =====
         internal bool showMatchSourcePanel = true;
         internal bool showKnowledgePanel = true;
         internal bool showMemoryPanel = true;
@@ -59,13 +45,11 @@ namespace Ustas.RimAI.Communication.Memory.Debug
             this.closeOnClickedOutside = false;
             this.absorbInputAroundWindow = true;
             
-            // 默认选择第一个殖民者
             if (Find.CurrentMap != null)
             {
                 selectedPawn = Find.CurrentMap.mapPawns.FreeColonists.FirstOrDefault();
             }
             
-            // 初始化匹配源
             LoadAvailableMatchingSources();
         }
 
@@ -83,10 +67,6 @@ namespace Ustas.RimAI.Communication.Memory.Debug
         
         
         
-        /// <summary>
-        /// 绘制匹配源选择器
-        /// ⭐ 与 Settings.knowledgeMatchingSources 同步
-        /// </summary>
         
         
         
@@ -109,38 +89,18 @@ namespace Ustas.RimAI.Communication.Memory.Debug
         
         
         
-        /// <summary>
-        /// 刷新解析后的匹配文本
-        /// ⭐ 使用 RimTalk 的 ScribanParser.Render 静默解析
-        /// ⭐ Pawn 属性变量会同时解析所有参与者，用逗号分隔
-        /// </summary>
-        
-        
-        /// <summary>
-        /// 使用 RimTalk 的 ScribanParser.Render 进行解析
-        /// ⭐ logErrors = false 以静默模式运行
-        /// ⭐ isPawnProperty = true 时使用 Pawn 对象解析
-        /// ⭐ isPawnProperty = false 时使用 PromptManager.LastContext 解析（包含 prompt 等上下文变量）
-        /// </summary>
-        
-        
-        /// <summary>
-        /// 刷新匹配的常识列表
-        /// </summary>
-        
-        
-        /// <summary>
-        /// 刷新记忆预览
-        /// </summary>
         
         
         
         
         
         
-        /// <summary>
-        /// 显示使用帮助对话框
-        /// </summary>
+        
+        
+        
+        
+        
+        
         
         
         #endregion
@@ -176,7 +136,6 @@ internal void LoadAvailableMatchingSources()
             
             if (availableMatchingSources == null || availableMatchingSources.Count == 0)
             {
-                // 使用备用列表
                 availableMatchingSources = new List<(string, string, bool)>
                 {
                     ("prompt", "Dialogue prompt", false),
@@ -210,7 +169,6 @@ internal void RefreshParsedMatchText()
             
             var sb = new StringBuilder();
             
-            // 构建参与者列表
             var participants = new List<Pawn> { selectedPawn };
             if (targetPawn != null && targetPawn != selectedPawn)
             {
@@ -221,19 +179,16 @@ internal void RefreshParsedMatchText()
             {
                 try
                 {
-                    // 判断是否是Pawn属性
                     bool isPawnProperty = availableMatchingSources
                         .Any(s => s.name == sourceName && s.isPawnProperty);
                     
                     if (isPawnProperty)
                     {
-                        // ⭐ 同时解析所有参与者的属性值
                         var values = new List<string>();
                         var pawnNames = new List<string>();
                         
                         foreach (var pawn in participants)
                         {
-                            // isPawnProperty = true 使用 Pawn 对象解析
                             string parsed = RenderWithScriban($"{{{{ pawn.{sourceName} }}}}", pawn, null, isPawnProperty: true);
                             if (!string.IsNullOrEmpty(parsed) && !parsed.Contains("{{"))
                             {
@@ -245,16 +200,12 @@ internal void RefreshParsedMatchText()
                         if (values.Count > 0)
                         {
                             if (sb.Length > 0) sb.AppendLine();
-                            // 格式: [name @当前角色 @目标角色]
                             sb.AppendLine($"[{sourceName} {string.Join(" ", pawnNames)}]");
-                            // 值用逗号加换行分隔，可读性更好
                             sb.Append(string.Join(",\n", values));
                         }
                     }
                     else
                     {
-                        // 非 Pawn 属性（如 prompt），使用 PromptManager.LastContext 解析
-                        // isPawnProperty = false 使用上次对话的完整上下文
                         string parsed = RenderWithScriban($"{{{{ {sourceName} }}}}", selectedPawn, targetPawn, isPawnProperty: false);
                         if (!string.IsNullOrEmpty(parsed) && !parsed.Contains("{{"))
                         {
@@ -266,7 +217,6 @@ internal void RefreshParsedMatchText()
                 }
                 catch
                 {
-                    // 静默处理任何解析错误
                 }
             }
             
@@ -333,7 +283,6 @@ internal void RefreshMatchedKnowledge()
             }
             catch
             {
-                // 静默处理错误
             }
         }
 
@@ -360,7 +309,6 @@ internal void RefreshMemoryPreview()
             {
                 var sb = new StringBuilder();
                 
-                // 使用动态注入获取记忆
                 if (settings.useDynamicInjection)
                 {
                     List<DynamicMemoryInjection.MemoryScore> memoryScores;
@@ -398,7 +346,6 @@ internal void RefreshMemoryPreview()
                 }
                 else
                 {
-                    // 静态注入模式
                     sb.AppendLine("RimTalk_Preview_StaticMode".Translate());
                     sb.AppendLine();
                     

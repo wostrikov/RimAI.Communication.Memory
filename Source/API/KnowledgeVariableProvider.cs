@@ -20,26 +20,20 @@ namespace Ustas.RimAI.Communication.Memory.API
     {
         #region 位置追踪（供 Patch 使用）
         
-        /// <summary>
-        /// 缓存的 knowledge 输出信息，供后台线程的向量增强使用
-        /// </summary>
+        // Threading/concurrency constraint — do not race this state. (summary knowledge summary)
         public class KnowledgeInjectionContext
         {
-            public string MatchText { get; set; }           // 用于关键词匹配的文本（配置的匹配源）
-            public string DialogueType { get; set; }        // ⭐ 用于向量匹配的文本（固定使用 dialogue.type）
-            public string KeywordKnowledge { get; set; }    // 关键词匹配结果
-            public Pawn Speaker { get; set; }               // 说话者
-            public Pawn Listener { get; set; }              // 听者
-            public int Tick { get; set; }                   // 创建时的游戏 tick
+            public string MatchText { get; set; }          
+            public string DialogueType { get; set; }       
+            public string KeywordKnowledge { get; set; }   
+            public Pawn Speaker { get; set; }              
+            public Pawn Listener { get; set; }             
+            public int Tick { get; set; }                  
         }
         
-        // 缓存最近一次 knowledge 注入的上下文
         private static KnowledgeInjectionContext _lastContext;
         private static readonly object _contextLock = new object();
         
-        /// <summary>
-        /// 获取最近一次 knowledge 注入的上下文（供 Patch 使用）
-        /// </summary>
         public static KnowledgeInjectionContext GetLastContext()
         {
             lock (_contextLock)
@@ -48,9 +42,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
         
-        /// <summary>
-        /// 清除缓存的上下文
-        /// </summary>
         public static void ClearContext()
         {
             lock (_contextLock)
@@ -61,18 +52,6 @@ namespace Ustas.RimAI.Communication.Memory.API
         
         #endregion
         
-        /// <summary>
-        /// 获取匹配的常识内容
-        /// 由 RimTalk Scriban Parser 在解析 {{knowledge}} 时调用
-        ///
-        /// ⭐ v4.1 修复：向量搜索不再在此处执行
-        /// 向量搜索会阻塞主线程（因为 Scriban API 是同步的），
-        /// 改为通过 Patch_GenerateAndProcessTalkAsync 在异步上下文中执行
-        ///
-        /// ⭐ v5.0: 参数类型保持 object 以便反射调用，内部会适配 PromptContext/MustacheContext
-        /// </summary>
-        /// <param name="promptContext">PromptContext 对象（由 RimTalk 传入，可能是 PromptContext 或旧版 MustacheContext）</param>
-        /// <returns>格式化的常识文本</returns>
         public static string GetMatchedKnowledge(object promptContext)
         {
             if (promptContext == null)
@@ -108,7 +87,6 @@ namespace Ustas.RimAI.Communication.Memory.API
 
                 var settings = RimTalkMemoryPatchMod.Settings;
                 
-                // 1. 根据用户选择的匹配源，构建匹配文本
                 string matchText = BuildMatchText(promptContext, settings);
                 var typedKnowledge = MemoryContextAccess.Knowledge;
                 if (typedKnowledge != null && !string.IsNullOrEmpty(matchText))
@@ -140,7 +118,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                     return "(Немає контексту для зіставлення)";
                 }
                 
-                // 2. 获取 Pawn 信息
                 Pawn speaker = GetPropertyValue<Pawn>(promptContext, "CurrentPawn");
                 Pawn listener = null;
                 
@@ -150,29 +127,23 @@ namespace Ustas.RimAI.Communication.Memory.API
                     listener = allPawns[1];
                 }
                 
-                // 3. 获取常识库
                 var memoryManager = Find.World?.GetComponent<MemoryManager>();
                 if (memoryManager?.CommonKnowledge == null)
                 {
                     return "(Знання про світ відсутні)";
                 }
                 
-                // 4. 关键词匹配（传递pawn信息以支持专属常识过滤）
-                // ⭐ 修复：必须传递speaker和listener，否则targetPawnId过滤无法生效
                 List<KnowledgeScore> matchedScores;
                 string keywordKnowledge = memoryManager.CommonKnowledge.InjectKnowledgeWithDetails(
                     matchText,
                     settings.maxInjectedKnowledge,
                     out matchedScores,
-                    speaker,   // currentPawn - 用于匹配专属常识
+                    speaker,  
                     listener   // targetPawn
                 );
                 
-                // 获取 dialogue.type 用于向量搜索（独立于关键词匹配源）
-                // ⭐ v5.0: 适配新版 PromptContext，属性名为 DialogueType
                 string dialogueType = GetVariableValue(promptContext, "dialogue.type");
                 
-                // 缓存上下文信息供向量增强 Patch 使用
                 lock (_contextLock)
                 {
                     _lastContext = new KnowledgeInjectionContext
@@ -186,13 +157,11 @@ namespace Ustas.RimAI.Communication.Memory.API
                     };
                 }
                 
-                // 5. 返回关键词匹配结果
                 if (string.IsNullOrEmpty(keywordKnowledge))
                 {
                     return "(Відповідних знань не знайдено)";
                 }
                 
-                // ⭐ v5.1: 应用提示词规范化规则（迁移自 SmartInjectionManager）
                 return PromptNormalizer.Normalize(keywordKnowledge);
             }
             catch (Exception ex)
@@ -202,10 +171,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
 
-        /// <summary>
-        /// 获取按分类分组的常识内容（改进版 {{knowledge}}）
-        /// 输出格式：按分类分组，每组有标题，条目只显示分类标签
-        /// </summary>
         public static string GetGroupedKnowledge(object promptContext)
         {
             if (promptContext == null) return "";
@@ -216,7 +181,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 if (matchedScores == null || matchedScores.Count == 0)
                     return "(Відповідних знань не знайдено)";
 
-                // ⭐ v5.1: 应用提示词规范化规则
                 return PromptNormalizer.Normalize(FormatGroupedKnowledge(matchedScores));
             }
             catch (Exception ex)
@@ -226,9 +190,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
 
-        /// <summary>
-        /// 获取指定分类的常识内容
-        /// </summary>
         public static string GetKnowledgeByCategory(object promptContext, KnowledgeCategory category)
         {
             if (promptContext == null) return "";
@@ -245,7 +206,6 @@ namespace Ustas.RimAI.Communication.Memory.API
 
                 if (filtered.Count == 0) return "";
 
-                // ⭐ v5.1: 应用提示词规范化规则
                 return PromptNormalizer.Normalize(FormatCategoryEntries(filtered));
             }
             catch (Exception ex)
@@ -255,27 +215,20 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
 
-        // 分类变量的便捷包装方法
         public static string GetKnowledgeRules(object ctx) => GetKnowledgeByCategory(ctx, KnowledgeCategory.Instructions);
         public static string GetKnowledgeLore(object ctx) => GetKnowledgeByCategory(ctx, KnowledgeCategory.Lore);
         public static string GetKnowledgeStatus(object ctx) => GetKnowledgeByCategory(ctx, KnowledgeCategory.PawnStatus);
         public static string GetKnowledgeHistory(object ctx) => GetKnowledgeByCategory(ctx, KnowledgeCategory.History);
         public static string GetKnowledgeOther(object ctx) => GetKnowledgeByCategory(ctx, KnowledgeCategory.Other);
 
-        // 缓存匹配结果，避免同一渲染周期内多次匹配
         private static List<KnowledgeScore> _cachedScores;
         private static int _cachedTick = -1;
         private static readonly object _cacheLock = new object();
         
-        /// <summary>
-        /// 核心匹配逻辑：获取匹配的常识评分列表（复用 GetMatchedKnowledge 的逻辑）
-        /// 同一 tick 内的多次调用会复用缓存结果
-        /// </summary>
         private static List<KnowledgeScore> GetMatchedScores(object promptContext)
         {
             int currentTick = Find.TickManager?.TicksGame ?? 0;
             
-            // 同一 tick 内复用缓存
             lock (_cacheLock)
             {
                 if (_cachedScores != null && _cachedTick == currentTick)
@@ -307,7 +260,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 listener
             );
 
-            // 同步更新 _lastContext（保持与 GetMatchedKnowledge 一致）
             string dialogueType = GetVariableValue(promptContext, "dialogue.type");
             lock (_contextLock)
             {
@@ -322,7 +274,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 };
             }
             
-            // 缓存结果
             lock (_cacheLock)
             {
                 _cachedScores = matchedScores;
@@ -332,9 +283,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             return matchedScores;
         }
 
-        /// <summary>
-        /// 获取分类的中文显示名称
-        /// </summary>
         private static string GetCategoryDisplayName(KnowledgeCategory category)
         {
             switch (category)
@@ -348,9 +296,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
 
-        /// <summary>
-        /// 获取条目的第一个标签（分类标签），用于简化显示
-        /// </summary>
         private static string GetFirstTag(CommonKnowledgeEntry entry)
         {
             if (string.IsNullOrEmpty(entry.tag)) return "";
@@ -358,14 +303,10 @@ namespace Ustas.RimAI.Communication.Memory.API
             return tags.Count > 0 ? tags[0] : entry.tag;
         }
 
-        /// <summary>
-        /// 格式化分组输出（用于 {{knowledge}}）
-        /// </summary>
         private static string FormatGroupedKnowledge(List<KnowledgeScore> scores)
         {
             if (scores == null || scores.Count == 0) return "";
 
-            // 按分类分组
             var groups = new Dictionary<KnowledgeCategory, List<KnowledgeScore>>();
             foreach (var score in scores)
             {
@@ -375,7 +316,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 groups[cat].Add(score);
             }
 
-            // 按固定顺序输出：规则 → 世界观 → 殖民者状态 → 历史 → 其他
             var order = new KnowledgeCategory[]
             {
                 KnowledgeCategory.Instructions,
@@ -402,9 +342,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             return sb.ToString().TrimEnd();
         }
 
-        /// <summary>
-        /// 格式化单分类条目列表（用于 {{knowledge_xxx}} 变量）
-        /// </summary>
         private static string FormatCategoryEntries(List<KnowledgeScore> scores)
         {
             if (scores == null || scores.Count == 0) return "";
@@ -418,32 +355,21 @@ namespace Ustas.RimAI.Communication.Memory.API
         }
 
         
-        /// <summary>
-        /// 根据用户选择的匹配源构建匹配文本
-        /// v4.1: 支持 Pawn 属性类别自动匹配所有参与对话的 pawn
-        /// v5.0: 适配 PromptContext
-        /// v5.1: 过滤掉 knowledge 变量，防止自己匹配自己
-        /// </summary>
         private static string BuildMatchText(object promptContext, RimTalkMemoryPatchSettings settings)
         {
             var matchTextBuilder = new StringBuilder();
             var sources = settings.knowledgeMatchingSources;
             
-            // 如果没有配置匹配源，使用默认
             if (sources == null || sources.Count == 0)
             {
                 sources = new List<string> { "prompt" };
             }
             
-            // 获取所有参与对话的 pawn
             var allPawns = GetPropertyValue<List<Pawn>>(promptContext, "AllPawns");
             int pawnCount = allPawns?.Count ?? 0;
             
             foreach (var source in sources)
             {
-                // ⭐ v5.1: 过滤掉所有 knowledge 相关变量，防止自己匹配自己导致无限递归
-                // 包括: knowledge, knowledge_grouped, knowledge_rules, knowledge_lore,
-                //       knowledge_status, knowledge_history, knowledge_other, knowledge.xxx 等
                 if (source.Equals("knowledge", StringComparison.OrdinalIgnoreCase) ||
                     source.StartsWith("knowledge_", StringComparison.OrdinalIgnoreCase) ||
                     source.StartsWith("knowledge.", StringComparison.OrdinalIgnoreCase))
@@ -451,18 +377,14 @@ namespace Ustas.RimAI.Communication.Memory.API
                     continue;
                 }
                 
-                // 检查是否是 Pawn 属性（需要自动匹配所有 pawn）
                 if (MustacheVariableHelper.IsPawnProperty(source))
                 {
-                    // ⭐ v5.0: 新格式使用 pawn.xxx，对每个参与对话的 pawn 获取该属性值
-                    // 复用 MustacheVariableHelper 的方法获取属性值
                     if (allPawns != null)
                     {
                         foreach (var pawn in allPawns)
                         {
                             if (pawn == null) continue;
                             
-                            // 使用 MustacheVariableHelper 获取 pawn 的属性值
                             if (MustacheVariableHelper.TryGetPawnPropertyValue(source, pawn, out string value)
                                 && !string.IsNullOrEmpty(value))
                             {
@@ -477,7 +399,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 }
                 else
                 {
-                    // 普通变量直接获取
                     string value = GetVariableValue(promptContext, source);
                     if (!string.IsNullOrEmpty(value))
                     {
@@ -493,24 +414,16 @@ namespace Ustas.RimAI.Communication.Memory.API
             return matchTextBuilder.ToString();
         }
         
-        /// <summary>
-        /// 从 PromptContext 获取变量值
-        /// 优先使用 PromptContext 的直接属性，其次尝试通过 RimTalk 的 ScribanParser 解析
-        /// ⭐ v5.0: 适配新版 Scriban 模板系统
-        /// </summary>
         private static string GetVariableValue(object ctx, string variableName)
         {
             try
             {
-                // 1. 优先检查 PromptContext 的直接属性
                 string directValue = GetDirectContextProperty(ctx, variableName);
                 if (!string.IsNullOrEmpty(directValue))
                 {
                     return directValue;
                 }
                 
-                // 2. 尝试使用 RimTalk 的 ScribanParser 解析变量
-                // 这样可以利用 RimTalk 已有的所有变量解析逻辑
                 string parsedValue = TryParseScribanVariable(ctx, variableName);
                 if (!string.IsNullOrEmpty(parsedValue))
                 {
@@ -525,13 +438,8 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
         
-        /// <summary>
-        /// 获取 PromptContext 的直接属性
-        /// ⭐ v5.0: 适配新版 PromptContext 属性名
-        /// </summary>
         private static string GetDirectContextProperty(object ctx, string variableName)
         {
-            // 映射常用变量名到 PromptContext 属性
             switch (variableName)
             {
                 case "dialogue.prompt":
@@ -549,11 +457,6 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
         }
         
-        /// <summary>
-        /// 尝试使用 RimTalk 的 ScribanParser 解析变量
-        /// 这允许我们复用 RimTalk 的所有变量解析逻辑，无需手动枚举
-        /// ⭐ v5.0: 优先使用 ScribanParser，兼容旧版 MustacheParser
-        /// </summary>
         private static string TryParseScribanVariable(object ctx, string variableName)
         {
             try
@@ -576,9 +479,6 @@ namespace Ustas.RimAI.Communication.Memory.API
                 return null;
             }
         }
-        // ⭐ v4.1: GetVectorEnhancedKnowledge 和 CombineKnowledge 方法已移除
-        // 向量搜索现在通过 Patch_GenerateAndProcessTalkAsync 在异步上下文中执行
-        // 这避免了在 Mustache API 同步调用中阻塞主线程
         
         
         #region Helper Methods

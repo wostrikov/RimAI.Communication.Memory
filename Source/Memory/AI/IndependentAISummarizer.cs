@@ -17,13 +17,9 @@ using Ustas.RimAI.Core.Player2;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
-    // DTO 类已提取到独立文件：
-    // - DTO/OpenAITypes.cs (OpenAIRequest, OpenAIMessage, CacheControl)
-    // - DTO/GeminiTypes.cs (GeminiRequest, GeminiContent, GeminiPart, GeminiGenerationConfig, GeminiThinkingConfig)
     
     public static class IndependentAISummarizer
     {
-        // ? v3.3.2.35: 优化正则表达式 - 提升为静态编译字段
         internal static readonly Regex GoogleResponseRegex = new Regex(
             @"""text""\s*:\s*""(.*?)""",
             RegexOptions.Compiled | RegexOptions.Singleline
@@ -38,9 +34,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
         internal static bool useRimTalkAdapter = false;
         internal static string apiKey, apiUrl, model, provider;
         
-        // ? 修复1: 添加缓存大小限制，防止内存泄漏
-        internal const int MAX_CACHE_SIZE = 100; // 最多缓存100个总结
-        internal const int CACHE_CLEANUP_THRESHOLD = 120; // 达到120个时清理
+        internal const int MAX_CACHE_SIZE = 100;
+        internal const int CACHE_CLEANUP_THRESHOLD = 120;
         
         internal static readonly Dictionary<string, string> completedSummaries = new Dictionary<string, string>();
         internal static readonly HashSet<string> pendingSummaries = new HashSet<string>();
@@ -53,26 +48,14 @@ namespace Ustas.RimAI.Communication.Memory.AI
 
         
 
-        /// <summary>
-        /// ? 修复：添加强制重新初始化方法
-        /// </summary>
-        
-        
-        /// <summary>
-        /// ? v3.3.3: 清除所有API配置和缓存
-        /// </summary>
         
         
         
         
-        /// <summary>
-        /// ? v3.3.3: 验证API配置
-        /// </summary>
         
         
-        /// <summary>
-        /// 尝试从 RimTalk 加载配置（兼容模式）
-        /// </summary>
+        
+        
         
 
         
@@ -83,23 +66,12 @@ namespace Ustas.RimAI.Communication.Memory.AI
 
         
 
-        /// <summary>
-        /// ? v3.3.2.34: 重构版 - 使用 DTO 类和手动序列化（安全）
-        /// 彻底修复特殊字符导致的 JSON 格式错误
-        /// </summary>
         
         
-        /// <summary>
-        /// ? v3.3.2.34: 安全的 JSON 字符串转义
-        /// 处理所有特殊字符：引号、换行、反斜杠等
-        /// </summary>
         
 
         
 
-        /// <summary>
-        /// ? v3.3.2.35: 优化版 - 使用静态编译的正则表达式
-        /// </summary>
         
 
         
@@ -180,7 +152,6 @@ public static void ForceReinitialize()
 
 public static void ClearAllConfiguration()
         {
-            // 清除静态变量
             IndependentAISummarizer.apiKey = "";
             IndependentAISummarizer.apiUrl = "";
             IndependentAISummarizer.model = "";
@@ -188,7 +159,6 @@ public static void ClearAllConfiguration()
             IndependentAISummarizer.useRimTalkAdapter = false;
             IndependentAISummarizer.isInitialized = false;
             
-            // 清除所有缓存
             lock (IndependentAISummarizer.completedSummaries)
             {
                 IndependentAISummarizer.completedSummaries.Clear();
@@ -218,7 +188,6 @@ public static void Initialize()
             {
                 var settings = RimTalkMemoryPatchMod.Settings;
                 
-                // ? 修复：严格按照用户设置决定是否跟随RimTalk
                 if (settings.useRimTalkAIConfig)
                 {
                     if (TryLoadFromRimTalk())
@@ -232,7 +201,6 @@ public static void Initialize()
                     return;
                 }
                 
-                // 使用独立配置
                 IndependentAISummarizer.apiKey = settings.independentProvider == "OpenAI"
                     ? AiCredentialResolver.Resolve().Value
                     : settings.independentApiKey;
@@ -240,7 +208,6 @@ public static void Initialize()
                 IndependentAISummarizer.model = settings.independentModel;
                 IndependentAISummarizer.provider = settings.independentProvider;
                 
-                // ? v3.3.6: Player2 特殊处理 - 优先使用本地应用
                 if (IndependentAISummarizer.provider == "Player2")
                 {
                     var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
@@ -263,7 +230,6 @@ public static void Initialize()
                     }
                 }
                 
-                // 如果 URL 为空，根据提供商设置默认值
                 if (string.IsNullOrEmpty(IndependentAISummarizer.apiUrl))
                 {
                     if (IndependentAISummarizer.provider == "OpenAI")
@@ -284,7 +250,6 @@ public static void Initialize()
                     }
                 }
                 
-                // ? 详细验证配置
                 if (!ValidateConfiguration())
                 {
                     IndependentAISummarizer.isInitialized = false;
@@ -305,7 +270,6 @@ public static void Initialize()
 
 internal static bool ValidateConfiguration()
         {
-            // 检查API Key
             if (string.IsNullOrEmpty(IndependentAISummarizer.apiKey))
             {
                 Log.Error("[AI] ? API Key is empty!");
@@ -313,7 +277,6 @@ internal static bool ValidateConfiguration()
                 return false;
             }
             
-            // 检查API Key长度
             if (IndependentAISummarizer.apiKey.Length < 10)
             {
                 Log.Error($"[AI] ? API Key too short (length: {IndependentAISummarizer.apiKey.Length})!");
@@ -322,10 +285,8 @@ internal static bool ValidateConfiguration()
                 return false;
             }
             
-            // ? v3.3.6: Player2/Custom模式不强制检查格式
             if (IndependentAISummarizer.provider != "Custom" && IndependentAISummarizer.provider != "Player2" && IndependentAISummarizer.provider != "Google")
             {
-                // 检查API Key格式（OpenAI/DeepSeek建议以sk-开头，但只是警告）
                 if ((IndependentAISummarizer.provider == "OpenAI" || IndependentAISummarizer.provider == "DeepSeek") && !IndependentAISummarizer.apiKey.StartsWith("sk-"))
                 {
                     Log.Warning($"[AI] ?? API Key doesn't start with 'sk-' for {IndependentAISummarizer.provider}");
@@ -334,14 +295,12 @@ internal static bool ValidateConfiguration()
                 }
             }
             
-            // 检查API URL
             if (string.IsNullOrEmpty(IndependentAISummarizer.apiUrl))
             {
                 Log.Error("[AI] ? API URL is empty!");
                 return false;
             }
             
-            // 检查Model
             if (string.IsNullOrEmpty(IndependentAISummarizer.model))
             {
                 Log.Error("[AI] Назву моделі не налаштовано");
@@ -491,13 +450,10 @@ public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, st
                     {
                         lock (IndependentAISummarizer.completedSummaries)
                         {
-                            // ? 修改1: 增加缓存上限，防止内存泄漏
                             if (IndependentAISummarizer.completedSummaries.Count >= IndependentAISummarizer.CACHE_CLEANUP_THRESHOLD)
                             {
-                                // ? v3.3.2.29: 确定性清理 - 按 key 字母顺序升序排序后删除前50%
-                                // 使用字母顺序排序代替随机 Take()，确保相同的缓存状态总是删除相同的条目
                                 var toRemove = IndependentAISummarizer.completedSummaries.Keys
-                                    .OrderBy(k => k, StringComparer.Ordinal) // 字母顺序升序
+                                    .OrderBy(k => k, StringComparer.Ordinal)
                                     .Take(IndependentAISummarizer.MAX_CACHE_SIZE / 2)
                                     .ToList();
                                 
@@ -551,7 +507,6 @@ internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string
         {
             var settings = RimTalkMemoryPatchMod.Settings;
             
-            // 构建记忆列表
             var memoryListSb = new StringBuilder();
             int maxMemories = (template == "deep_archive") ? 15 : 20;
             int i = 1;
@@ -562,20 +517,16 @@ internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string
             }
             string memoryList = memoryListSb.ToString().TrimEnd();
             
-            // 使用自定义提示词或默认提示词
             string promptTemplate;
             
             if (template == "deep_archive")
             {
-                // 深度归档
                 if (!string.IsNullOrEmpty(settings.deepArchivePrompt))
                 {
-                    // 使用自定义提示词
                     promptTemplate = settings.deepArchivePrompt;
                 }
                 else
                 {
-                    // 使用默认提示词
                     promptTemplate = 
                         "Архів спогадів колоніста {0}\n\n" +
                         "Список спогадів\n" +
@@ -588,15 +539,12 @@ internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string
             }
             else
             {
-                // 每日总结
                 if (!string.IsNullOrEmpty(settings.dailySummaryPrompt))
                 {
-                    // 使用自定义提示词
                     promptTemplate = settings.dailySummaryPrompt;
                 }
                 else
                 {
-                    // 使用默认提示词
                     promptTemplate = 
                         "Підсумок спогадів колоніста {0}\n\n" +
                         "Список спогадів\n" +
@@ -608,14 +556,10 @@ internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string
                 }
             }
             
-            // ⭐ 修复：先转义花括号，防止 string.Format 报错
-            // 将用户自定义提示词中的 { 和 } 转义为 {{ 和 }}
             string escapedTemplate = promptTemplate.Replace("{", "{{").Replace("}", "}}");
             
-            // 然后把占位符 {{{0}}} 和 {{{1}}} 替换回 {0} 和 {1}
             escapedTemplate = escapedTemplate.Replace("{{0}}", "{0}").Replace("{{1}}", "{1}");
             
-            // 替换占位符
             string result = string.Format(escapedTemplate, pawn.LabelShort, memoryList);
             
             return result;
@@ -629,7 +573,6 @@ internal static string BuildJsonRequest(string prompt)
             
             if (isGoogle)
             {
-                // ? Google Gemini 格式
                 string escapedPrompt = EscapeJsonString(prompt);
                 
                 var sb = new StringBuilder();
@@ -656,9 +599,7 @@ internal static string BuildJsonRequest(string prompt)
             }
             else
             {
-                // ? OpenAI/DeepSeek/Player2/Custom - 统一使用OpenAI兼容格式
                 
-                // 固定的系统指令（可缓存）
                 string systemPrompt = "Ти — помічник зі стислого узагальнення спогадів колонії RimWorld.\n" +
                                     "Узагальнюй вміст спогадів гранично лаконічно.\n" +
                                     "Виводь лише текст підсумку без додаткового форматування.";
@@ -671,13 +612,11 @@ internal static string BuildJsonRequest(string prompt)
                 sb.Append($"\"IndependentAISummarizer.model\":\"{IndependentAISummarizer.model}\",");
                 sb.Append("\"messages\":[");
                 
-                // system消息（带缓存控制）
                 sb.Append("{\"role\":\"system\",");
                 sb.Append($"\"content\":\"{escapedSystem}\"");
                 
                 if (enableCaching)
                 {
-                    // ? OpenAI/Custom/Player2 都尝试使用 cache_control
                     if ((IndependentAISummarizer.provider == "OpenAI" || IndependentAISummarizer.provider == "Custom" || IndependentAISummarizer.provider == "Player2") && 
                         (IndependentAISummarizer.model.Contains("gpt-4") || IndependentAISummarizer.model.Contains("gpt-3.5")))
                     {
@@ -686,14 +625,12 @@ internal static string BuildJsonRequest(string prompt)
                     }
                     else if (IndependentAISummarizer.provider == "DeepSeek")
                     {
-                        // DeepSeek缓存控制
                         sb.Append(",\"cache\":true");
                     }
                 }
                 
                 sb.Append("},");
                 
-                // user消息（变化的内容）
                 sb.Append("{\"role\":\"user\",");
                 sb.Append($"\"content\":\"{escapedPrompt}\"");
                 sb.Append("}],");
@@ -747,7 +684,6 @@ internal static string EscapeJsonString(string text)
                         sb.Append("\\f");
                         break;
                     default:
-                        // 其他控制字符使用 Unicode 转义
                         if (c < 32)
                         {
                             sb.Append("\\u");
@@ -816,7 +752,7 @@ internal static async Task<string> CallAIAsync(string prompt)
             }
 
             const int MAX_RETRIES = 3;
-            const int RETRY_DELAY_MS = 2000; // 2秒重试延迟
+            const int RETRY_DELAY_MS = 2000;
             
             for (int attempt = 1; attempt <= MAX_RETRIES; attempt++)
             {
@@ -844,7 +780,6 @@ internal static async Task<string> CallAIAsync(string prompt)
                     request.Method = "POST";
                     request.ContentType = "application/json";
                     
-                    // ? v3.3.3: Google API不使用Bearer token（Key在URL中）
                     if (IndependentAISummarizer.provider != "Google")
                     {
                         if (IndependentAISummarizer.provider == "Player2")
@@ -858,12 +793,10 @@ internal static async Task<string> CallAIAsync(string prompt)
                         }
                     }
                     
-                    // ? 增加超时时间到120秒（2分钟）
-                    request.Timeout = 120000; // 原来是30000（30秒）
+                    request.Timeout = 120000;
 
                     string json = IndependentAISummarizer.BuildJsonRequest(prompt);
 
-                    // 显式使用更宽容的转码方式
                     var tolerantUtf8 = new UTF8Encoding(false, false);
                     byte[] bodyRaw;
                     try
@@ -872,7 +805,6 @@ internal static async Task<string> CallAIAsync(string prompt)
                     }
                     catch
                     {
-                        // 如果依然报错，使用正则表达式强制剔除无效的代理对字符(Surrogate pairs)
                         string safeJson = Regex.Replace(json, @"\p{Cs}", "?");
                         bodyRaw = Encoding.UTF8.GetBytes(safeJson);
                     }
@@ -888,12 +820,10 @@ internal static async Task<string> CallAIAsync(string prompt)
                     {
                         string responseText = await ReadStreamAsTextAsync(response.GetResponseStream());
                         
-                        // ? v3.3.7: 添加响应接收确认日志
                         Log.Message($"[AI Summarizer] ✅ Response received, length: {responseText.Length} chars");
                         
                         string result = ParseResponse(responseText);
                         
-                        // ? v3.3.7: 添加解析结果确认日志
                         if (result != null)
                         {
                             Log.Message($"[AI Summarizer] ✅ Parse successful, result length: {result.Length} chars");
@@ -915,7 +845,7 @@ internal static async Task<string> CallAIAsync(string prompt)
                 {
                     bool shouldRetry = false;
                     string errorDetail = "";
-                    HttpStatusCode statusCode = 0; // ? v3.3.3: 保存状态码到外部变量
+                    HttpStatusCode statusCode = 0;
                     
 
 
@@ -923,14 +853,12 @@ internal static async Task<string> CallAIAsync(string prompt)
 	                {
 	                    using (var errorResponse = (HttpWebResponse)ex.Response)
 	                    {
-	                        statusCode = errorResponse.StatusCode; // ? 保存状态码
+	                        statusCode = errorResponse.StatusCode;
 	                        string errorText = ReadStreamAsText(errorResponse.GetResponseStream());
 	                        
-	                        // ? v3.3.3: 根据错误类型显示完整或截断的错误信息
 	                        if (errorResponse.StatusCode == HttpStatusCode.Unauthorized || // 401
 	                            errorResponse.StatusCode == HttpStatusCode.Forbidden)      // 403
 	                        {
-	                            // 认证错误：显示完整错误信息（帮助调试）
 	                            errorDetail = errorText;
 	                            Log.Error($"[AI Summarizer] ? Authentication Error ({errorResponse.StatusCode}):");
 	                            Log.Error("[AI Summarizer]    Credential rejected by IndependentAISummarizer.provider");
@@ -945,11 +873,9 @@ internal static async Task<string> CallAIAsync(string prompt)
 	                        }
 	                        else
 	                        {
-	                            // 其他错误：截断显示
 	                            errorDetail = errorText.Substring(0, Math.Min(200, errorText.Length));
 	                        }
 	                        
-	                        // 判断是否应该重试
 	                        if (errorResponse.StatusCode == HttpStatusCode.ServiceUnavailable || // 503
 	                            errorResponse.StatusCode == (HttpStatusCode)429 ||              // Too Many Requests
 	                            errorResponse.StatusCode == HttpStatusCode.GatewayTimeout ||    // 504
@@ -970,13 +896,11 @@ internal static async Task<string> CallAIAsync(string prompt)
 	                {
 	                    errorDetail = ex.Message;
 	                    Log.Warning($"[AI Summarizer] ?? Network Error (attempt {attempt}/{MAX_RETRIES}): {errorDetail}");
-	                    shouldRetry = true; // 网络错误也重试
+	                    shouldRetry = true;
 	                }
 	                
-	                // 如果是最后一次尝试或不应该重试，则失败
 	                if (attempt >= MAX_RETRIES || !shouldRetry)
 	                {
-	                    // ? v3.3.3: 使用保存的状态码判断
 	                    if (statusCode != HttpStatusCode.Unauthorized && 
 	                        statusCode != HttpStatusCode.Forbidden)
 	                    {
@@ -985,8 +909,7 @@ internal static async Task<string> CallAIAsync(string prompt)
 	                    return null;
 	                }
 	                
-	                // 等待后重试
-	                await Task.Delay(RETRY_DELAY_MS * attempt); // 递增延迟：2s, 4s, 6s
+	                await Task.Delay(RETRY_DELAY_MS * attempt);
                 }
                 catch (Exception ex)
                 {
@@ -1001,18 +924,15 @@ internal static async Task<string> CallAIAsync(string prompt)
 
 internal static string ParseResponse(string responseText)
         {
-            // ? v3.3.7: 方法入口日志（确保方法被调用）
             Log.Message($"[AI Summarizer] 🔍 ParseResponse called, IndependentAISummarizer.provider={IndependentAISummarizer.provider}");
             
             try
             {
-                // ? 调试日志：输出完整响应
                 Log.Message($"[AI Summarizer] Full API Response (Length: {responseText.Length}):\n{responseText}");
 
-                // 必须配合之前给你的那个能跳过转义引号的正则
+                // Hard constraint — changing this breaks an invariant.
                 var regex = IndependentAISummarizer.provider == "Google" ? IndependentAISummarizer.GoogleResponseRegex : IndependentAISummarizer.OpenAIResponseRegex;
 
-                // ⭐ 核心修改：使用 Matches (复数) 抓取所有数据包
                 var matches = regex.Matches(responseText);
                 
                 Log.Message($"[AI Summarizer] Regex matched {matches.Count} fragments");
@@ -1023,10 +943,8 @@ internal static string ParseResponse(string responseText)
                     foreach (Match match in matches)
                     {
                         string fragment = match.Groups[1].Value;
-                        // 把每个数据包里的碎片拼起来
                         sb.Append(fragment);
                     }
-                    // 拼完之后再统一反转义
                     string result = Regex.Unescape(sb.ToString());
                     Log.Message($"[AI Summarizer] Final parsed result: {result}");
                     return result;
