@@ -2,6 +2,7 @@ using Ustas.RimAI.Communication.API;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Prompt;
 using System;
+using RimAI.Core.Runtime;
 using Ustas.RimAI.Core.Handshake;
 using Verse;
 
@@ -150,7 +151,7 @@ namespace Ustas.RimAI.Communication.Memory.API
                 Name = ENTRY_NAME,
                 Content = GetMemoryEntryContent(),
                 Enabled = true,
-                Role = PromptRole.System,
+                Role = ToPromptRole(RimAiRuntimeGateway.ResolveMemoryPromptPolicy(ENTRY_NAME).Role),
                 Position = PromptPosition.Relative
             };
             RimTalkPromptAPI.InsertPromptEntryAfterName(entry, CHAT_HISTORY_ENTRY_NAME);
@@ -167,6 +168,11 @@ namespace Ustas.RimAI.Communication.Memory.API
             chatHistoryEntry.Enabled = false;
             Log.Message($"[MemoryPatch] ✓ Disabled '{CHAT_HISTORY_ENTRY_NAME}' to avoid conflict with Memory & Knowledge injection");
         }
+
+        private static PromptRole ToPromptRole(RimAiPromptRole role) =>
+            role == RimAiPromptRole.User ? PromptRole.User
+            : role == RimAiPromptRole.Assistant ? PromptRole.Assistant
+            : PromptRole.System;
 
         private static string GetMemoryEntryContent()
         {
