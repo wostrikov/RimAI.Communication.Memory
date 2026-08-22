@@ -22,9 +22,9 @@ namespace Ustas.RimAI.Communication.Memory
             int keepCount = Math.Max(10, quickScored.Count / 2);
             var topCandidates = quickScored.Take(keepCount).ToList();
             
-            bool useSemantics = false;
+            bool useSemantics = AI.EmbeddingService.IsAvailable();
             
-            if (!useSemantics || !AI.EmbeddingService.IsAvailable())
+            if (!useSemantics)
             {
                 return topCandidates;
             }
@@ -120,9 +120,9 @@ namespace Ustas.RimAI.Communication.Memory
             int keepCount = Math.Max(5, quickScored.Count / 2);
             var topCandidates = quickScored.Take(keepCount).ToList();
             
-            bool useSemantics = false;
+            bool useSemantics = AI.EmbeddingService.IsAvailable();
             
-            if (!useSemantics || !AI.EmbeddingService.IsAvailable())
+            if (!useSemantics)
             {
                 return topCandidates;
             }

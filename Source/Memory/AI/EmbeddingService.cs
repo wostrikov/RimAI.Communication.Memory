@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Verse;
 
 namespace Ustas.RimAI.Communication.Memory.AI
@@ -25,7 +26,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             try
             {
-                Log.Message("[Embedding] v3.3.2.27: semantic embedding вилучено; використовується SuperKeywordEngine");
+                Log.Message("[Embedding] local deterministic embeddings available; remote embedding API is not required");
+                isInitialized = true;
                 return;
             }
             catch (Exception ex)
@@ -37,10 +39,15 @@ namespace Ustas.RimAI.Communication.Memory.AI
         
         public static bool IsAvailable()
         {
-            return false;
+            return true;
         }
         
-        public static async Task<float[]> GetEmbeddingAsync(string text)
+        public static Task<float[]> GetEmbeddingAsync(string text)
+        {
+            return Task.FromResult(ComputeLocalEmbedding(text));
+        }
+
+        static float[] ComputeLocalEmbedding(string text)
         {
             if (!IsAvailable()) return null;
             
@@ -63,10 +70,10 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
             {
-                Log.Message($"[Embedding] API call: {text.Substring(0, Math.Min(30, text.Length))}...");
+                Log.Message($"[Embedding] local embed: {text.Substring(0, Math.Min(30, text.Length))}...");
             }
-            
-            float[] embedding = await CallEmbeddingAPIAsync(text);
+
+            float[] embedding = DeterministicEmbedding.Embed(text);
             
             if (embedding != null)
             {
@@ -91,7 +98,12 @@ namespace Ustas.RimAI.Communication.Memory.AI
             return embedding;
         }
         
-        public static async Task<Dictionary<string, float[]>> GetEmbeddingsBatchAsync(List<string> texts)
+        public static Task<Dictionary<string, float[]>> GetEmbeddingsBatchAsync(List<string> texts)
+        {
+            return Task.FromResult(GetEmbeddingsBatch(texts));
+        }
+
+        public static Dictionary<string, float[]> GetEmbeddingsBatch(List<string> texts)
         {
             var results = new Dictionary<string, float[]>();
             
@@ -108,7 +120,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 {
                     try
                     {
-                        var embedding = await GetEmbeddingAsync(text);
+                        var embedding = ComputeLocalEmbedding(text);
                         if (embedding != null)
                         {
                             results[text] = embedding;
@@ -118,11 +130,6 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     {
                         Log.Warning($"[Embedding] Failed to get embedding for text: {ex.Message}");
                     }
-                }
-                
-                if (i + BATCH_SIZE < texts.Count)
-                {
-                    await Task.Delay(100);
                 }
             }
             

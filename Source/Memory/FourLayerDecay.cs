@@ -1,4 +1,5 @@
 ﻿using Ustas.RimAI.Communication.Memory.Capture;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Communication.Memory.UI;
 using Ustas.RimAI.Communication.Memory;
 using System;
@@ -35,32 +36,14 @@ public void DecayActivity()
 
 internal void CleanupLowActivityMemories()
         {
-            const float ACTIVITY_THRESHOLD = 0.01f;
+            const float ACTIVITY_THRESHOLD = MemoryLayerMaintenance.ActivityCleanupThreshold;
 
-            int removedSCM = 0;
-            int removedELS = 0;
-            int removedCLPA = 0;
-
-            int beforeSCM = situationalMemories.Count;
-            situationalMemories.RemoveAll(m =>
-                m.Activity < ACTIVITY_THRESHOLD &&
-                !m.IsPinned
-            );
-            removedSCM = beforeSCM - situationalMemories.Count;
-
-            int beforeELS = eventLogMemories.Count;
-            eventLogMemories.RemoveAll(m =>
-                m.Activity < ACTIVITY_THRESHOLD &&
-                !m.IsPinned
-            );
-            removedELS = beforeELS - eventLogMemories.Count;
-
-            int beforeCLPA = archiveMemories.Count;
-            archiveMemories.RemoveAll(m =>
-                m.Activity < ACTIVITY_THRESHOLD &&
-                !m.IsPinned
-            );
-            removedCLPA = beforeCLPA - archiveMemories.Count;
+            int removedSCM = MemoryLayerMaintenance.RemoveLowActivity(
+                situationalMemories, m => m.Activity, m => m.IsPinned, ACTIVITY_THRESHOLD);
+            int removedELS = MemoryLayerMaintenance.RemoveLowActivity(
+                eventLogMemories, m => m.Activity, m => m.IsPinned, ACTIVITY_THRESHOLD);
+            int removedCLPA = MemoryLayerMaintenance.RemoveLowActivity(
+                archiveMemories, m => m.Activity, m => m.IsPinned, ACTIVITY_THRESHOLD);
 
             if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0 || removedCLPA > 0))
             {
@@ -78,39 +61,10 @@ internal void EnforceMemoryLimits()
             int scmNonPinnedCount = situationalMemories.Count(m => !m.IsPinned);
             int elsNonPinnedCount = eventLogMemories.Count(m => !m.IsPinned);
 
-            if (scmNonPinnedCount > MaxSCM)
-            {
-                int toRemoveCount = scmNonPinnedCount - MaxSCM;
-                var toRemove = situationalMemories
-                    .Where(m => !m.IsPinned)
-                    .OrderBy(m => m.Activity)
-                    .ThenBy(m => m.GameTick)
-                    .Take(toRemoveCount)
-                    .ToList();
-
-                foreach (var memory in toRemove)
-                {
-                    situationalMemories.Remove(memory);
-                    removedSCM++;
-                }
-            }
-
-            if (elsNonPinnedCount > MaxELS)
-            {
-                int toRemoveCount = elsNonPinnedCount - MaxELS;
-                var toRemove = eventLogMemories
-                    .Where(m => !m.IsPinned)
-                    .OrderBy(m => m.Activity)
-                    .ThenBy(m => m.GameTick)
-                    .Take(toRemoveCount)
-                    .ToList();
-
-                foreach (var memory in toRemove)
-                {
-                    eventLogMemories.Remove(memory);
-                    removedELS++;
-                }
-            }
+            removedSCM = MemoryLayerMaintenance.EnforceLimit(
+                situationalMemories, MaxSCM, m => m.Activity, m => m.GameTick, m => m.IsPinned);
+            removedELS = MemoryLayerMaintenance.EnforceLimit(
+                eventLogMemories, MaxELS, m => m.Activity, m => m.GameTick, m => m.IsPinned);
 
             if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0))
             {

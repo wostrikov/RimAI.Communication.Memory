@@ -1,7 +1,14 @@
 <Project>
-  <PropertyGroup><BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\bin\</BaseOutputPath><BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\obj\</BaseIntermediateOutputPath></PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'RimAI.Communication.Memory'">
+    <BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'RimAI.Communication.Memory.Tests'">
+    <BaseOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory.Tests\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(LOCALAPPDATA)\Ustas\RimWorldSourceBuilds\RimAI.Communication.Memory.Tests\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
 	<PropertyGroup>
-		<MSBuildProjectExtensionsPath>$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
+		<MSBuildProjectExtensionsPath Condition="'$(BaseIntermediateOutputPath)' != ''">$(BaseIntermediateOutputPath)</MSBuildProjectExtensionsPath>
 	</PropertyGroup>
 
 	<!-- 默认不将引用程序集复制到本地 -->

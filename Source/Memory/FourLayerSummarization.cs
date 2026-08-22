@@ -1,4 +1,5 @@
 ﻿using Ustas.RimAI.Communication.Memory.Capture;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Communication.Memory.UI;
 using Ustas.RimAI.Communication.Memory;
 using System;
@@ -79,16 +80,12 @@ public void DailySummarization()
                 InsertMemoryByTimestamp(eventLogMemories, summaryEntry);
             }
 
-            foreach (var memory in allMemoriesToSummarize)
-            {
-                if (memory != null) memory.IsSummarized = true;
-            }
-
-            activeMemories.Clear();
-
-            int beforeCount = situationalMemories.Count;
-            situationalMemories.RemoveAll(m => !m.IsPinned);
-            int removedCount = beforeCount - situationalMemories.Count;
+            int removedCount = MemoryConsolidationPolicy.ApplyAfterSummary(
+                allMemoriesToSummarize,
+                activeMemories,
+                situationalMemories,
+                memory => { if (memory != null) memory.IsSummarized = true; },
+                memory => memory.IsPinned);
 
             if (Prefs.DevMode && removedCount > 0)
             {
@@ -165,16 +162,12 @@ public void ManualSummarization()
                 InsertMemoryByTimestamp(eventLogMemories, summaryEntry);
             }
 
-            foreach (var memory in allMemoriesToSummarize)
-            {
-                if (memory != null) memory.IsSummarized = true;
-            }
-
-            activeMemories.Clear();
-
-            int beforeCount = situationalMemories.Count;
-            situationalMemories.RemoveAll(m => !m.IsPinned);
-            int removedCount = beforeCount - situationalMemories.Count;
+            int removedCount = MemoryConsolidationPolicy.ApplyAfterSummary(
+                allMemoriesToSummarize,
+                activeMemories,
+                situationalMemories,
+                memory => { if (memory != null) memory.IsSummarized = true; },
+                memory => memory.IsPinned);
 
             if (Prefs.DevMode && removedCount > 0)
             {

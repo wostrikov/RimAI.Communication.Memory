@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RimWorld;
 using UnityEngine;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Verse;
 
 namespace Ustas.RimAI.Communication.Memory
@@ -177,9 +178,7 @@ namespace Ustas.RimAI.Communication.Memory
 
         public void Decay(float rate)
         {
-            if (IsPinned) return;
-
-            Activity *= (1f - rate);
+            Activity = MemoryLayerMaintenance.DecayActivity(Activity, rate, IsPinned);
         }
 
         public float CalculateRetrievalScore(string context, List<string> contextKeywords)

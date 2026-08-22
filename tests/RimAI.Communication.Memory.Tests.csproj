@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Source\Memory\Policy\MemoryLayerMaintenance.cs" Link="Policy\MemoryLayerMaintenance.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemoryConsolidationPolicy.cs" Link="Policy\MemoryConsolidationPolicy.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemoryScopeSnapshot.cs" Link="Policy\MemoryScopeSnapshot.cs" />
+    <Compile Include="..\Source\Memory\Policy\DeterministicEmbedding.cs" Link="Policy\DeterministicEmbedding.cs" />
+    <Compile Include="..\Source\Memory\Policy\KnowledgeMatchPolicy.cs" Link="Policy\KnowledgeMatchPolicy.cs" />
+    <None Include="..\Source\Memory\AI\EmbeddingService.cs" Link="EmbeddingService.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\SemanticScoringSystem.cs" Link="SemanticScoringSystem.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\FourLayerMemoryComp.cs" Link="FourLayerMemoryComp.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\FourLayerDecay.cs" Link="FourLayerDecay.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\FourLayerSummarization.cs" Link="FourLayerSummarization.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\MemoryEntry.cs" Link="MemoryEntry.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\MemoryManager.cs" Link="MemoryManager.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\RoundMemory\RoundMemoryManager.cs" Link="RoundMemoryManager.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\CommonKnowledgeLibrary.cs" Link="CommonKnowledgeLibrary.cs.src" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

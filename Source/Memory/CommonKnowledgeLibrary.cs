@@ -5,6 +5,7 @@ using System.Text;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Policy;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -419,10 +420,19 @@ namespace Ustas.RimAI.Communication.Memory
             
             foreach (var entry in allMatchedEntries)
             {
-                KnowledgeMatchType matchType = KnowledgeMatchType.Keyword;
-                
-                float matchTypeScore = 0.5f;
-                float finalScore = matchTypeScore + entry.importance;
+                KnowledgeTagMatchMode mode = entry.matchMode == KeywordMatchMode.All
+                    ? KnowledgeTagMatchMode.All
+                    : KnowledgeTagMatchMode.Any;
+                KnowledgeMatchKind kind = KnowledgeMatchPolicy.Classify(context, entry.content, entry.GetTags(), mode);
+                KnowledgeMatchType matchType = kind == KnowledgeMatchKind.Vector
+                    ? KnowledgeMatchType.Vector
+                    : kind == KnowledgeMatchKind.Mixed
+                        ? KnowledgeMatchType.Mixed
+                        : KnowledgeMatchType.Keyword;
+
+                float matchTypeScore = kind == KnowledgeMatchKind.Keyword || kind == KnowledgeMatchKind.Mixed ? 0.5f : 0f;
+                float vectorScore = KnowledgeMatchPolicy.VectorScore(context, entry.content, entry.GetTags());
+                float finalScore = matchTypeScore + (vectorScore * 0.4f) + entry.importance;
                 
                 allScores.Add(new KnowledgeScoreDetail
                 {
@@ -516,31 +526,10 @@ namespace Ustas.RimAI.Communication.Memory
         private bool IsMatched(string text, CommonKnowledgeEntry entry)
         {
             var tags = entry.GetTags();
-            if (tags == null || tags.Count == 0) return false;
-
-            switch (entry.matchMode)
-            {
-                case KeywordMatchMode.Any:
-                    foreach (var tag in tags)
-                    {
-                        if (string.IsNullOrWhiteSpace(tag)) continue;
-                        if (text.IndexOf(tag, StringComparison.OrdinalIgnoreCase) >= 0)
-                            return true;
-                    }
-                    return false;
-
-                case KeywordMatchMode.All:
-                    foreach (var tag in tags)
-                    {
-                        if (string.IsNullOrWhiteSpace(tag)) continue;
-                        if (text.IndexOf(tag, StringComparison.OrdinalIgnoreCase) < 0)
-                            return false;
-                    }
-                    return true;
-
-                default:
-                    return false;
-            }
+            KnowledgeTagMatchMode mode = entry.matchMode == KeywordMatchMode.All
+                ? KnowledgeTagMatchMode.All
+                : KnowledgeTagMatchMode.Any;
+            return KnowledgeMatchPolicy.Matches(text, entry.content, tags, mode);
         }
 
         private string BuildMatchTextFromKnowledge(List<CommonKnowledgeEntry> entries)
