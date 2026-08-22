@@ -53,6 +53,7 @@ public sealed class MemoryComposition : IRimAiModuleComposition
         ContextProvider = new MemoryContextProvider();
         MemoryContextAccess.Register(ContextProvider);
         MemoryContextAccess.RegisterKnowledge(ContextProvider);
+        MemoryPipelineProbe.Register();
         RimAiLog.Info(RimAiLogCategory.Memory, "[RimAI.Memory] Loaded successfully");
         IsStarted = true;
     }
