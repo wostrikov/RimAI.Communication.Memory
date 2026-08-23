@@ -48,9 +48,7 @@ Requires Harmony and RimAI.Communication. Load order: Harmony → RimAI.Communic
 
 [h1]鸣谢[/h1]
 
-Juicy - RimTalk 原作者
-
-GitHub: https://github.com/sanguodxj-byte/RimTalk-ExpandMemory
+Attribution: Juicy (original Communication/RimTalk author). The live product name is RimAI.Communication.Memory.
 	</description>
 	
 	<modDependencies>
