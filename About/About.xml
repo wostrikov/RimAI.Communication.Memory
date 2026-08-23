@@ -10,45 +10,13 @@
 	<modVersion>3.4.0</modVersion>
 	<url>https://github.com/sanguodxj-byte/RimTalk-ExpandMemory</url>
 	
-	<description>[h1]RimAI.Communication.Memory v3.4.0[/h1]
+	<description>RimAI.Communication.Memory gives colonists layered conversation memory so they remember more and stay consistent over time.
 
-RimAI Communication memory module. Adds a layered memory system so colonists remember more and speak more consistently.
+It works with RimAI.Communication. Recent and longer-term memories, optional background knowledge, and a timeline you can review, summarize, or archive stay in this module.
 
-[hr][/hr]
+Requires Harmony and RimAI.Communication. Load after both. Gameplay text AI uses shared RimAI settings.
 
-[h1]记忆系统[/h1]
-
-分四层存储：超短期(ABM)、短期(SCM)、中期(ELS)、长期(CLPA)。越老的记忆权重越低，重要的内容会留得更久。对话时自动挑选最相关的记忆注入，不会把所有东西一股脑塞进去。
-
-[h1]常识库[/h1]
-
-可以手动写入背景知识，格式是 [标签|重要性]内容。角色对话涉及相关话题时会自动带入。支持分类管理、批量操作、导入导出。
-
-有个标签测试工具，输入标签和对话内容，能直接看到会不会匹配、匹配到什么，方便排查误触。
-
-[h1]记忆时间线 UI[/h1]
-
-卡片式布局，按时间排列，不同层级用颜色区分。支持 Ctrl/Shift 多选和框选，可以批量总结、归档或删除。
-
-[h1]其他[/h1]
-
-Gameplay text AI uses the shared RimAI configuration. Embedding/vector settings stay module-specific.
-
-提示词有规范化处理，可以自定义文本替换规则，支持正则，实时生效。
-
-旧存档直接兼容，不需要重新开档。
-
-[hr][/hr]
-
-[h1]安装[/h1]
-
-Requires Harmony and RimAI.Communication. Load order: Harmony → RimAI.Communication → this mod.
-
-[hr][/hr]
-
-[h1]鸣谢[/h1]
-
-Attribution: Juicy (original Communication/RimTalk author). The live product name is RimAI.Communication.Memory.
+Attribution: Juicy (original Communication/RimTalk author).
 	</description>
 	
 	<modDependencies>
@@ -60,8 +28,6 @@ Attribution: Juicy (original Communication/RimTalk author). The live product nam
 		<li>
 			<packageId>ustas.rimai.communication</packageId>
 			<displayName>RimAI.Communication</displayName>
-			<steamWorkshopUrl>https://steamcommunity.com/sharedfiles/filedetails/?id=3381946324</steamWorkshopUrl>
-			<downloadUrl>https://github.com/CET-Chengdu/RimTalk</downloadUrl>
 		</li>
 	</modDependencies>
 	
