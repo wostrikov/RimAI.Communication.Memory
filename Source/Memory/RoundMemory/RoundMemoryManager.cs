@@ -1,5 +1,6 @@
 ﻿using Ustas.RimAI.Communication.Memory.Utils;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Policy;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -127,7 +128,8 @@ namespace Ustas.RimAI.Communication.Memory
             if (pawns is null) return;
             foreach (var pawn in pawns)
             {
-                if (pawn is null) continue;
+                if (!MemoryRoundConversationPolicy.ShouldWriteThrough(pawn != null))
+                    continue;
                 pawn.TryGetComp<FourLayerMemoryComp>()?.ActiveMemories?.Add(roundMemory);
             }
         }

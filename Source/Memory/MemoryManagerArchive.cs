@@ -7,6 +7,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
+using Ustas.RimAI.Communication.Memory.Policy;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -16,23 +17,21 @@ namespace Ustas.RimAI.Communication.Memory
 
 internal void CheckArchiveInterval(int currentDay)
         {
-            if (!RimTalkMemoryPatchMod.Settings.enableAutoArchive)
+            var cadence = MemoryArchiveCyclePolicy.DecideCadence(
+                RimTalkMemoryPatchMod.Settings.enableAutoArchive,
+                lastArchiveDay,
+                currentDay,
+                RimTalkMemoryPatchMod.Settings.archiveIntervalDays);
+            if (cadence == MemoryArchiveCadenceAction.SkipDisabled ||
+                cadence == MemoryArchiveCadenceAction.NotDue)
                 return;
-            
-            int intervalDays = RimTalkMemoryPatchMod.Settings.archiveIntervalDays;
-            
-            if (lastArchiveDay == -1)
+            if (cadence == MemoryArchiveCadenceAction.ArmFirstDay)
             {
                 lastArchiveDay = currentDay;
                 return;
             }
             
-            int daysSinceLastArchive = currentDay - lastArchiveDay;
-            
-            if (daysSinceLastArchive < intervalDays)
-                return;
-            
-            Log.Message($"[RimAI.Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {intervalDays} days)");
+            Log.Message($"[RimAI.Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {RimTalkMemoryPatchMod.Settings.archiveIntervalDays} days)");
             
             int totalArchivedPawns = 0;
             int totalArchivedEntries = 0;
@@ -59,7 +58,7 @@ internal void CheckArchiveInterval(int currentDay)
                     if (nonPinnedELS.Count == 0)
                         continue;
                     
-                    int archiveCount = Math.Max(1, (int)(nonPinnedELS.Count * 0.25f));
+                    int archiveCount = MemoryArchiveCyclePolicy.ArchiveCount(nonPinnedELS.Count);
                     
                     var toArchive = nonPinnedELS
                         .OrderBy(m => m.GameTick)
@@ -94,7 +93,9 @@ internal void CheckArchiveInterval(int currentDay)
                         archiveEntry.AddTag("自动归档");
                         archiveEntry.AddTag($"源自{memories.Count}条ELS");
                         
-                        if (RimTalkMemoryPatchMod.Settings.useAISummarization && AI.IndependentAISummarizer.IsAvailable())
+                        if (MemoryArchiveCyclePolicy.UseOptionalAiSummary(
+                            RimTalkMemoryPatchMod.Settings.useAISummarization,
+                            AI.IndependentAISummarizer.IsAvailable()))
                         {
                             string cacheKey = AI.IndependentAISummarizer.ComputeCacheKey(pawn, memories);
                             

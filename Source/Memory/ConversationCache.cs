@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Policy;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -67,7 +68,10 @@ namespace Ustas.RimAI.Communication.Memory
         
         public string TryGet(string cacheKey)
         {
-            if (!RimTalkMemoryPatchMod.Settings.enableConversationCache)
+            if (MemoryColonyCapacityPolicy.DecideLookup(
+                    RimTalkMemoryPatchMod.Settings.enableConversationCache,
+                    found: false,
+                    expired: false) == MemoryCacheLookupAction.Disabled)
                 return null;
             
             if (UnityEngine.Random.value < 0.1f)
@@ -82,7 +86,8 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 var entry = node.Value;
                 
-                if (!entry.IsExpired(currentTick, expireTicks))
+                var lookup = MemoryColonyCapacityPolicy.DecideLookup(true, found: true, expired: entry.IsExpired(currentTick, expireTicks));
+                if (lookup == MemoryCacheLookupAction.Hit)
                 {
                     entry.lastUsedTick = currentTick;
                     entry.useCount++;
@@ -143,7 +148,7 @@ namespace Ustas.RimAI.Communication.Memory
                 lruList.AddFirst(newNode);
                 cacheMap[cacheKey] = newNode;
                 
-                if (cacheMap.Count > MaxCacheSize)
+                if (MemoryColonyCapacityPolicy.LruEvictCount(cacheMap.Count, MaxCacheSize) > 0)
                 {
                     EvictLRU_O1();
                 }

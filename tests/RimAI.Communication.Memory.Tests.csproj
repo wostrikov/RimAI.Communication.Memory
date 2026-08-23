@@ -11,6 +11,9 @@
     <Compile Include="..\Source\Memory\Policy\MemoryScopeSnapshot.cs" Link="Policy\MemoryScopeSnapshot.cs" />
     <Compile Include="..\Source\Memory\Policy\DeterministicEmbedding.cs" Link="Policy\DeterministicEmbedding.cs" />
     <Compile Include="..\Source\Memory\Policy\KnowledgeMatchPolicy.cs" Link="Policy\KnowledgeMatchPolicy.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemoryRoundConversationPolicy.cs" Link="Policy\MemoryRoundConversationPolicy.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemoryArchiveCyclePolicy.cs" Link="Policy\MemoryArchiveCyclePolicy.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemoryColonyCapacityPolicy.cs" Link="Policy\MemoryColonyCapacityPolicy.cs" />
     <None Include="..\Source\Memory\AI\EmbeddingService.cs" Link="EmbeddingService.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\SemanticScoringSystem.cs" Link="SemanticScoringSystem.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\FourLayerMemoryComp.cs" Link="FourLayerMemoryComp.cs.src" CopyToOutputDirectory="PreserveNewest" />
@@ -20,5 +23,9 @@
     <None Include="..\Source\Memory\MemoryManager.cs" Link="MemoryManager.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\RoundMemory\RoundMemoryManager.cs" Link="RoundMemoryManager.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\CommonKnowledgeLibrary.cs" Link="CommonKnowledgeLibrary.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\RoundMemory\RoundMemory.cs" Link="RoundMemory.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\MemoryManagerArchive.cs" Link="MemoryManagerArchive.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Utils\RimRingBuffer.cs" Link="RimRingBuffer.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\ConversationCache.cs" Link="ConversationCache.cs.src" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

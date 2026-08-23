@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using Ustas.RimAI.Communication.Memory.Policy;
+using RimWorld;
 using RimWorld.Planet;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,10 +72,13 @@ namespace Ustas.RimAI.Communication.Memory
 
         public string GetParticipantsRoster()
         {
-            return string.Join(", ", Pawns
-                .Select(p => p?.LabelShort)
-                .Where(n => n is not null)
-            );
+            var names = new List<string>();
+            foreach (var pawn in Pawns)
+            {
+                if (pawn?.LabelShort != null)
+                    names.Add(pawn.LabelShort);
+            }
+            return MemoryRoundConversationPolicy.ComposeRoster(names);
         }
 
         public override void ExposeData()

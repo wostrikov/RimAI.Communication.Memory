@@ -1,4 +1,5 @@
 ﻿using System;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Unity.Mathematics;
 
 namespace Ustas.RimAI.Communication.Memory.Utils
@@ -26,10 +27,10 @@ namespace Ustas.RimAI.Communication.Memory.Utils
 
         public void Add(T item)
         {
-            _buffer[(_head + _count) & _capacityMask] = item;
-
-            if (_count < _capacity) _count++;
-            else _head = (_head + 1) & _capacityMask;
+            MemoryColonyCapacityPolicy.AfterAdd(_head, _count, _capacity, out int writeIndex, out int newHead, out int newCount);
+            _buffer[writeIndex] = item;
+            _head = newHead;
+            _count = newCount;
         }
 
         // Non-obvious edge case — read carefully before changing. (summary List index index Count summary)
