@@ -10,13 +10,16 @@
 	<modVersion>3.4.0</modVersion>
 	<url>https://github.com/sanguodxj-byte/RimTalk-ExpandMemory</url>
 	
-	<description>RimAI.Communication.Memory gives colonists layered conversation memory so they remember more and stay consistent over time.
+	<description>RimAI.Communication.Memory дає колоністам шарувату пам’ять розмов, щоб вони пам’ятали більше й говорили послідовніше.
 
-It works with RimAI.Communication. Recent and longer-term memories, optional background knowledge, and a timeline you can review, summarize, or archive stay in this module.
+Основні можливості:
+• нещодавні та довші спогади
+• необов’язкові фонові знання
+• стрічка пам’яті: перегляд, стислий виклад, архів
 
-Requires Harmony and RimAI.Communication. Load after both. Gameplay text AI uses shared RimAI settings.
+Потрібні Harmony та RimAI.Communication. Завантажуйте після обох. Текстовий ШІ — зі спільних налаштувань RimAI.
 
-Attribution: Juicy (original Communication/RimTalk author).
+Подяка: Juicy (оригінальний автор Communication/RimTalk).
 	</description>
 	
 	<modDependencies>
