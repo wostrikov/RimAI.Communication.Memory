@@ -112,6 +112,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
             Rect viewRect = new Rect(0f, 0f, rect.width - 20f, 900f);
             
             Widgets.BeginScrollView(rect, ref scrollPosition, viewRect);
+            // Verse wraps a Listing into a second column, off the visible view, as soon as
+            // content passes the rect height, and CurHeight then reports that new column.
+            // A scrolling settings page never wants that; see validate_scrollable_listings.
+            listing.maxOneColumn = true;
             listing.Begin(viewRect);
             
             Text.Font = GameFont.Small;

@@ -303,6 +303,10 @@ namespace Ustas.RimAI.Communication.Memory
             Widgets.DrawBoxSolid(sectionRect, new Color(0.15f, 0.15f, 0.15f, 0.5f));
             
             Listing_Standard inner = new Listing_Standard();
+            // Verse wraps a Listing into a second column, off the visible view, as soon as
+            // content passes the rect height, and CurHeight then reports that new column.
+            // A scrolling settings page never wants that; see validate_scrollable_listings.
+            inner.maxOneColumn = true;
             inner.Begin(sectionRect.ContractedBy(10f));
             
             Text.Font = GameFont.Small;

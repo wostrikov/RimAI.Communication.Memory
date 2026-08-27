@@ -313,6 +313,10 @@ public void DoSettingsWindowContents(Rect inRect)
             Listing_Standard listingStandard = new Listing_Standard();
             Rect viewRect = new Rect(0f, 0f, inRect.width - 20f, 1400f);
             Widgets.BeginScrollView(inRect, ref RimTalkMemoryPatchSettings.scrollPosition, viewRect);
+            // Verse wraps a Listing into a second column, off the visible view, as soon as
+            // content passes the rect height, and CurHeight then reports that new column.
+            // A scrolling settings page never wants that; see validate_scrollable_listings.
+            listingStandard.maxOneColumn = true;
             listingStandard.Begin(viewRect);
 
             DrawPresetConfiguration(listingStandard);
