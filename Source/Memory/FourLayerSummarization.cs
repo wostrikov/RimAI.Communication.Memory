@@ -67,7 +67,7 @@ public void DailySummarization()
                             summaryEntry.Content = aiSummary;
                             summaryEntry.RemoveTag("简单总结");
                             summaryEntry.AddTag("AI总结");
-                            summaryEntry.Notes = "AI 总结已于后台完成并自动更新。";
+                            summaryEntry.Notes = "Підсумок від ШІ завершено у фоні й оновлено автоматично.";
                         }
                     });
 
@@ -149,7 +149,7 @@ public void ManualSummarization()
                             summaryEntry.Content = aiSummary;
                             summaryEntry.RemoveTag("简单总结");
                             summaryEntry.AddTag("AI总结");
-                            summaryEntry.Notes = "AI 总结已于后台完成并自动更新。";
+                            summaryEntry.Notes = "Підсумок від ШІ завершено у фоні й оновлено автоматично.";
                         }
                     });
 

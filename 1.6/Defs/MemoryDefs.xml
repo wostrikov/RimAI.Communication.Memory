@@ -4,8 +4,8 @@
   <!-- See InjectMemoryCompPatch.cs for implementation -->
   
   <!-- ⚠️ WorldComponent 不需要在 Defs 中声明 -->
-  <!-- RimWorld 会自动发现所有继承自 WorldComponent 的类 -->
-  <!-- 如果遇到 "Could not find class" 错误，这是存档兼容性问题 -->
-  <!-- 解决方法：删除旧存档或使用 BackCompatibilityFix -->
+  <!-- RimWorld сам знаходить усі класи, успадковані від WorldComponent -->
+  <!-- Помилка "Could not find class" означає проблему сумісності збережень -->
+  <!-- Розв'язання: видалити старе збереження або застосувати BackCompatibilityFix -->
 
 </Defs>

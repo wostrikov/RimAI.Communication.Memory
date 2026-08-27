@@ -198,7 +198,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             
             if (defeated)
             {
-                entry.content = $"{raidInfo.initialText}，殖民地成功击退了进攻";
+                entry.content = $"{raidInfo.initialText}, колонія успішно відбила напад";
                 entry.importance = 0.95f;
             }
             else

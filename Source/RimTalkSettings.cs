@@ -184,8 +184,8 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                const string legacyDaily = "殖民者{0}的记忆总结\n\n记忆列表\n{1}\n\n要求提炼地点人物事件\n相似事件合并标注频率\n极简表达不超过80字\n只输出总结文字不要其他格式";
-                const string legacyArchive = "殖民者{0}的记忆归档\n\n记忆列表\n{1}\n\n要求提炼核心特征和里程碑事件\n合并相似经历突出长期趋势\n极简表达不超过60字\n只输出总结文字不要其他格式";
+                const string legacyDaily = "Підсумок памʼяті колоніста {0}\n\nСписок спогадів\n{1}\n\nВимоги: виділити місця, людей, події\nСхожі події обʼєднати й позначити частоту\nГранично стисло, не більше 80 слів\nВивести лише текст підсумку, без жодного оформлення";
+                const string legacyArchive = "Архів памʼяті колоніста {0}\n\nСписок спогадів\n{1}\n\nВимоги: виділити ключові риси й переломні події\nОбʼєднати схожий досвід, підкреслити довгі тенденції\nГранично стисло, не більше 60 слів\nВивести лише текст підсумку, без жодного оформлення";
                 if (dailySummaryPrompt == legacyDaily) dailySummaryPrompt = "";
                 if (deepArchivePrompt == legacyArchive) deepArchivePrompt = "";
                 if (independentModel == "gpt-3.5-turbo") independentModel = "";

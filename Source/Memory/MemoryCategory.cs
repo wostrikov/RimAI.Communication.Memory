@@ -14,7 +14,7 @@ namespace Ustas.RimAI.Communication.Memory
     public enum MemoryType
     {
         Conversation,  
-        [Obsolete("互动记忆已废弃，保留此枚举值仅为兼容旧存档")]
+        [Obsolete("Памʼять взаємодій виведена з ужитку; це значення лишається тільки для сумісності зі старими збереженнями")]
         Interaction,   
         Action,        
         Observation,   

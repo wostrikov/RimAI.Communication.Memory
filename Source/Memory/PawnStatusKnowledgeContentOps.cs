@@ -41,27 +41,27 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 if (daysInColony == 0)
                 {
-                    baseDescription = $"{name}是殖民地的新成员，今天({joinDate})刚加入";
+                    baseDescription = $"{name} — новачок у колонії, приєднався сьогодні ({joinDate})";
                 }
                 else if (daysInColony == 1)
                 {
-                    baseDescription = $"{name}是殖民地的新成员，昨天({joinDate})加入";
+                    baseDescription = $"{name} — новачок у колонії, приєднався вчора ({joinDate})";
                 }
                 else
                 {
-                    baseDescription = $"{name}是殖民地的新成员，{daysInColony}天前({joinDate})加入";
+                    baseDescription = $"{name} — новачок у колонії, приєднався {daysInColony} дн. тому ({joinDate})";
                 }
             }
             else
             {
-                baseDescription = $"{name}是殖民地的资深成员，已加入殖民地 {daysInColony} 天（加入于{joinDate}），对殖民地的历史和成员关系较为熟悉";
+                baseDescription = $"{name} — досвідчений член колонії, у ній уже {daysInColony} дн. (приєднався {joinDate}), добре знає історію колонії та стосунки між її людьми";
             }
             
             if (!string.IsNullOrEmpty(raceInfo))
             {
                 if (daysInColony < 7)
                 {
-                    return $"{baseDescription}。{raceInfo}。对殖民地的历史和成员关系尚不熟悉";
+                    return $"{baseDescription}. {raceInfo}. Ще погано знає історію колонії та стосунки між її людьми";
                 }
                 else
                 {
