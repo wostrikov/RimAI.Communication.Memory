@@ -6,6 +6,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory.Persistence;
 using Ustas.RimAI.Core.Diagnostics;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Monitoring
 {
@@ -33,7 +34,7 @@ namespace Ustas.RimAI.Communication.Memory.Monitoring
             
             if (Prefs.DevMode)
             {
-                Log.Message("[Performance Monitor] Initialized");
+                ModuleLog.Message("[Performance Monitor] Initialized");
             }
         }
         
@@ -196,7 +197,7 @@ namespace Ustas.RimAI.Communication.Memory.Monitoring
             
             Initialize();
             
-            Log.Message("[Performance Monitor] Statistics reset");
+            ModuleLog.Message("[Performance Monitor] Statistics reset");
         }
         
         public static void ExportReport(string filePath = null)

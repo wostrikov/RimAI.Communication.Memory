@@ -2,6 +2,7 @@ using System;
 using Verse;
 using RimWorld.Planet;
 using Ustas.RimAI.Core.Handshake;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -29,9 +30,9 @@ namespace Ustas.RimAI.Communication.Memory
                 System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(memoryManagerType.TypeHandle);
                 System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(aiRequestManagerType.TypeHandle);
                 
-                Log.Message($"[RimTalk BackCompat] ✅ Types pre-initialized:");
-                Log.Message($"  - {memoryManagerType.FullName}");
-                Log.Message($"  - {aiRequestManagerType.FullName}");
+                ModuleLog.Message($"[RimTalk BackCompat] ✅ Types pre-initialized:");
+                ModuleLog.Message($"  - {memoryManagerType.FullName}");
+                ModuleLog.Message($"  - {aiRequestManagerType.FullName}");
                 
             }
             catch (Exception ex)

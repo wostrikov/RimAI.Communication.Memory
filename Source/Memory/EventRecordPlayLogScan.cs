@@ -4,6 +4,7 @@ using System.Linq;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory;
 
@@ -95,7 +96,7 @@ internal static class EventRecordPlayLogScan
                                 
                                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                                 {
-                                    Log.Message($"[EventRecord] Created event knowledge: {eventText.Substring(0, Math.Min(50, eventText.Length))}...");
+                                    ModuleLog.Message($"[EventRecord] Created event knowledge: {eventText.Substring(0, Math.Min(50, eventText.Length))}...");
                                 }
                             }
                         }
@@ -111,7 +112,7 @@ internal static class EventRecordPlayLogScan
                 
                 if (processedCount > 0 && Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[EventRecord] Scanned {scannedCount} entries, processed {processedCount} new events (total: {totalCount})");
+                    ModuleLog.Message($"[EventRecord] Scanned {scannedCount} entries, processed {processedCount} new events (total: {totalCount})");
                 }
             }
             catch (Exception ex)

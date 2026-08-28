@@ -15,6 +15,7 @@ using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
 using Ustas.RimAI.Core.Player2;
 using RimAI.Core.Runtime;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -180,7 +181,7 @@ public static void ClearAllConfiguration()
                 IndependentAISummarizer.mainThreadActions.Clear();
             }
             
-            Log.Message("[AI] ?? All API configuration and cache cleared");
+            ModuleLog.Message("[AI] ?? All API configuration and cache cleared");
         }
 
 public static void Initialize()
@@ -193,7 +194,7 @@ public static void Initialize()
                 {
                     if (TryLoadFromRimTalk())
                     {
-                        Log.Message($"[AI] Loaded from RimTalk ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                        ModuleLog.Message($"[AI] Loaded from RimTalk ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
                         IndependentAISummarizer.isInitialized = true;
                         return;
                     }
@@ -220,13 +221,13 @@ public static void Initialize()
                     {
                         IndependentAISummarizer.apiKey = session.ApiKey;
                         IndependentAISummarizer.apiUrl = Player2Endpoints.ChatCompletions(session.BaseUrl);
-                        Log.Message(session.IsLocal
+                        ModuleLog.Message(session.IsLocal
                             ? "[AI] Using Player2 local app connection"
                             : "[AI] Using Player2 remote API with manual key");
                     }
                     else
                     {
-                        Log.Message("[AI] Player2 selected but no key, trying to detect local app...");
+                        ModuleLog.Message("[AI] Player2 selected but no key, trying to detect local app...");
                         TryDetectPlayer2LocalApp();
                     }
                 }
@@ -257,9 +258,9 @@ public static void Initialize()
                     return;
                 }
                 
-                Log.Message($"[AI] ? Initialized with independent config ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
-                Log.Message($"[AI]    Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
-                Log.Message($"[AI]    API URL: {IndependentAISummarizer.apiUrl}");
+                ModuleLog.Message($"[AI] ? Initialized with independent config ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                ModuleLog.Message($"[AI]    Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
+                ModuleLog.Message($"[AI]    API URL: {IndependentAISummarizer.apiUrl}");
                 IndependentAISummarizer.isInitialized = true;
             }
             catch (Exception ex)
@@ -332,7 +333,7 @@ internal static bool TryLoadFromRimTalk()
                     {
                         IndependentAISummarizer.useRimTalkAdapter = true;
                         IndependentAISummarizer.isInitialized = true;
-                        Log.Message($"[AI] Loaded from shared text AI ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                        ModuleLog.Message($"[AI] Loaded from shared text AI ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
                         return true;
                     }
                 }
@@ -349,7 +350,7 @@ internal static bool TryLoadFromRimTalk()
                 if (string.IsNullOrEmpty(IndependentAISummarizer.model)) return false;
                 IndependentAISummarizer.useRimTalkAdapter = true;
                 IndependentAISummarizer.isInitialized = true;
-                Log.Message($"[AI] Loaded from Communication ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
+                ModuleLog.Message($"[AI] Loaded from Communication ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
                 return true;
             }
             catch (Exception ex)
@@ -390,7 +391,7 @@ public static void TryDetectPlayer2LocalApp()
             {
                 try
                 {
-                    Log.Message("[AI] Checking for local Player2 app...");
+                    ModuleLog.Message("[AI] Checking for local Player2 app...");
                     var session = Player2Session.Current.EnsureAuthenticated(new Player2AuthRequest
                     {
                         RequestGameKey = Player2GameKeys.Memory
@@ -404,7 +405,7 @@ public static void TryDetectPlayer2LocalApp()
                         return;
                     }
 
-                    Log.Message("[AI] Player2 local app not found, will use remote API");
+                    ModuleLog.Message("[AI] Player2 local app not found, will use remote API");
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
                         Messages.Message("RimTalk_Settings_Player2NotFound".Translate(), MessageTypeDefOf.NeutralEvent, false);
@@ -466,7 +467,7 @@ public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, st
 
                                 if (Prefs.DevMode)
                                 {
-                                    Log.Message($"[AI Summarizer] ?? Cleaned cache: {toRemove.Count} entries removed (deterministic by key order), {IndependentAISummarizer.completedSummaries.Count} remaining");
+                                    ModuleLog.Message($"[AI Summarizer] ?? Cleaned cache: {toRemove.Count} entries removed (deterministic by key order), {IndependentAISummarizer.completedSummaries.Count} remaining");
                                 }
                             }
                             
@@ -767,14 +768,14 @@ internal static async Task<string> CallAIAsync(string prompt)
 
                     if (attempt > 1)
                     {
-                        Log.Message($"[AI Summarizer] Retry attempt {attempt}/{MAX_RETRIES}...");
+                        ModuleLog.Message($"[AI Summarizer] Retry attempt {attempt}/{MAX_RETRIES}...");
                     }
                     else
                     {
-                        Log.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
-                        Log.Message($"[AI Summarizer]   Provider: {IndependentAISummarizer.provider}");
-                        Log.Message($"[AI Summarizer]   Model: {IndependentAISummarizer.model}");
-                        Log.Message($"[AI Summarizer]   Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
+                        ModuleLog.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
+                        ModuleLog.Message($"[AI Summarizer]   Provider: {IndependentAISummarizer.provider}");
+                        ModuleLog.Message($"[AI Summarizer]   Model: {IndependentAISummarizer.model}");
+                        ModuleLog.Message($"[AI Summarizer]   Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
                     }
 
                     var request = (HttpWebRequest)WebRequest.Create(actualUrl);
@@ -821,13 +822,13 @@ internal static async Task<string> CallAIAsync(string prompt)
                     {
                         string responseText = await ReadStreamAsTextAsync(response.GetResponseStream());
                         
-                        Log.Message($"[AI Summarizer] ✅ Response received, length: {responseText.Length} chars");
+                        ModuleLog.Message($"[AI Summarizer] ✅ Response received, length: {responseText.Length} chars");
                         
                         string result = ParseResponse(responseText);
                         
                         if (result != null)
                         {
-                            Log.Message($"[AI Summarizer] ✅ Parse successful, result length: {result.Length} chars");
+                            ModuleLog.Message($"[AI Summarizer] ✅ Parse successful, result length: {result.Length} chars");
                         }
                         else
                         {
@@ -836,7 +837,7 @@ internal static async Task<string> CallAIAsync(string prompt)
                         
                         if (attempt > 1)
                         {
-                            Log.Message($"[AI Summarizer] ? Retry successful on attempt {attempt}");
+                            ModuleLog.Message($"[AI Summarizer] ? Retry successful on attempt {attempt}");
                         }
                         
                         return result;
@@ -925,18 +926,18 @@ internal static async Task<string> CallAIAsync(string prompt)
 
 internal static string ParseResponse(string responseText)
         {
-            Log.Message($"[AI Summarizer] 🔍 ParseResponse called, IndependentAISummarizer.provider={IndependentAISummarizer.provider}");
+            ModuleLog.Message($"[AI Summarizer] 🔍 ParseResponse called, IndependentAISummarizer.provider={IndependentAISummarizer.provider}");
             
             try
             {
-                Log.Message($"[AI Summarizer] Full API Response (Length: {responseText.Length}):\n{responseText}");
+                ModuleLog.Message($"[AI Summarizer] Full API Response (Length: {responseText.Length}):\n{responseText}");
 
                 // Hard constraint — changing this breaks an invariant.
                 var regex = IndependentAISummarizer.provider == "Google" ? IndependentAISummarizer.GoogleResponseRegex : IndependentAISummarizer.OpenAIResponseRegex;
 
                 var matches = regex.Matches(responseText);
                 
-                Log.Message($"[AI Summarizer] Regex matched {matches.Count} fragments");
+                ModuleLog.Message($"[AI Summarizer] Regex matched {matches.Count} fragments");
 
                 if (matches.Count > 0)
                 {
@@ -947,7 +948,7 @@ internal static string ParseResponse(string responseText)
                         sb.Append(fragment);
                     }
                     string result = Regex.Unescape(sb.ToString());
-                    Log.Message($"[AI Summarizer] Final parsed result: {result}");
+                    ModuleLog.Message($"[AI Summarizer] Final parsed result: {result}");
                     return result;
                 }
                 else

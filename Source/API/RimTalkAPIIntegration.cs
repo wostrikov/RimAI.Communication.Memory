@@ -5,6 +5,7 @@ using System;
 using RimAI.Core.Runtime;
 using Ustas.RimAI.Core.Handshake;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
@@ -61,7 +62,7 @@ namespace Ustas.RimAI.Communication.Memory.API
                 _apiAvailable = true;
                 RegisterVariables();
                 RegisterPromptEntry();
-                Log.Message("[MemoryPatch] ✓ Integrated via typed Communication prompt API");
+                ModuleLog.Message("[MemoryPatch] ✓ Integrated via typed Communication prompt API");
             }
             catch (Exception ex)
             {
@@ -118,11 +119,11 @@ namespace Ustas.RimAI.Communication.Memory.API
                     if (NormalizePrompt(existingEntry.Content) == NormalizePrompt(LEGACY_ENGLISH_MEMORY_CONTENT))
                     {
                         existingEntry.Content = GetMemoryEntryContent();
-                        Log.Message($"[MemoryPatch] ✓ Migrated unchanged PromptEntry: {ENTRY_NAME}");
+                        ModuleLog.Message($"[MemoryPatch] ✓ Migrated unchanged PromptEntry: {ENTRY_NAME}");
                     }
                     else if (NormalizePrompt(existingEntry.Content) != NormalizePrompt(GetMemoryEntryContent()))
                     {
-                        Log.Message($"[MemoryPatch] Preserved customized PromptEntry: {ENTRY_NAME}");
+                        ModuleLog.Message($"[MemoryPatch] Preserved customized PromptEntry: {ENTRY_NAME}");
                     }
 
                     DisableChatHistoryIfEnabled(preset);
@@ -138,7 +139,7 @@ namespace Ustas.RimAI.Communication.Memory.API
                         foreach (var keyword in SniffingKeywords)
                         {
                             if (!content.Contains(keyword)) continue;
-                            Log.Message($"[MemoryPatch] Detected custom memory variable '{keyword}' in active preset. Skipping auto-injection.");
+                            ModuleLog.Message($"[MemoryPatch] Detected custom memory variable '{keyword}' in active preset. Skipping auto-injection.");
                             return;
                         }
                     }
@@ -166,7 +167,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             var chatHistoryEntry = preset.GetEntry(chatHistoryId);
             if (chatHistoryEntry == null || !chatHistoryEntry.Enabled) return;
             chatHistoryEntry.Enabled = false;
-            Log.Message($"[MemoryPatch] ✓ Disabled '{CHAT_HISTORY_ENTRY_NAME}' to avoid conflict with Memory & Knowledge injection");
+            ModuleLog.Message($"[MemoryPatch] ✓ Disabled '{CHAT_HISTORY_ENTRY_NAME}' to avoid conflict with Memory & Knowledge injection");
         }
 
         private static PromptRole ToPromptRole(RimAiPromptRole role) =>
@@ -200,7 +201,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             {
                 RimTalkPromptAPI.RemovePromptEntry(PromptEntry.GenerateDeterministicId(MOD_ID, ENTRY_NAME));
                 RimTalkPromptAPI.UnregisterAllHooks(MOD_ID);
-                Log.Message("[MemoryPatch] Cleaned up Communication API registrations");
+                ModuleLog.Message("[MemoryPatch] Cleaned up Communication API registrations");
             }
             catch (Exception ex)
             {

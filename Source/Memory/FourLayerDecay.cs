@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -48,7 +49,7 @@ internal void CleanupLowActivityMemories()
             if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0 || removedCLPA > 0))
             {
                 var pawn = parent as Pawn;
-                Log.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} cleaned up " +
+                ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} cleaned up " +
                            $"{removedSCM} SCM + {removedELS} ELS + {removedCLPA} CLPA memories (activity < {ACTIVITY_THRESHOLD})");
             }
         }
@@ -72,7 +73,7 @@ internal void EnforceMemoryLimits()
                 int scmPinnedCount = situationalMemories.Count(m => m.IsPinned);
                 int elsPinnedCount = eventLogMemories.Count(m => m.IsPinned);
 
-                Log.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} enforced limits: " +
+                ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} enforced limits: " +
                            $"removed {removedSCM} SCM (non-pinned: {scmNonPinnedCount - removedSCM}, pinned: {scmPinnedCount}, max: {MaxSCM}) + " +
                            $"{removedELS} ELS (non-pinned: {elsNonPinnedCount - removedELS}, pinned: {elsPinnedCount}, max: {MaxELS})");
             }

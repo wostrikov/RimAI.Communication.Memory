@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -65,7 +66,7 @@ namespace Ustas.RimAI.Communication.Memory
             string playerName = playerPawn?.LabelShort;
             Instance._playerDialogue = $"{(string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName)}: {playerDialogue}";
 
-            Log.Message("[RoundMemory] Репліку гравця успішно захоплено");
+            ModuleLog.Message("[RoundMemory] Репліку гравця успішно захоплено");
         }
 
         public static void StreamingBuildRoundMemory<T>(
@@ -146,7 +147,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             LookRoundMemories();
 
-            Log.Message($"[RoundMemory] ExposeData for RoundMemory: count={_roundMemories.Count}; NextRoundMemoryId: {_nextRoundMemoryId}");
+            ModuleLog.Message($"[RoundMemory] ExposeData for RoundMemory: count={_roundMemories.Count}; NextRoundMemoryId: {_nextRoundMemoryId}");
         }
 
         private void LookRoundMemories()
@@ -224,7 +225,7 @@ namespace Ustas.RimAI.Communication.Memory
 
                     ABMs[i] = managerRef;
 
-                    if (Prefs.DevMode) Log.Message("[RoundMemory] Вказівник ABM виправлено");
+                    if (Prefs.DevMode) ModuleLog.Message("[RoundMemory] Вказівник ABM виправлено");
                 }
             }
         }

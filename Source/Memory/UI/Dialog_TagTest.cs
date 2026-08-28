@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
@@ -219,11 +220,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
             testResult = TestTagMatch(testMatchText, tempEntry);
             testExecuted = true;
             
-            Log.Message($"[Тест тегу] Тег: {testTag}");
-            Log.Message($"[Тест тегу] Діалог: {testContext}");
-            Log.Message($"[Тест тегу] Pawn: {(testPawn != null ? testPawn.LabelShort : "немає")}");
-            Log.Message($"[Тест тегу] Фактичний текст зіставлення: {testMatchText}");
-            Log.Message($"[Тест тегу] Результат: {(testResult ? "збіг" : "немає збігу")}");
+            ModuleLog.Message($"[Тест тегу] Тег: {testTag}");
+            ModuleLog.Message($"[Тест тегу] Діалог: {testContext}");
+            ModuleLog.Message($"[Тест тегу] Pawn: {(testPawn != null ? testPawn.LabelShort : "немає")}");
+            ModuleLog.Message($"[Тест тегу] Фактичний текст зіставлення: {testMatchText}");
+            ModuleLog.Message($"[Тест тегу] Результат: {(testResult ? "збіг" : "немає збігу")}");
         }
 
         private string BuildPawnInfoText(Pawn pawn)

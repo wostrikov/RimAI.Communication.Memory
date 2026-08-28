@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -110,7 +111,7 @@ namespace Ustas.RimAI.Communication.Memory
             logCounter++;
             if (Prefs.DevMode && logCounter % LOG_INTERVAL == 0)
             {
-                Log.Message($"[Adaptive Threshold] {type} - Current: {currentThreshold:F3}, " +
+                ModuleLog.Message($"[Adaptive Threshold] {type} - Current: {currentThreshold:F3}, " +
                            $"Recommended: {recommendedThreshold:F3}, Smoothed: {smoothedThreshold:F3} " +
                            $"(Mean: {stats.Mean:F3}, StdDev: {stats.StdDev:F3}, Samples: {scores.Count})");
             }
@@ -166,7 +167,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (Prefs.DevMode)
             {
-                Log.Message($"[Adaptive Threshold] Applied - Memory: {memoryThreshold:F3}, Knowledge: {knowledgeThreshold:F3}");
+                ModuleLog.Message($"[Adaptive Threshold] Applied - Memory: {memoryThreshold:F3}, Knowledge: {knowledgeThreshold:F3}");
             }
         }
 
@@ -205,7 +206,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (Prefs.DevMode)
             {
-                Log.Message("[Adaptive Threshold] History reset");
+                ModuleLog.Message("[Adaptive Threshold] History reset");
             }
         }
 

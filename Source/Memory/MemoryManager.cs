@@ -7,6 +7,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -176,7 +177,7 @@ namespace Ustas.RimAI.Communication.Memory
                     Log.Warning($"[RimAI.Memory] ⚠️ Old save detected! Initialized lastSummarizationDay to {currentDay} to prevent immediate summarization.");
                 }
                 
-                Log.Message($"[RimAI.Memory] MemoryManager loaded successfully.");
+                ModuleLog.Message($"[RimAI.Memory] MemoryManager loaded successfully.");
             }
         }
         
@@ -257,7 +258,7 @@ internal void UpdateEventKnowledgeTimePrefixes()
             
             if (Prefs.DevMode && updatedCount > 0 && UnityEngine.Random.value < 0.1f)
             {
-                Log.Message($"[RimAI.Memory] Updated {updatedCount} event knowledge time prefixes");
+                ModuleLog.Message($"[RimAI.Memory] Updated {updatedCount} event knowledge time prefixes");
             }
         }
 
@@ -274,7 +275,7 @@ internal void CheckDailySummarization()
             
             if (currentDay != lastSummarizationDay && currentHour == targetHour)
             {
-                Log.Message($"[RimAI.Memory] 🌙 Day {currentDay}, Hour {currentHour}: Triggering daily ELS summarization");
+                ModuleLog.Message($"[RimAI.Memory] 🌙 Day {currentDay}, Hour {currentHour}: Triggering daily ELS summarization");
                 
                 foreach (var map in Find.Maps)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -112,7 +113,7 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     if (Prefs.DevMode)
                     {
-                        Log.Message($"[Prompt Cache] ?? HIT: {pawn.LabelShort} (saved ~{EstimateComputeCost()}ms)");
+                        ModuleLog.Message($"[Prompt Cache] ?? HIT: {pawn.LabelShort} (saved ~{EstimateComputeCost()}ms)");
                     }
                     
                     return entry;
@@ -124,7 +125,7 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     if (Prefs.DevMode)
                     {
-                        Log.Message($"[Prompt Cache] ?? INVALIDATED: {pawn.LabelShort} (memory/knowledge changed)");
+                        ModuleLog.Message($"[Prompt Cache] ?? INVALIDATED: {pawn.LabelShort} (memory/knowledge changed)");
                     }
                 }
             }
@@ -154,7 +155,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[Prompt Cache] ?? CACHED: {pawn.LabelShort} (total: {cache.Count}/{MaxCacheSize})");
+                ModuleLog.Message($"[Prompt Cache] ?? CACHED: {pawn.LabelShort} (total: {cache.Count}/{MaxCacheSize})");
             }
         }
         
@@ -171,7 +172,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (keysToRemove.Count > 0 && Prefs.DevMode)
             {
-                Log.Message($"[Prompt Cache] ??? Invalidated {keysToRemove.Count} entries for {pawn.LabelShort}");
+                ModuleLog.Message($"[Prompt Cache] ??? Invalidated {keysToRemove.Count} entries for {pawn.LabelShort}");
             }
         }
         
@@ -183,7 +184,7 @@ namespace Ustas.RimAI.Communication.Memory
             totalMisses = 0;
             totalInvalidations = 0;
             
-            Log.Message($"[Prompt Cache] ??? Cleared {count} cached prompts");
+            ModuleLog.Message($"[Prompt Cache] ??? Cleared {count} cached prompts");
         }
         
         public void CleanExpired()
@@ -203,7 +204,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (expiredKeys.Count > 0 && Prefs.DevMode)
             {
-                Log.Message($"[Prompt Cache] ?? Cleaned {expiredKeys.Count} expired entries");
+                ModuleLog.Message($"[Prompt Cache] ?? Cleaned {expiredKeys.Count} expired entries");
             }
         }
         
@@ -267,7 +268,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[Prompt Cache] ??? EVICTED LRU entry");
+                    ModuleLog.Message($"[Prompt Cache] ??? EVICTED LRU entry");
                 }
             }
         }

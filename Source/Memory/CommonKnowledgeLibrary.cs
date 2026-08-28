@@ -6,6 +6,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Policy;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -78,7 +79,7 @@ namespace Ustas.RimAI.Communication.Memory
                     {
                         if (vectorIds != null && vectorDataSerialized != null && vectorHashes != null && vectorIds.Count > 0)
                         {
-                            Log.Message($"[RimAI.Memory] Restoring {vectorIds.Count} vectors from save...");
+                            ModuleLog.Message($"[RimAI.Memory] Restoring {vectorIds.Count} vectors from save...");
                             
                             var vectorData = new List<List<float>>();
                             foreach (var serialized in vectorDataSerialized)
@@ -106,10 +107,10 @@ namespace Ustas.RimAI.Communication.Memory
                         }
                         else
                         {
-                            Log.Message("[RimAI.Memory] No saved vectors found, will perform full sync.");
+                            ModuleLog.Message("[RimAI.Memory] No saved vectors found, will perform full sync.");
                         }
                         
-                        Log.Message("[RimAI.Memory] Syncing knowledge library to vector database...");
+                        ModuleLog.Message("[RimAI.Memory] Syncing knowledge library to vector database...");
                         VectorDB.VectorService.Instance.SyncKnowledgeLibrary(this);
                     }
                     catch (Exception ex)

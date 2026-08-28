@@ -7,6 +7,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -47,12 +48,12 @@ internal void SummarizeAllMemories()
 
             if (queuedCount > 0)
             {
-                Log.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for summarization (15s delay between each)");
+                ModuleLog.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for summarization (15s delay between each)");
                 nextSummarizationTick = Find.TickManager.TicksGame;
             }
             else
             {
-                Log.Message($"[RimAI.Memory] ✅ No colonists need summarization");
+                ModuleLog.Message($"[RimAI.Memory] ✅ No colonists need summarization");
             }
         }
 
@@ -98,7 +99,7 @@ internal void ProcessSummarizationQueue()
             {
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimAI.Memory] Summarized memories for {pawn.LabelShort} ({summarizationQueue.Count} remaining)");
+                    ModuleLog.Message($"[RimAI.Memory] Summarized memories for {pawn.LabelShort} ({summarizationQueue.Count} remaining)");
                 }
             }
 
@@ -111,7 +112,7 @@ internal void ProcessSummarizationQueue()
             {
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimAI.Memory] All colonists summarized!");
+                    ModuleLog.Message($"[RimAI.Memory] All colonists summarized!");
                 }
             }
         }
@@ -154,7 +155,7 @@ internal void ProcessManualSummarizationQueue()
             {
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimAI.Memory] Manual summarized for {pawn.LabelShort} ({scmCount} SCM -> ELS, {manualSummarizationQueue.Count} remaining)");
+                    ModuleLog.Message($"[RimAI.Memory] Manual summarized for {pawn.LabelShort} ({scmCount} SCM -> ELS, {manualSummarizationQueue.Count} remaining)");
                 }
                 
                 Messages.Message(
@@ -172,7 +173,7 @@ internal void ProcessManualSummarizationQueue()
             {
                 if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                 {
-                    Log.Message($"[RimAI.Memory] All manual summarizations complete!");
+                    ModuleLog.Message($"[RimAI.Memory] All manual summarizations complete!");
                 }
                 Messages.Message("Ручне підсумування завершено для всіх колоністів", MessageTypeDefOf.PositiveEvent, false);
             }
@@ -198,7 +199,7 @@ public void QueueManualSummarization(List<Pawn> pawns)
 
             if (queuedCount > 0)
             {
-                Log.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for manual summarization (1s delay between each)");
+                ModuleLog.Message($"[RimAI.Memory] 📋 Queued {queuedCount} colonists for manual summarization (1s delay between each)");
                 nextManualSummarizationTick = Find.TickManager.TicksGame;
             }
             else

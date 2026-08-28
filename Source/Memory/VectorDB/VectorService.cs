@@ -11,6 +11,7 @@ using Ustas.RimAI.Core.Diagnostics;
 using Verse;
 using RimWorld;
 using RimAI.Core.Runtime;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.VectorDB
 {
@@ -183,7 +184,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                     if (entriesToUpdate.Count == 0 && entriesToRemove.Count == 0)
                     {
-                        Log.Message("[RimAI.Memory] VectorService: No changes detected, skipping sync.");
+                        ModuleLog.Message("[RimAI.Memory] VectorService: No changes detected, skipping sync.");
                         _isSyncing = false;
                         return;
                     }
@@ -193,7 +194,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                         Messages.Message($"Оновлення векторної бази… ({entriesToUpdate.Count} нових/змінених, {entriesToRemove.Count} видалених)", MessageTypeDefOf.NeutralEvent, false);
                     });
 
-                    Log.Message($"[RimAI.Memory] VectorService: Syncing {entriesToUpdate.Count} updated entries, removing {entriesToRemove.Count} entries...");
+                    ModuleLog.Message($"[RimAI.Memory] VectorService: Syncing {entriesToUpdate.Count} updated entries, removing {entriesToRemove.Count} entries...");
 
                     lock (_loreVectors)
                     {
@@ -230,7 +231,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                         await Task.Delay(200).ConfigureAwait(false);
                     }
 
-                    Log.Message($"[RimAI.Memory] VectorService: Sync complete! {syncedCount}/{entriesToUpdate.Count} entries vectorized.");
+                    ModuleLog.Message($"[RimAI.Memory] VectorService: Sync complete! {syncedCount}/{entriesToUpdate.Count} entries vectorized.");
                     
                     LongEventHandler.ExecuteWhenFinished(() =>
                     {
@@ -278,7 +279,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                             _loreVectors[id] = vector;
                             _contentHashes[id] = currentHash;
                         }
-                        Log.Message($"[RimAI.Memory] VectorService: Updated vector for entry {id}");
+                        ModuleLog.Message($"[RimAI.Memory] VectorService: Updated vector for entry {id}");
                     }
                 }
                 catch (Exception ex)
@@ -298,7 +299,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     {
                         _loreVectors.Remove(id);
                         _contentHashes.Remove(id);
-                        Log.Message($"[RimAI.Memory] VectorService: Removed vector for entry {id}");
+                        ModuleLog.Message($"[RimAI.Memory] VectorService: Removed vector for entry {id}");
                     }
                 }
             }
@@ -325,7 +326,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     hashes.Add(_contentHashes.ContainsKey(id) ? _contentHashes[id] : "");
                 }
                 
-                Log.Message($"[RimAI.Memory] VectorService: Exported {ids.Count} vectors for save");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Exported {ids.Count} vectors for save");
             }
         }
 
@@ -355,7 +356,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     }
                 }
                 
-                Log.Message($"[RimAI.Memory] VectorService: Imported {_loreVectors.Count} vectors from save");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Imported {_loreVectors.Count} vectors from save");
             }
         }
 
@@ -410,10 +411,10 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                 string jsonBody = JsonConvert.SerializeObject(requestBody);
                 
-                Log.Message($"[RimAI.Memory] VectorService: Sending request to {apiUrl}");
-                Log.Message($"[RimAI.Memory] VectorService: Model: {model}");
-                Log.Message($"[RimAI.Memory] VectorService: Input count: {texts.Count}");
-                Log.Message($"[RimAI.Memory] VectorService: Request body: {jsonBody}");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Sending request to {apiUrl}");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Model: {model}");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Input count: {texts.Count}");
+                ModuleLog.Message($"[RimAI.Memory] VectorService: Request body: {jsonBody}");
 
                 var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
 
@@ -424,7 +425,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
 
                     var response = await _httpClient.SendAsync(request).ConfigureAwait(false);
                     
-                    Log.Message($"[RimAI.Memory] VectorService: Response status: {(int)response.StatusCode} {response.StatusCode}");
+                    ModuleLog.Message($"[RimAI.Memory] VectorService: Response status: {(int)response.StatusCode} {response.StatusCode}");
                     
                     if (!response.IsSuccessStatusCode)
                     {
@@ -435,7 +436,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                     }
 
                     string responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    Log.Message($"[RimAI.Memory] VectorService: Response received, length: {responseString.Length}");
+                    ModuleLog.Message($"[RimAI.Memory] VectorService: Response received, length: {responseString.Length}");
                     
                     JObject jsonResponse = JObject.Parse(responseString);
                     
@@ -456,7 +457,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                         }
                     }
 
-                    Log.Message($"[RimAI.Memory] VectorService: Successfully parsed {embeddings.Count} embeddings");
+                    ModuleLog.Message($"[RimAI.Memory] VectorService: Successfully parsed {embeddings.Count} embeddings");
                     return embeddings;
                 }
             }
@@ -495,7 +496,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
                 _httpClient?.Dispose();
                 _httpClient = null;
                 _isInitialized = false;
-                Log.Message("[RimAI.Memory] VectorService: Disposed.");
+                ModuleLog.Message("[RimAI.Memory] VectorService: Disposed.");
             }
             catch (Exception ex)
             {

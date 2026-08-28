@@ -7,6 +7,7 @@ using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Memory.API;
 using Ustas.RimAI.Communication.Memory.VectorDB;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Integration;
 
@@ -116,7 +117,7 @@ public static class VectorTalkEnricher
             }
 
             var similarities = string.Join(", ", finalResults.Select(r => $"{r.Entry.tag}:{r.Similarity:F3}"));
-            Log.Message($"[RimAI.Memory] Vector matched {finalResults.Count} knowledge entries. Similarities: {similarities}");
+            ModuleLog.Message($"[RimAI.Memory] Vector matched {finalResults.Count} knowledge entries. Similarities: {similarities}");
             return vectorSb.ToString();
         }
         catch (Exception ex)

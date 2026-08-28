@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using RimAI.Core.Runtime;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -247,7 +248,7 @@ namespace Ustas.RimAI.Communication.Memory
                     s == "knowledge" || s.StartsWith("knowledge.", StringComparison.OrdinalIgnoreCase));
                 if (removedCount > 0)
                 {
-                    Log.Message($"[MemoryPatch] Removed {removedCount} 'knowledge' entries from matching sources to prevent self-referencing.");
+                    ModuleLog.Message($"[MemoryPatch] Removed {removedCount} 'knowledge' entries from matching sources to prevent self-referencing.");
                 }
             }
         }

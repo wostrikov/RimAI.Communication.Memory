@@ -8,6 +8,7 @@ using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
 using Ustas.RimAI.Communication.Memory.Policy;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -31,7 +32,7 @@ internal void CheckArchiveInterval(int currentDay)
                 return;
             }
             
-            Log.Message($"[RimAI.Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {RimTalkMemoryPatchMod.Settings.archiveIntervalDays} days)");
+            ModuleLog.Message($"[RimAI.Memory] 📚 Day {currentDay}: Triggering CLPA archive (every {RimTalkMemoryPatchMod.Settings.archiveIntervalDays} days)");
             
             int totalArchivedPawns = 0;
             int totalArchivedEntries = 0;
@@ -139,7 +140,7 @@ internal void CheckArchiveInterval(int currentDay)
                         if (Prefs.DevMode)
                         {
                             int remainingELS = fourLayerComp.EventLogMemories.Count;
-                            Log.Message($"[RimAI.Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
+                            ModuleLog.Message($"[RimAI.Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
                                        $"removed {removedCount} ELS (top 25%), kept {remainingELS} ELS (including {remainingELS - nonPinnedELS.Count + removedCount} pinned/edited)");
                         }
                     }
@@ -161,7 +162,7 @@ internal void CheckArchiveInterval(int currentDay)
                         
                         if (Prefs.DevMode && toRemove.Count > 0)
                         {
-                            Log.Message($"[RimAI.Memory] Cleaned {toRemove.Count} old CLPA memories for {pawn.LabelShort}");
+                            ModuleLog.Message($"[RimAI.Memory] Cleaned {toRemove.Count} old CLPA memories for {pawn.LabelShort}");
                         }
                     }
                 }
@@ -171,7 +172,7 @@ internal void CheckArchiveInterval(int currentDay)
             
             if (totalArchivedPawns > 0)
             {
-                Log.Message($"[RimAI.Memory] ✅ Автоархівацію CLPA завершено: колоністів {totalArchivedPawns}, створено записів CLPA {totalArchivedEntries}, вилучено ELS {totalRemovedELS} (перші 25%)");
+                ModuleLog.Message($"[RimAI.Memory] ✅ Автоархівацію CLPA завершено: колоністів {totalArchivedPawns}, створено записів CLPA {totalArchivedEntries}, вилучено ELS {totalRemovedELS} (перші 25%)");
                 
                 Messages.Message(
                     $"Автоархівування CLPA завершено: колоністів — {totalArchivedPawns}, архівних спогадів — {totalArchivedEntries}, архівовано ELS — {totalRemovedELS}",
@@ -181,7 +182,7 @@ internal void CheckArchiveInterval(int currentDay)
             }
             else
             {
-                Log.Message($"[RimAI.Memory] ✅ CLPA auto-archive check complete: no memories to archive");
+                ModuleLog.Message($"[RimAI.Memory] ✅ CLPA auto-archive check complete: no memories to archive");
             }
         }
 

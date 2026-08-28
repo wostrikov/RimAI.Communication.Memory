@@ -5,6 +5,7 @@ using System.Text;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -42,9 +43,9 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (Prefs.DevMode)
             {
-                Log.Message($"[Memory Injection] Scene: {SceneAnalyzer.GetSceneDisplayName(sceneType)}");
-                Log.Message($"[Memory Injection] Confidence: {analysis.Confidence:P0}");
-                Log.Message($"[Memory Injection] Weights: {sceneWeights}");
+                ModuleLog.Message($"[Memory Injection] Scene: {SceneAnalyzer.GetSceneDisplayName(sceneType)}");
+                ModuleLog.Message($"[Memory Injection] Confidence: {analysis.Confidence:P0}");
+                ModuleLog.Message($"[Memory Injection] Weights: {sceneWeights}");
             }
 
             List<string> contextKeywords = ExtractKeywords(context);
@@ -83,7 +84,7 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[Memory Injection] No memories met threshold ({threshold:F2}), returning null");
+                    ModuleLog.Message($"[Memory Injection] No memories met threshold ({threshold:F2}), returning null");
                 }
                 return null;
             }

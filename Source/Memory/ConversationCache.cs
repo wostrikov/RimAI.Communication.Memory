@@ -4,6 +4,7 @@ using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Policy;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -98,7 +99,7 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
                     {
-                        Log.Message($"[Cache] 🎯 HIT: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (uses: {entry.useCount})");
+                        ModuleLog.Message($"[Cache] 🎯 HIT: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (uses: {entry.useCount})");
                     }
                     
                     return entry.dialogue;
@@ -110,7 +111,7 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     if (Prefs.DevMode)
                     {
-                        Log.Message($"[Cache] ⏰ EXPIRED: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}...");
+                        ModuleLog.Message($"[Cache] ⏰ EXPIRED: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}...");
                     }
                 }
             }
@@ -156,7 +157,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
             {
-                Log.Message($"[Cache] 💾 ADD: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (total: {cacheMap.Count})");
+                ModuleLog.Message($"[Cache] 💾 ADD: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (total: {cacheMap.Count})");
             }
         }
         
@@ -172,7 +173,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[Cache] 🗑️ EVICT: {lruEntry.cacheKey.Substring(0, Math.Min(30, lruEntry.cacheKey.Length))}... (uses: {lruEntry.useCount})");
+                ModuleLog.Message($"[Cache] 🗑️ EVICT: {lruEntry.cacheKey.Substring(0, Math.Min(30, lruEntry.cacheKey.Length))}... (uses: {lruEntry.useCount})");
             }
         }
         
@@ -201,7 +202,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (cleanedCount > 0 && Prefs.DevMode)
             {
-                Log.Message($"[Cache] 🧹 Cleaned {cleanedCount} expired entries");
+                ModuleLog.Message($"[Cache] 🧹 Cleaned {cleanedCount} expired entries");
             }
         }
         
@@ -213,7 +214,7 @@ namespace Ustas.RimAI.Communication.Memory
             totalHits = 0;
             totalMisses = 0;
             
-            Log.Message($"[Cache] 🗑️ Cleared {count} cached conversations");
+            ModuleLog.Message($"[Cache] 🗑️ Cleared {count} cached conversations");
         }
         
         public string GetStats()
@@ -254,7 +255,7 @@ namespace Ustas.RimAI.Communication.Memory
                             }
                         }
                         
-                        Log.Message($"[Cache] Loaded {cacheMap.Count} cached conversations");
+                        ModuleLog.Message($"[Cache] Loaded {cacheMap.Count} cached conversations");
                     }
                 }
             }

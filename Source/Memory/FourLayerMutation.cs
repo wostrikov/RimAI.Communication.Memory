@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -50,7 +51,7 @@ public void PinMemory(string memoryId, bool pinned)
 
 public void PinRoundMemory(RoundMemory roundMemory, string memoryId)
         {
-            Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinning RoundMemory");
+            ModuleLog.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinning RoundMemory");
 
             var newMemory = new MemoryEntry(
             content: string.Empty,
@@ -72,12 +73,12 @@ public void PinRoundMemory(RoundMemory roundMemory, string memoryId)
             };
             SituationalMemories?.Add(newMemory);
             DeleteMemory(memoryId);
-            Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinned RoundMemory as MemoryEntry");
+            ModuleLog.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Pinned RoundMemory as MemoryEntry");
 
             roundMemory.IsPinned = false;
 
             FourLayerMemoryComp.GetMemoryWindowInstance()?.InvalidateCache();
-            Log.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Refreshed Memory Window UI");
+            ModuleLog.Message("[RoundMemory] FourLayerMemoryComp.PinMemory: Refreshed Memory Window UI");
         }
 
 public void DeleteMemory(string memoryId)
@@ -122,7 +123,7 @@ public void ManualArchive()
             if (archivedCount > 0)
             {
                 eventLogMemories.Clear();
-                Log.Message($"[Memory] {parent.LabelShort} manual archive: {archivedCount} entries");
+                ModuleLog.Message($"[Memory] {parent.LabelShort} manual archive: {archivedCount} entries");
             }
         }
 
@@ -136,7 +137,7 @@ public void AddActiveMemory(string content, MemoryType type, float importance = 
                 {
                     Pawn pawn = parent as Pawn;
                     string pawnLabel = ((pawn != null) ? pawn.LabelShort : null) ?? "Unknown";
-                    Log.Message(string.Concat(
+                    ModuleLog.Message(string.Concat(
                     [
                         "[Memory] Skipped duplicate memory for ",
                         pawnLabel,

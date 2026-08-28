@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -114,7 +115,7 @@ namespace Ustas.RimAI.Communication.Memory
                         };
                     }
                     
-                    Log.Message($"[RimAI.Memory] Loaded extended properties for {keys.Count} knowledge entries");
+                    ModuleLog.Message($"[RimAI.Memory] Loaded extended properties for {keys.Count} knowledge entries");
                 }
             }
         }

@@ -5,6 +5,7 @@ using HarmonyLib;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Patches
 {
@@ -95,7 +96,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
                 
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[EventRecord] ?? Raid started: {eventText} (ID: {raidId})");
+                    ModuleLog.Message($"[EventRecord] ?? Raid started: {eventText} (ID: {raidId})");
                 }
             }
         }
@@ -209,7 +210,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[EventRecord] ? Updated raid outcome: {entry.content}");
+                ModuleLog.Message($"[EventRecord] ? Updated raid outcome: {entry.content}");
             }
         }
         
@@ -249,7 +250,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
                 
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[EventRecord] ? Created knowledge: {eventText} (importance: {importance:F2})");
+                    ModuleLog.Message($"[EventRecord] ? Created knowledge: {eventText} (importance: {importance:F2})");
                 }
             }
             

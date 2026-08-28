@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -61,7 +62,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (Prefs.DevMode)
             {
-                Log.Message($"[Proactive Recall] {pawn.LabelShort} recalled memory: {best.Memory.Content.Substring(0, Math.Min(50, best.Memory.Content.Length))} (Score: {best.Score:F2}, Chance: {triggerChance:P0})");
+                ModuleLog.Message($"[Proactive Recall] {pawn.LabelShort} recalled memory: {best.Memory.Content.Substring(0, Math.Min(50, best.Memory.Content.Length))} (Score: {best.Score:F2}, Chance: {triggerChance:P0})");
             }
 
             return recallPrompt;

@@ -3,6 +3,7 @@ using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Injection
 {
@@ -38,7 +39,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             {
                 if (Prefs.DevMode)
                 {
-                    Log.Message($"[ABMCollector] {pawn?.LabelShort}: No ActiveMemories found (comp={comp != null}, count={comp?.ActiveMemories?.Count ?? 0})");
+                    ModuleLog.Message($"[ABMCollector] {pawn?.LabelShort}: No ActiveMemories found (comp={comp != null}, count={comp?.ActiveMemories?.Count ?? 0})");
                 }
                 return result;
             }
@@ -55,7 +56,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[ABMCollector] {pawn.LabelShort}: Processing {sortedList.Count} memories, cache size={RoundMemoryCache?.Count ?? 0}");
+                ModuleLog.Message($"[ABMCollector] {pawn.LabelShort}: Processing {sortedList.Count} memories, cache size={RoundMemoryCache?.Count ?? 0}");
             }
             
             foreach (var entry in sortedList)
@@ -73,7 +74,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
                     {
                         if (Prefs.DevMode)
                         {
-                            Log.Message("[ABMCollector] Skipped duplicate RoundMemory");
+                            ModuleLog.Message("[ABMCollector] Skipped duplicate RoundMemory");
                         }
                         continue;
                     }
@@ -94,7 +95,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
         public static void ResetDuplicateCache()
         {
             RoundMemoryCache.Clear();
-            if (Prefs.DevMode) Log.Message("[RoundMemory] Кеш перевірки дублікатів скинуто");
+            if (Prefs.DevMode) ModuleLog.Message("[RoundMemory] Кеш перевірки дублікатів скинуто");
         }
 
         public static int GetCollectedCount(List<MemoryEntry> collected)

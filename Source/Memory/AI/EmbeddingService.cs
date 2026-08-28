@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Ustas.RimAI.Communication.Memory.Policy;
 using Verse;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -26,7 +27,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             try
             {
-                Log.Message("[Embedding] local deterministic embeddings available; remote embedding API is not required");
+                ModuleLog.Message("[Embedding] local deterministic embeddings available; remote embedding API is not required");
                 isInitialized = true;
                 return;
             }
@@ -62,7 +63,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 {
                     if (Prefs.DevMode && UnityEngine.Random.value < 0.01f)
                     {
-                        Log.Message($"[Embedding] Cache hit ({embeddingCache.Count}/{MAX_CACHE_SIZE})");
+                        ModuleLog.Message($"[Embedding] Cache hit ({embeddingCache.Count}/{MAX_CACHE_SIZE})");
                     }
                     return cachedVector;
                 }
@@ -70,7 +71,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
             {
-                Log.Message($"[Embedding] local embed: {text.Substring(0, Math.Min(30, text.Length))}...");
+                ModuleLog.Message($"[Embedding] local embed: {text.Substring(0, Math.Min(30, text.Length))}...");
             }
 
             float[] embedding = DeterministicEmbedding.Embed(text);
@@ -88,7 +89,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                         }
                         
                         if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
-                            Log.Message($"[Embedding] Cache cleanup: {toRemove.Count} removed, {embeddingCache.Count} remain");
+                            ModuleLog.Message($"[Embedding] Cache cleanup: {toRemove.Count} removed, {embeddingCache.Count} remain");
                     }
                     
                     embeddingCache[cacheKey] = embedding;
@@ -194,9 +195,9 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[Embedding] Calling {provider} API...");
-                Log.Message($"[Embedding] API URL: {apiUrl}");
-                Log.Message($"[Embedding] API Key: {apiKey.Substring(0, Math.Min(10, apiKey.Length))}... (length: {apiKey.Length})");
+                ModuleLog.Message($"[Embedding] Calling {provider} API...");
+                ModuleLog.Message($"[Embedding] API URL: {apiUrl}");
+                ModuleLog.Message($"[Embedding] API Key: {apiKey.Substring(0, Math.Min(10, apiKey.Length))}... (length: {apiKey.Length})");
             }
             
             var request = (HttpWebRequest)WebRequest.Create(apiUrl);
@@ -210,7 +211,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             
             if (Prefs.DevMode)
             {
-                Log.Message($"[Embedding] Request body: {jsonRequest.Substring(0, Math.Min(200, jsonRequest.Length))}...");
+                ModuleLog.Message($"[Embedding] Request body: {jsonRequest.Substring(0, Math.Min(200, jsonRequest.Length))}...");
             }
             
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonRequest);
@@ -230,8 +231,8 @@ namespace Ustas.RimAI.Communication.Memory.AI
                     
                     if (Prefs.DevMode)
                     {
-                        Log.Message($"[Embedding] Response status: {response.StatusCode}");
-                        Log.Message($"[Embedding] Response: {responseText.Substring(0, Math.Min(200, responseText.Length))}...");
+                        ModuleLog.Message($"[Embedding] Response status: {response.StatusCode}");
+                        ModuleLog.Message($"[Embedding] Response: {responseText.Substring(0, Math.Min(200, responseText.Length))}...");
                     }
                     
                     return ParseOpenAIEmbeddingResponse(responseText);
@@ -390,7 +391,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             {
                 int count = embeddingCache.Count;
                 embeddingCache.Clear();
-                Log.Message($"[Embedding] Cleared {count} cached embeddings");
+                ModuleLog.Message($"[Embedding] Cleared {count} cached embeddings");
             }
         }
         
