@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimWorld;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -113,7 +114,11 @@ namespace Ustas.RimAI.Communication.Memory
                         }
                     }
                 }
-                catch { }
+                // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - xenotype keyword omitted from extraction
+                catch (System.Exception ex)
+                {
+                    ModuleLog.Message("[RimAI.Memory] xenotype keyword omitted from extraction: " + ex.Message);
+                }
             }
         }
         

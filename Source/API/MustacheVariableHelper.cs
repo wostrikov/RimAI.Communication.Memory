@@ -5,6 +5,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.API;
 using Ustas.RimAI.Communication.Prompt;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
@@ -279,7 +280,11 @@ namespace Ustas.RimAI.Communication.Memory.API
                     result.Add((name, item.Description));
                 }
             }
-            catch { }
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - a variable source was skipped from the suggestion list
+            catch (System.Exception ex)
+            {
+                ModuleLog.Message("[RimAI.Memory] a variable source was skipped from the suggestion list: " + ex.Message);
+            }
 
             return result;
         }
@@ -295,7 +300,11 @@ namespace Ustas.RimAI.Communication.Memory.API
                         result.Add((item.Name, item.Description));
                 }
             }
-            catch { }
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - a variable source was skipped from the suggestion list
+            catch (System.Exception ex)
+            {
+                ModuleLog.Message("[RimAI.Memory] a variable source was skipped from the suggestion list: " + ex.Message);
+            }
 
             return result;
         }

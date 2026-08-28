@@ -10,6 +10,7 @@ using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.API;
 using Ustas.RimAI.Communication.Prompt;
+using Ustas.RimAI.Communication.Memory.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Debug
 {
@@ -215,8 +216,10 @@ internal void RefreshParsedMatchText()
                         }
                     }
                 }
-                catch
+                // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - a preview section was left out
+                catch (System.Exception ex)
                 {
+                    ModuleLog.Message("[RimAI.Memory] a preview section was left out: " + ex.Message);
                 }
             }
             
@@ -281,8 +284,10 @@ internal void RefreshMatchedKnowledge()
                     matchedKnowledge = scores;
                 }
             }
-            catch
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - a preview section was left out
+            catch (System.Exception ex)
             {
+                ModuleLog.Message("[RimAI.Memory] a preview section was left out: " + ex.Message);
             }
         }
 

@@ -612,7 +612,11 @@ namespace Ustas.RimAI.Communication.Memory
                             }
                         }
                     }
-                    catch { }
+                    // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - xenotype name omitted from the knowledge line
+                    catch (System.Exception ex)
+                    {
+                        ModuleLog.Message("[RimAI.Memory] xenotype name omitted from the knowledge line: " + ex.Message);
+                    }
                 }
 
                 if (pawn.IsColonist)

@@ -86,8 +86,10 @@ public static class VectorTalkEnricher
                         keywordMatchedIds.Add(score.Entry.id);
                 }
             }
-            catch
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - keyword scoring was skipped for this enrichment
+            catch (System.Exception ex)
             {
+                ModuleLog.Message("[RimAI.Memory] keyword scoring was skipped for this enrichment: " + ex.Message);
             }
 
             var entriesSnapshot = memoryManager.CommonKnowledge.Entries.ToList();

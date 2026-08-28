@@ -284,7 +284,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
                             }
                         }
                     }
-                    catch { }
+                    // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY - xenotype name omitted from the tag test
+                    catch (System.Exception ex)
+                    {
+                        ModuleLog.Message("[RimAI.Memory] xenotype name omitted from the tag test: " + ex.Message);
+                    }
                 }
 
                 if (pawn.IsColonist)
