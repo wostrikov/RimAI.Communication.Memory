@@ -145,7 +145,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             newMemory.IsPinned = isPinned;
 
-            newMemory.AddTag("手动添加");
+            newMemory.AddTag("Додано вручну");
 
             switch (targetLayer)
             {

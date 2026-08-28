@@ -3,7 +3,7 @@
   <!-- Memory Management Main Tab -->
   <MainButtonDef>
     <defName>RimTalk_Memory</defName>
-    <!-- label 和 description 由 Languages/*/DefInjected/MainButtonDef/RimTalk_Memory.xml 提供 -->
+    <!-- label і description надає Languages/*/DefInjected/MainButtonDef/RimTalk_Memory.xml -->
     <tabWindowClass>Ustas.RimAI.Communication.Memory.UI.MainTabWindow_Memory</tabWindowClass>
     <order>35</order>
   </MainButtonDef>

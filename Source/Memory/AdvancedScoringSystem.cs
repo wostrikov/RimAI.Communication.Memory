@@ -118,19 +118,19 @@ namespace Ustas.RimAI.Communication.Memory
 
             context = context.ToLower();
 
-            if (ContainsAny(context, new[] { "袭击", "敌人", "危险", "受伤", "死", "快", "救" }))
+            if (ContainsAny(context, new[] { "напад", "ворог", "небезпека", "поранення", "смерть", "хутко", "рятуй" }))
                 return ConversationSceneType.Emergency;
 
-            if (ContainsAny(context, new[] { "过去", "以前", "曾经", "记得", "那时", "当时" }))
+            if (ContainsAny(context, new[] { "підійти", "раніше", "колись", "памʼятаю", "тоді", "у той час" }))
                 return ConversationSceneType.HistoryRecall;
 
-            if (ContainsAny(context, new[] { "感觉", "心情", "难过", "开心", "想", "喜欢", "讨厌" }))
+            if (ContainsAny(context, new[] { "відчуття", "настрій", "сумно", "радісно", "думка", "подобається", "неприємно" }))
                 return ConversationSceneType.EmotionalTalk;
 
-            if (ContainsAny(context, new[] { "工作", "任务", "建造", "种植", "研究", "搬运" }))
+            if (ContainsAny(context, new[] { "робота", "завдання", "будувати", "садити", "дослідження", "переносити" }))
                 return ConversationSceneType.WorkDiscussion;
 
-            if (ContainsAny(context, new[] { "你是", "叫什么", "来自", "背景", "擅长" }))
+            if (ContainsAny(context, new[] { "ти є", "як звати", "родом з", "минуле", "вправний у" }))
                 return ConversationSceneType.Introduction;
 
             return ConversationSceneType.Casual;
@@ -231,17 +231,17 @@ namespace Ustas.RimAI.Communication.Memory
         {
             var topics = new List<string>();
 
-            if (ContainsAny(context, new[] { "工作", "任务", "建造", "种植" }))
-                topics.Add("工作");
+            if (ContainsAny(context, new[] { "робота", "завдання", "будувати", "садити" }))
+                topics.Add("робота");
 
-            if (ContainsAny(context, new[] { "战斗", "袭击", "敌人", "武器" }))
-                topics.Add("战斗");
+            if (ContainsAny(context, new[] { "бій", "напад", "ворог", "зброя" }))
+                topics.Add("бій");
 
-            if (ContainsAny(context, new[] { "聊天", "朋友", "关系", "喜欢" }))
-                topics.Add("社交");
+            if (ContainsAny(context, new[] { "балачка", "друг", "стосунки", "подобається" }))
+                topics.Add("спілкування");
 
-            if (ContainsAny(context, new[] { "受伤", "治疗", "生病", "健康" }))
-                topics.Add("健康");
+            if (ContainsAny(context, new[] { "поранення", "лікувати", "хворий", "здоровий" }))
+                topics.Add("здоровий");
 
             return topics;
         }
@@ -251,10 +251,10 @@ namespace Ustas.RimAI.Communication.Memory
             var emotions = new HashSet<string>();
             var emotionKeywords = new[] 
             { 
-                "开心", "高兴", "快乐", "愉快",
-                "难过", "悲伤", "伤心", "痛苦",
-                "愤怒", "生气", "恼火", "讨厌",
-                "害怕", "恐惧", "担心", "焦虑"
+                "радісно", "втішений", "щасливий", "приємно",
+                "сумно", "смуток", "засмучений", "біль",
+                "лють", "злість", "роздратування", "неприємно",
+                "страх", "жах", "тривога", "неспокій"
             };
 
             foreach (var word in emotionKeywords)

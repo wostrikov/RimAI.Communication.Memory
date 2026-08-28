@@ -139,11 +139,11 @@ namespace Ustas.RimAI.Communication.Memory
                     Log.Message($"[PawnStatus] {pawn.LabelShort}: joinTick={joinTick}, currentTick={currentTick}, daysInColony={daysInColony}");
                 }
 
-                string statusTag = $"殖民者状态,{pawn.LabelShort}";
+                string statusTag = $"Стан колоніста,{pawn.LabelShort}";
                 
                 var existingEntry = library.Entries.FirstOrDefault(e => 
-                    (e.targetPawnId == pawn.thingIDNumber && e.tag.Contains("殖民者状态")) ||
-                    (e.tag.Contains(pawn.LabelShort) && e.tag.Contains("殖民者状态"))
+                    (e.targetPawnId == pawn.thingIDNumber && e.tag.Contains("Стан колоніста")) ||
+                    (e.tag.Contains(pawn.LabelShort) && e.tag.Contains("Стан колоніста"))
                 );
 
                 float defaultImportance = 0.5f;
@@ -278,7 +278,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             var autoKeywords = new[] 
             { 
-                "刚加入", "新成员", "资深成员", "已加入殖民地" 
+                "щойно приєднався", "новий член", "Досвідчений член", "вже в колонії" 
             };
             
             return autoKeywords.Any(k => content.Contains(k));
@@ -290,7 +290,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             var entry = library.Entries.FirstOrDefault(e => 
                 e.tag.Contains(pawn.LabelShort) && 
-                e.tag.Contains("殖民者状态")
+                e.tag.Contains("Стан колоніста")
             );
             
             if (entry != null)

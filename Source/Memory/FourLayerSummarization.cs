@@ -54,7 +54,7 @@ public void DailySummarization()
 
                 summaryEntry.keywords.AddRange(memories.SelectMany(m => m.keywords).Distinct());
                 summaryEntry.tags.AddRange(memories.SelectMany(m => m.tags).Distinct());
-                summaryEntry.AddTag("简单总结");
+                summaryEntry.AddTag("Стислий підсумок");
 
                 if (RimTalkMemoryPatchMod.Settings.useAISummarization && AI.IndependentAISummarizer.IsAvailable())
                 {
@@ -65,16 +65,16 @@ public void DailySummarization()
                         if (!string.IsNullOrEmpty(aiSummary))
                         {
                             summaryEntry.Content = aiSummary;
-                            summaryEntry.RemoveTag("简单总结");
-                            summaryEntry.AddTag("AI总结");
+                            summaryEntry.RemoveTag("Стислий підсумок");
+                            summaryEntry.AddTag("Підсумок ШІ");
                             summaryEntry.Notes = "Підсумок від ШІ завершено у фоні й оновлено автоматично.";
                         }
                     });
 
                     AI.IndependentAISummarizer.SummarizeMemories(pawn, memories, "daily_summary");
 
-                    summaryEntry.AddTag("待AI更新");
-                    summaryEntry.Notes = "AI 总结正在后台处理中...";
+                    summaryEntry.AddTag("чекає на оновлення ШІ");
+                    summaryEntry.Notes = "Підсумок від ШІ обробляється у фоні...";
                 }
 
                 InsertMemoryByTimestamp(eventLogMemories, summaryEntry);
@@ -136,7 +136,7 @@ public void ManualSummarization()
 
                 summaryEntry.keywords.AddRange(memories.SelectMany(m => m.keywords).Distinct());
                 summaryEntry.tags.AddRange(memories.SelectMany(m => m.tags).Distinct());
-                summaryEntry.AddTag("手动总结");
+                summaryEntry.AddTag("Ручний підсумок");
 
                 if (RimTalkMemoryPatchMod.Settings.useAISummarization && AI.IndependentAISummarizer.IsAvailable())
                 {
@@ -147,16 +147,16 @@ public void ManualSummarization()
                         if (!string.IsNullOrEmpty(aiSummary))
                         {
                             summaryEntry.Content = aiSummary;
-                            summaryEntry.RemoveTag("简单总结");
-                            summaryEntry.AddTag("AI总结");
+                            summaryEntry.RemoveTag("Стислий підсумок");
+                            summaryEntry.AddTag("Підсумок ШІ");
                             summaryEntry.Notes = "Підсумок від ШІ завершено у фоні й оновлено автоматично.";
                         }
                     });
 
                     AI.IndependentAISummarizer.SummarizeMemories(pawn, memories, "daily_summary");
 
-                    summaryEntry.AddTag("待AI更新");
-                    summaryEntry.Notes = "AI 总结正在后台处理中...";
+                    summaryEntry.AddTag("чекає на оновлення ШІ");
+                    summaryEntry.Notes = "Підсумок від ШІ обробляється у фоні...";
                 }
 
                 InsertMemoryByTimestamp(eventLogMemories, summaryEntry);
@@ -216,13 +216,13 @@ internal string CreateSimpleSummary(List<MemoryEntry> memories, MemoryType type)
                 foreach (var group in byPerson.Take(5))
                 {
                     if (shown > 0) summary.Append("；");
-                    summary.Append($"与{group.Key}对话×{group.Count()}");
+                    summary.Append($"розмов з {group.Key} ×{group.Count()}");
                     shown++;
                 }
 
                 if (shown == 0)
                 {
-                    summary.Append($"对话{memories.Count}次");
+                    summary.Append($"розмов: {memories.Count}");
                 }
             }
             else if (type == MemoryType.Action)
@@ -282,10 +282,10 @@ internal string CreateSimpleSummary(List<MemoryEntry> memories, MemoryType type)
 
             if (summary.Length > 0 && memories.Count > 3)
             {
-                summary.Append($"（共{memories.Count}条）");
+                summary.Append($"(усього {memories.Count})");
             }
 
-            return summary.Length > 0 ? summary.ToString() : $"{type}记忆{memories.Count}条";
+            return summary.Length > 0 ? summary.ToString() : $"{type}: спогадів {memories.Count}";
         }
 
 internal void TrimEventLog()

@@ -30,7 +30,7 @@ namespace Ustas.RimAI.Communication.Memory
                 Quadrum joinQuadrum = GenDate.Quadrum(joinTick, longitude);
                 int joinYear = GenDate.Year(joinTick, longitude);
                 
-                joinDate = $"{joinQuadrum.Label()} {joinDay}日, {joinYear}年";
+                joinDate = $"{joinQuadrum.Label()} {joinDay} дн., {joinYear} р.";
             }
             
             string raceInfo = GetCompleteRaceInfo(pawn);
@@ -83,7 +83,7 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 var match = System.Text.RegularExpressions.Regex.Match(
                     content, 
-                    @"\(([^)]+季\s*\d+日,\s*\d+年)\)"
+                    @"\(([^)]+сезон\s*\d+\s*дн,\s*\d+\s*р)\)"
                 );
                 
                 if (match.Success)
@@ -93,7 +93,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 match = System.Text.RegularExpressions.Regex.Match(
                     content,
-                    @"加入于([^，。）]+季\s*\d+日,\s*\d+年)"
+                    @"приєднався([^,.)]+сезон\s*\d+\s*дн,\s*\d+\s*р)"
                 );
                 
                 if (match.Success)
@@ -158,16 +158,16 @@ namespace Ustas.RimAI.Communication.Memory
                 {
                     if (xenotypeName.Equals(raceName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return $"{pawnName}的种族是{raceName}";
+                        return $"Раса {pawnName} — {raceName}";
                     }
                     else
                     {
-                        return $"{pawnName}的种族是{raceName}-{xenotypeName}";
+                        return $"Раса {pawnName} — {raceName}-{xenotypeName}";
                     }
                 }
                 else
                 {
-                    return $"{pawnName}的种族是{raceName}";
+                    return $"Раса {pawnName} — {raceName}";
                 }
             }
             catch (Exception ex)
@@ -177,7 +177,7 @@ namespace Ustas.RimAI.Communication.Memory
                     Log.Warning($"[PawnStatus] Failed to extract race info for {pawn.LabelShort}: {ex.Message}");
                 }
                 
-                return $"{pawn.LabelShort}的种族是{pawn.def?.label ?? "未知"}";
+                return $"Раса {pawn.LabelShort} — {pawn.def?.label ?? "未知"}";
             }
         }
         

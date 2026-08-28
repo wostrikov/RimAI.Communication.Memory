@@ -59,7 +59,7 @@ namespace Ustas.RimAI.Communication.Memory
                 return false;
             
             string lowerTag = entry.tag.ToLower();
-            return lowerTag.Contains("规则") || 
+            return lowerTag.Contains("правила") || 
                    lowerTag.Contains("instructions") || 
                    lowerTag.Contains("rule");
         }

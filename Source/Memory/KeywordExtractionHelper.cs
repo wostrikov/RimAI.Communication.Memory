@@ -71,21 +71,21 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 if (ageYears < 3f)
                 {
-                    AddAndRecord("婴儿", keywords, info.AgeKeywords);
-                    AddAndRecord("宝宝", keywords, info.AgeKeywords);
+                    AddAndRecord("немовля", keywords, info.AgeKeywords);
+                    AddAndRecord("малюк", keywords, info.AgeKeywords);
                 }
                 else if (ageYears < 13f)
                 {
-                    AddAndRecord("儿童", keywords, info.AgeKeywords);
-                    AddAndRecord("小孩", keywords, info.AgeKeywords);
+                    AddAndRecord("дитина", keywords, info.AgeKeywords);
+                    AddAndRecord("дитя", keywords, info.AgeKeywords);
                 }
                 else if (ageYears < 18f)
                 {
-                    AddAndRecord("青少年", keywords, info.AgeKeywords);
+                    AddAndRecord("підліток", keywords, info.AgeKeywords);
                 }
                 else
                 {
-                    AddAndRecord("成人", keywords, info.AgeKeywords);
+                    AddAndRecord("дорослий", keywords, info.AgeKeywords);
                 }
             }
         }
@@ -121,19 +121,19 @@ namespace Ustas.RimAI.Communication.Memory
         {
             if (pawn.IsColonist)
             {
-                AddAndRecord("殖民者", keywords, info.IdentityKeywords);
+                AddAndRecord("колоніст", keywords, info.IdentityKeywords);
             }
             else if (pawn.IsPrisoner)
             {
-                AddAndRecord("囚犯", keywords, info.IdentityKeywords);
+                AddAndRecord("бранець", keywords, info.IdentityKeywords);
             }
             else if (pawn.IsSlaveOfColony)
             {
-                AddAndRecord("奴隶", keywords, info.IdentityKeywords);
+                AddAndRecord("раб", keywords, info.IdentityKeywords);
             }
             else if (pawn.HostFaction == Faction.OfPlayer)
             {
-                AddAndRecord("访客", keywords, info.IdentityKeywords);
+                AddAndRecord("гість", keywords, info.IdentityKeywords);
             }
             else if (pawn.Faction != null && pawn.Faction != Faction.OfPlayer)
             {
@@ -175,11 +175,11 @@ namespace Ustas.RimAI.Communication.Memory
                         
                         if (level >= 15)
                         {
-                            AddAndRecord(skillRecord.def.label + "精通", keywords, info.SkillLevelKeywords);
+                            AddAndRecord(skillRecord.def.label + "майстер", keywords, info.SkillLevelKeywords);
                         }
                         else if (level >= 10)
                         {
-                            AddAndRecord(skillRecord.def.label + "熟练", keywords, info.SkillLevelKeywords);
+                            AddAndRecord(skillRecord.def.label + "вправний", keywords, info.SkillLevelKeywords);
                         }
                     }
                 }
@@ -192,11 +192,11 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 if (pawn.health.hediffSet.GetInjuredParts().Any())
                 {
-                    AddAndRecord("受伤", keywords, info.HealthKeywords);
+                    AddAndRecord("поранення", keywords, info.HealthKeywords);
                 }
                 else if (!pawn.health.HasHediffsNeedingTend())
                 {
-                    AddAndRecord("健康", keywords, info.HealthKeywords);
+                    AddAndRecord("здоровий", keywords, info.HealthKeywords);
                 }
             }
         }

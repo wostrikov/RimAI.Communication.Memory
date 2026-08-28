@@ -81,7 +81,7 @@ internal static class EventRecordPlayLogScan
                                 
                                 string originalText = EventRecordPlayLogExtractor.ExtractOriginalEventText(eventText);
                                 
-                                var entry = new CommonKnowledgeEntry("事件,历史", eventText)
+                                var entry = new CommonKnowledgeEntry("події,історія", eventText)
                                 {
                                     importance = importance,
                                     isEnabled = true,
@@ -141,12 +141,12 @@ internal static class EventRecordPlayLogScan
                     if (!string.IsNullOrEmpty(previewText))
                     {
                         bool isImportantEvent = 
-                            previewText.Contains("死亡") || previewText.Contains("died") || previewText.Contains("killed") || 
+                            previewText.Contains("смерть") || previewText.Contains("died") || previewText.Contains("killed") || 
                             previewText.Contains("dead") || previewText.Contains("death") ||
-                            previewText.Contains("葬礼") || previewText.Contains("葬") || previewText.Contains("埋葬") ||
-                            previewText.Contains("结婚") || previewText.Contains("婚礼") || previewText.Contains("married") ||
-                            previewText.Contains("生日") || previewText.Contains("birthday") ||
-                            previewText.Contains("突破") || previewText.Contains("breakthrough");
+                            previewText.Contains("похорон") || previewText.Contains("похорон") || previewText.Contains("поховати") ||
+                            previewText.Contains("одруження") || previewText.Contains("весілля") || previewText.Contains("married") ||
+                            previewText.Contains("день народження") || previewText.Contains("birthday") ||
+                            previewText.Contains("прорив") || previewText.Contains("breakthrough");
                         
                         if (!isImportantEvent)
                         {
@@ -197,15 +197,15 @@ internal static class EventRecordPlayLogScan
                 string timePrefix = "";
                 if (daysAgo < 1)
                 {
-                    timePrefix = "今天";
+                    timePrefix = "сьогодні";
                 }
                 else if (daysAgo < 3)
                 {
-                    timePrefix = $"{daysAgo}天前";
+                    timePrefix = $"{daysAgo} дн. тому";
                 }
                 else if (daysAgo < 7)
                 {
-                    timePrefix = $"约{daysAgo}天前";
+                    timePrefix = $"близько {daysAgo} дн. тому";
                 }
                 else
                 {

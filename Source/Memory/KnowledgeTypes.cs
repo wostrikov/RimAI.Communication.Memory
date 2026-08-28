@@ -108,8 +108,8 @@ namespace Ustas.RimAI.Communication.Memory
             if (string.IsNullOrEmpty(text))
                 return text;
             
-            string[] timePrefixes = { "今天", "1天前", "2天前", "3天前", "4天前", "5天前", "6天前", 
-                                     "约3天前", "约4天前", "约5天前", "约6天前", "约7天前" };
+            string[] timePrefixes = { "сьогодні", "1 дн. тому", "2 дн. тому", "3 дн. тому", "4 дн. тому", "5 дн. тому", "6 дн. тому", 
+                                     "близько 3 дн. тому", "близько 4 дн. тому", "близько 5 дн. тому", "близько 6 дн. тому", "близько 7 дн. тому" };
             
             foreach (var prefix in timePrefixes)
             {
@@ -136,23 +136,23 @@ namespace Ustas.RimAI.Communication.Memory
             string timePrefix = "";
             if (daysElapsed < 1)
             {
-                timePrefix = "今天";
+                timePrefix = "сьогодні";
             }
             else if (daysElapsed == 1)
             {
-                timePrefix = "1天前";
+                timePrefix = "1 дн. тому";
             }
             else if (daysElapsed == 2)
             {
-                timePrefix = "2天前";
+                timePrefix = "2 дн. тому";
             }
             else if (daysElapsed < 7)
             {
-                timePrefix = $"约{daysElapsed}天前";
+                timePrefix = $"близько {daysElapsed} дн. тому";
             }
             else
             {
-                timePrefix = "约7天前";
+                timePrefix = "близько 7 дн. тому";
             }
             
             content = timePrefix + originalEventText;
@@ -196,7 +196,7 @@ namespace Ustas.RimAI.Communication.Memory
                 return false;
             
             string lowerTag = tag.ToLower();
-            return lowerTag.Contains("规则") || 
+            return lowerTag.Contains("правила") || 
                    lowerTag.Contains("instructions") || 
                    lowerTag.Contains("rule");
         }

@@ -287,12 +287,12 @@ namespace Ustas.RimAI.Communication.Memory.API
         {
             switch (category)
             {
-                case KnowledgeCategory.Instructions: return "规则";
-                case KnowledgeCategory.Lore: return "世界观";
-                case KnowledgeCategory.PawnStatus: return "殖民者状态";
-                case KnowledgeCategory.History: return "历史";
-                case KnowledgeCategory.Other: return "其他";
-                default: return "未知";
+                case KnowledgeCategory.Instructions: return "правила";
+                case KnowledgeCategory.Lore: return "світобудова";
+                case KnowledgeCategory.PawnStatus: return "Стан колоніста";
+                case KnowledgeCategory.History: return "історія";
+                case KnowledgeCategory.Other: return "інше";
+                default: return "невідоме";
             }
         }
 

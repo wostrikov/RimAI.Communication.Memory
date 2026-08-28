@@ -223,13 +223,13 @@ internal List<CommonKnowledgeEntry> GetFilteredEntries()
 
 internal KnowledgeCategory GetEntryCategory(CommonKnowledgeEntry entry)
         {
-            if (entry.tag.Contains("规则") || entry.tag.Contains("Instructions"))
+            if (entry.tag.Contains("правила") || entry.tag.Contains("Instructions"))
                 return KnowledgeCategory.Instructions;
-            if (entry.tag.Contains("世界观") || entry.tag.Contains("Lore"))
+            if (entry.tag.Contains("світобудова") || entry.tag.Contains("Lore"))
                 return KnowledgeCategory.Lore;
-            if (entry.tag.Contains("殖民者状态") || entry.tag.Contains("PawnStatus"))
+            if (entry.tag.Contains("Стан колоніста") || entry.tag.Contains("PawnStatus"))
                 return KnowledgeCategory.PawnStatus;
-            if (entry.tag.Contains("历史") || entry.tag.Contains("History"))
+            if (entry.tag.Contains("історія") || entry.tag.Contains("History"))
                 return KnowledgeCategory.History;
             
             return KnowledgeCategory.Other;

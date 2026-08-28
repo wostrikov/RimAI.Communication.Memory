@@ -40,7 +40,7 @@ namespace Ustas.RimAI.Communication.Memory.Utils
             {
                 if (index < 0 || index >= _count)
                 {
-                    throw new IndexOutOfRangeException($"索引 {index} 超出边界 (Count: {_count})");
+                    throw new IndexOutOfRangeException($"Індекс {index} поза межами (Count: {_count})");
                 }
                 return _buffer[(_head + index) & _capacityMask];
             }

@@ -78,7 +78,7 @@ internal static class EventRecordPlayLogExtractor
             {
                 var billPattern = System.Text.RegularExpressions.Regex.Match(
                     text, 
-                    @"完成(target\.[A-Za-z0-9]+|.+?)清单[－\-](.+?)(?:[，。、\s]|$)",
+                    @"завершено (target\.[A-Za-z0-9]+|.+?) перелік[－\-](.+?)(?:[,.\s]|$)",
                     System.Text.RegularExpressions.RegexOptions.IgnoreCase
                 );
                 
@@ -97,11 +97,11 @@ internal static class EventRecordPlayLogExtractor
                     
                     if (!string.IsNullOrEmpty(person) && !string.IsNullOrEmpty(workbenchName))
                     {
-                        return $"{person}在{workbenchName}制造物品";
+                        return $"{person} виготовляє щось за {workbenchName}";
                     }
                     else if (!string.IsNullOrEmpty(workbenchName))
                     {
-                        return $"在{workbenchName}制造物品";
+                        return $"виготовляє щось за {workbenchName}";
                     }
                 }
                 
@@ -135,7 +135,7 @@ internal static class EventRecordPlayLogExtractor
                 }
             }
             
-            var targetMarkers = new[] { "击杀", "攻击", "种植", "建造", "制作", "完成", "治疗", "了" };
+            var targetMarkers = new[] { "вбивство", "атакувати", "садити", "будувати", "виготовити", "завершено", "лікувати", "вже" };
             
             foreach (var marker in targetMarkers)
             {
@@ -162,7 +162,7 @@ internal static class EventRecordPlayLogExtractor
         
         internal static string ExtractMainPerson(string text)
         {
-            var separators = new[] { "在", "的", "将", "被", "向", "与", "和", "对", " " };
+            var separators = new[] { "в", "це", "буде", "був", "до", "із", "та", "щодо", " " };
             
             foreach (var sep in separators)
             {
@@ -202,8 +202,8 @@ internal static class EventRecordPlayLogExtractor
                 return matchedKeywords.First();
             }
             
-            var commonActions = new[] { "种植", "建造", "完成", "击杀", "攻击", "防御", "制作", "烹饪", 
-                                         "研究", "治疗", "加入", "离开", "死亡", "受伤" };
+            var commonActions = new[] { "садити", "будувати", "завершено", "вбивство", "атакувати", "оборона", "виготовити", "куховарство", 
+                                         "дослідження", "лікувати", "приєднання", "відхід", "смерть", "поранення" };
             
             foreach (var action in commonActions)
             {
@@ -219,8 +219,8 @@ internal static class EventRecordPlayLogExtractor
             if (string.IsNullOrEmpty(eventText))
                 return eventText;
             
-            string[] timePrefixes = { "今天", "1天前", "2天前", "3天前", "4天前", "5天前", "6天前",
-                                     "约3天前", "约4天前", "约5天前", "约6天前", "约7天前" };
+            string[] timePrefixes = { "сьогодні", "1 дн. тому", "2 дн. тому", "3 дн. тому", "4 дн. тому", "5 дн. тому", "6 дн. тому",
+                                     "близько 3 дн. тому", "близько 4 дн. тому", "близько 5 дн. тому", "близько 6 дн. тому", "близько 7 дн. тому" };
             
             foreach (var prefix in timePrefixes)
             {
@@ -274,10 +274,10 @@ internal static class EventRecordPlayLogExtractor
                 return false;
             
             string[] conversationMarkers = { 
-                "说:", "said:", "说：", "说道:", "说道：",
-                "问:", "asked:", "问：", "问道:", "问道：",
-                "回答:", "replied:", "回答：", "答道:", "答道：",
-                "叫道:", "shouted:", "叫道：", "喊道:", "喊道："
+                "каже:", "said:", "мовить:", "сказав:", "сказала:",
+                "питає:", "asked:", "запитує:", "запитав:", "запитала:",
+                "відповідь:", "replied:", "відповіді:", "відповів:", "відповіла:",
+                "гукнув:", "shouted:", "гукнула:", "крикнув:", "крикнула:"
             };
             
             return conversationMarkers.Any(marker => text.Contains(marker));
@@ -290,7 +290,7 @@ internal static class EventRecordPlayLogExtractor
             
             var boringKeywords = new[] 
             { 
-                "走路", "吃饭", "睡觉", "娱乐", "闲逛", "休息",
+                "ходьба", "поїсти", "спати", "розваги", "тинятися", "відпочинок",
                 "walking", "eating", "sleeping", "recreation", "wandering"
             };
             

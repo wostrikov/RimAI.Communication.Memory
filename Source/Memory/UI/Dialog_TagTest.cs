@@ -247,19 +247,19 @@ namespace Ustas.RimAI.Communication.Memory.UI
                     
                     if (ageYears < 3f)
                     {
-                        sb.Append("婴儿 宝宝 ");
+                        sb.Append("немовля малюк ");
                     }
                     else if (ageYears < 13f)
                     {
-                        sb.Append("儿童 小孩 ");
+                        sb.Append("дитина дитя ");
                     }
                     else if (ageYears < 18f)
                     {
-                        sb.Append("青少年 ");
+                        sb.Append("підліток ");
                     }
                     else
                     {
-                        sb.Append("成人 ");
+                        sb.Append("дорослий ");
                     }
                 }
 
@@ -288,19 +288,19 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
                 if (pawn.IsColonist)
                 {
-                    sb.Append("殖民者 ");
+                    sb.Append("колоніст ");
                 }
                 else if (pawn.IsPrisoner)
                 {
-                    sb.Append("囚犯 ");
+                    sb.Append("бранець ");
                 }
                 else if (pawn.IsSlaveOfColony)
                 {
-                    sb.Append("奴隶 ");
+                    sb.Append("раб ");
                 }
                 else if (pawn.HostFaction == Faction.OfPlayer)
                 {
-                    sb.Append("访客 ");
+                    sb.Append("гість ");
                 }
                 else if (pawn.Faction != null && pawn.Faction != Faction.OfPlayer)
                 {
@@ -338,12 +338,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
                             if (level >= 15)
                             {
                                 sb.Append(skillRecord.def.label);
-                                sb.Append("精通 ");
+                                sb.Append("майстер ");
                             }
                             else if (level >= 10)
                             {
                                 sb.Append(skillRecord.def.label);
-                                sb.Append("熟练 ");
+                                sb.Append("вправний ");
                             }
                         }
                     }
@@ -353,11 +353,11 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 {
                     if (pawn.health.hediffSet.GetInjuredParts().Any())
                     {
-                        sb.Append("受伤 ");
+                        sb.Append("поранений ");
                     }
                     else if (!pawn.health.HasHediffsNeedingTend())
                     {
-                        sb.Append("健康 ");
+                        sb.Append("здоровий ");
                     }
                 }
 

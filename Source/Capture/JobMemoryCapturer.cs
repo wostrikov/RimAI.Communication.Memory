@@ -51,33 +51,33 @@ namespace Ustas.RimAI.Communication.Memory.Capture
 
                 desc = defName switch
                 {
-                    _ when defName.Contains("Haul") => "搬运",
-                    _ when defName.Contains("Harvest") => "收获",
-                    _ when defName.Contains("CutPlant") => "割除",
-                    _ when defName.Contains("Mine") => "采矿",
-                    _ when defName.Contains("Repair") => "修理",
-                    _ when defName.Contains("Milk") => "挤奶",
-                    _ when defName.Contains("Shear") => "剪毛",
+                    _ when defName.Contains("Haul") => "переносити",
+                    _ when defName.Contains("Harvest") => "збирати врожай",
+                    _ when defName.Contains("CutPlant") => "зрізати",
+                    _ when defName.Contains("Mine") => "видобуток",
+                    _ when defName.Contains("Repair") => "ремонт",
+                    _ when defName.Contains("Milk") => "доїти",
+                    _ when defName.Contains("Shear") => "стригти",
 
                     _ when defName.Contains("Deconstruct")
                     || defName.Contains("RemoveFloor")
                     || defName.Contains("RemoveRoof")
                     || defName.Contains("Uninstall")
-                    => "拆除",
+                    => "розібрати",
 
                     _ when defName.Contains("Frame")
                     || defName.Contains("BuildRoof")
                     || defName.Contains("Smooth")
-                    => "建造",
+                    => "будувати",
 
                     _ when defName.Contains("Sow")
                     || defName.Contains("Replant")
                     || defName.Contains("PlantSeed")
-                    => "种植",
+                    => "садити",
 
                     _ when defName.Contains("Clean")
                     || defName.Contains("Clear")
-                    => "清洁",
+                    => "прибирання",
 
                     _ => desc
                 };
@@ -274,7 +274,7 @@ namespace Ustas.RimAI.Communication.Memory.Capture
 
             if (string.IsNullOrEmpty(jobReport)) return string.Empty;
 
-            if (jobReport.StartsWith("正在"))
+            if (jobReport.StartsWith("зараз"))
             {
                 jobReport = jobReport.Substring(2);
             }
@@ -297,7 +297,7 @@ namespace Ustas.RimAI.Communication.Memory.Capture
 
             var targetThing = job.targetA.Thing;
 
-            if (targetThing == Parent) return "自己";
+            if (targetThing == Parent) return "сам";
 
             if (targetThing is Blueprint or Frame)
             {
@@ -307,20 +307,20 @@ namespace Ustas.RimAI.Communication.Memory.Capture
             return targetThing.LabelShort ?? targetThing.def?.label ?? string.Empty;
         }
 
-        private string BuildExactContent() => $"{GetDurationDesc()}{_repeatCount}次{_lastJobReport}";
+        private string BuildExactContent() => $"{GetDurationDesc()}разів: {_repeatCount}, {_lastJobReport}";
         private string BuildFuzzyContent() =>
-            $"{GetDurationDesc()}{_lastJobAggregateDesc}了{_repeatCount}次{string.Join("、", TargetNames.Take(3))}{(TargetNames.Count > 3 ? "等" : "")}。";
+            $"{GetDurationDesc()}{_lastJobAggregateDesc} разів: {_repeatCount}{string.Join("、", TargetNames.Take(3))}{(TargetNames.Count > 3 ? "等" : "")}。";
 
         private string GetDurationDesc()
         {
             return (Find.TickManager.TicksGame - _startGameTick) switch
             {
-                <= GenDate.TicksPerHour => "连续",
-                <= 2 * GenDate.TicksPerHour => "两小时内",
-                <= 4 * GenDate.TicksPerHour => "花费几小时",
-                <= 8 * GenDate.TicksPerHour => "花费小半天",
-                <= 12 * GenDate.TicksPerHour => "花费大半天",
-                _ => "花费一整天"
+                <= GenDate.TicksPerHour => "поспіль",
+                <= 2 * GenDate.TicksPerHour => "за дві години",
+                <= 4 * GenDate.TicksPerHour => "кілька годин",
+                <= 8 * GenDate.TicksPerHour => "пів дня або менше",
+                <= 12 * GenDate.TicksPerHour => "більшу частину дня",
+                _ => "цілий день"
             };
         }
 

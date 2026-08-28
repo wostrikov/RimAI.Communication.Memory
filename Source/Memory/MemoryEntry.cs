@@ -21,7 +21,7 @@ namespace Ustas.RimAI.Communication.Memory
             get
             {
                 if (string.IsNullOrEmpty(Content)) return Content;
-                const string legacyPrefix = "[对话参与者:";
+                const string legacyPrefix = "[Учасники розмови:";
                 return Content.StartsWith(legacyPrefix, StringComparison.Ordinal)
                     ? $"[{"RimTalk_Memory_Participants".Translate()}:" + Content.Substring(legacyPrefix.Length)
                     : Content;
@@ -110,13 +110,13 @@ namespace Ustas.RimAI.Communication.Memory
         {
             AddTag(Type switch
             {
-                MemoryType.Conversation => "对话",
-                MemoryType.Action => "行动",
-                MemoryType.Observation => "观察",
-                MemoryType.Event => "事件",
-                MemoryType.Emotion => "情绪",
-                MemoryType.Relationship => "关系",
-                MemoryType.Internal => "内部上下文",
+                MemoryType.Conversation => "розмова",
+                MemoryType.Action => "дія",
+                MemoryType.Observation => "спостереження",
+                MemoryType.Event => "подія",
+                MemoryType.Emotion => "емоції",
+                MemoryType.Relationship => "стосунки",
+                MemoryType.Internal => "Внутрішній контекст",
                 _ => null
             });
         }

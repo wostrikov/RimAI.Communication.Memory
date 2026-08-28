@@ -65,7 +65,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
         {
             int raidId = GenTicks.TicksGame;
             
-            string factionName = "未知敌人";
+            string factionName = "Невідомий ворог";
             if (parms.faction != null && !string.IsNullOrEmpty(parms.faction.Name))
             {
                 factionName = parms.faction.Name;
@@ -73,7 +73,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             
             string raidType = GetRaidType(incidentDef);
             
-            string eventText = $"今天{factionName}发动了{raidType}";
+            string eventText = $"Сьогодні {factionName} вчинила {raidType}";
             
             var entry = AddOrUpdateKnowledge(null, eventText, 0.9f);
             
@@ -105,15 +105,15 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             string defName = incidentDef.defName;
             
             if (defName.Contains("Siege"))
-                return "围城";
+                return "облога";
             else if (defName.Contains("Mech"))
-                return "机械族攻击";
+                return "напад механітів";
             else if (defName.Contains("Sapper"))
-                return "工兵袭击";
+                return "напад саперів";
             else if (defName.Contains("Breacher"))
-                return "破坏者袭击";
+                return "напад руйнівників";
             else
-                return "袭击";
+                return "напад";
         }
         
         private static bool raidCheckActive = false;
@@ -203,7 +203,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             }
             else
             {
-                entry.content = $"{raidInfo.initialText}，造成了严重损失";
+                entry.content = $"{raidInfo.initialText}, завдавши тяжких втрат";
                 entry.importance = 1.0f;
             }
             
@@ -238,7 +238,7 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             
             if (!exists)
             {
-                entry = new CommonKnowledgeEntry("事件,历史", eventText)
+                entry = new CommonKnowledgeEntry("події,історія", eventText)
                 {
                     importance = importance,
                     isEnabled = true,
@@ -263,49 +263,49 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             
             
             if (defName.Contains("Death") || defName.Contains("Dead") || 
-                label.Contains("死") || label.Contains("death"))
+                label.Contains("смерть") || label.Contains("death"))
                 return 1.0f;
             
             if (defName.Contains("Marriage") || defName.Contains("Wedding") || 
-                label.Contains("结婚") || label.Contains("婚"))
+                label.Contains("одруження") || label.Contains("шлюб"))
                 return 0.85f;
             
             if (defName.Contains("Funeral") || defName.Contains("Burial") || 
-                label.Contains("葬礼") || label.Contains("葬") || label.Contains("埋葬"))
+                label.Contains("похорон") || label.Contains("похорон") || label.Contains("поховати"))
                 return 0.9f;
             
-            if (defName.Contains("Birthday") || label.Contains("生日"))
+            if (defName.Contains("Birthday") || label.Contains("день народження"))
                 return 0.7f;
             
             if (defName.Contains("Breakthrough") || defName.Contains("Research") && defName.Contains("Complete") ||
-                label.Contains("突破") || label.Contains("完成研究"))
+                label.Contains("прорив") || label.Contains("завершити дослідження"))
                 return 0.8f;
             
-            if (defName.Contains("Anniversary") || label.Contains("周年"))
+            if (defName.Contains("Anniversary") || label.Contains("річниця"))
                 return 0.7f;
             
             if (defName.Contains("Join") || defName.Contains("Refugee") || 
                 defName.Contains("WandererJoin") || 
-                label.Contains("加入") || label.Contains("难民"))
+                label.Contains("приєднання") || label.Contains("біженці"))
                 return 0.8f;
             
-            if (defName.Contains("Infestation") || label.Contains("虫"))
+            if (defName.Contains("Infestation") || label.Contains("комаха"))
                 return 0.85f;
             
             if (defName.Contains("Fire") || defName.Contains("Explosion") || 
                 defName.Contains("Tornado") || defName.Contains("Eclipse") ||
-                label.Contains("火") || label.Contains("爆炸") || label.Contains("龙卷风"))
+                label.Contains("вогонь") || label.Contains("вибух") || label.Contains("торнадо"))
                 return 0.85f;
             
             if (defName.Contains("Caravan") || defName.Contains("Visitor") || 
                 defName.Contains("Trade") ||
-                label.Contains("贸易") || label.Contains("访客"))
+                label.Contains("торг") || label.Contains("гість"))
                 return 0.6f;
             
-            if (defName.Contains("Disease") || label.Contains("疾病") || label.Contains("瘟疫"))
+            if (defName.Contains("Disease") || label.Contains("хвороба") || label.Contains("чума"))
                 return 0.75f;
             
-            if (defName.Contains("Quest") || label.Contains("任务"))
+            if (defName.Contains("Quest") || label.Contains("завдання"))
                 return 0.65f;
             
             return 0.3f;
@@ -316,51 +316,51 @@ namespace Ustas.RimAI.Communication.Memory.Patches
             string label = incidentDef.label;
             string defName = incidentDef.defName;
             
-            string timePrefix = "今天";
+            string timePrefix = "сьогодні";
             
             if (defName.Contains("Marriage") || defName.Contains("Wedding"))
             {
-                return $"{timePrefix}举行了婚礼";
+                return $"{timePrefix}справили весілля";
             }
             else if (defName.Contains("Funeral") || defName.Contains("Burial"))
             {
-                return $"{timePrefix}举行了葬礼";
+                return $"{timePrefix}провели похорон";
             }
             else if (defName.Contains("Birthday"))
             {
-                return $"{timePrefix}庆祝了生日";
+                return $"{timePrefix}святкували день народження";
             }
             else if (defName.Contains("Breakthrough") || defName.Contains("Research") && defName.Contains("Complete"))
             {
-                return $"{timePrefix}取得了研究突破";
+                return $"{timePrefix}стався дослідницький прорив";
             }
             else if (defName.Contains("Anniversary"))
             {
-                return $"{timePrefix}庆祝了周年纪念";
+                return $"{timePrefix}святкували річницю";
             }
             else if (defName.Contains("WandererJoin") || defName.Contains("RefugeeJoin"))
             {
-                return $"{timePrefix}有新成员加入殖民地";
+                return $"{timePrefix}до колонії приєднався новий член";
             }
             else if (defName.Contains("Infestation"))
             {
-                return $"{timePrefix}发生了虫族入侵";
+                return $"{timePrefix}сталася навала комах";
             }
             else if (defName.Contains("Fire"))
             {
-                return $"{timePrefix}发生了火灾";
+                return $"{timePrefix}сталася пожежа";
             }
             else if (defName.Contains("Explosion"))
             {
-                return $"{timePrefix}发生了爆炸";
+                return $"{timePrefix}стався вибух";
             }
             else if (defName.Contains("Tornado"))
             {
-                return $"{timePrefix}遭遇了龙卷风";
+                return $"{timePrefix}налетів торнадо";
             }
             else if (defName.Contains("Eclipse"))
             {
-                return $"{timePrefix}发生了日食";
+                return $"{timePrefix}сталося затемнення";
             }
             else if (defName.Contains("TraderCaravan") || defName.Contains("VisitorGroup"))
             {

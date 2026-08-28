@@ -90,8 +90,8 @@ internal void CheckArchiveInterval(int currentDay)
                         
                         archiveEntry.keywords.AddRange(memories.SelectMany(m => m.keywords).Distinct());
                         archiveEntry.tags.AddRange(memories.SelectMany(m => m.tags).Distinct());
-                        archiveEntry.AddTag("自动归档");
-                        archiveEntry.AddTag($"源自{memories.Count}条ELS");
+                        archiveEntry.AddTag("Автоматичне архівування");
+                        archiveEntry.AddTag($"з {memories.Count} записів ELS");
                         
                         if (MemoryArchiveCyclePolicy.UseOptionalAiSummary(
                             RimTalkMemoryPatchMod.Settings.useAISummarization,
@@ -104,16 +104,16 @@ internal void CheckArchiveInterval(int currentDay)
                                 if (!string.IsNullOrEmpty(aiSummary))
                                 {
                                     archiveEntry.Content = aiSummary;
-                                    archiveEntry.RemoveTag("简单归档");
-                                    archiveEntry.AddTag("AI归档");
+                                    archiveEntry.RemoveTag("Просте архівування");
+                                    archiveEntry.AddTag("Архів ШІ");
                                     archiveEntry.Notes = "Глибоке архівування ШІ завершено.";
                                 }
                             });
                             
                             AI.IndependentAISummarizer.SummarizeMemories(pawn, memories, "deep_archive");
                             
-                            archiveEntry.AddTag("简单归档");
-                            archiveEntry.AddTag("待AI更新");
+                            archiveEntry.AddTag("Просте архівування");
+                            archiveEntry.AddTag("чекає на оновлення ШІ");
                             archiveEntry.Notes = "ШІ виконує глибоке архівування у фоновому режимі…";
                         }
                         
@@ -140,7 +140,7 @@ internal void CheckArchiveInterval(int currentDay)
                         {
                             int remainingELS = fourLayerComp.EventLogMemories.Count;
                             Log.Message($"[RimAI.Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
-                                       $"removed {removedCount} ELS (前25%), kept {remainingELS} ELS (including {remainingELS - nonPinnedELS.Count + removedCount} pinned/edited)");
+                                       $"removed {removedCount} ELS (top 25%), kept {remainingELS} ELS (including {remainingELS - nonPinnedELS.Count + removedCount} pinned/edited)");
                         }
                     }
                     
@@ -199,18 +199,18 @@ internal string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type
                     .GroupBy(m => m.relatedPawnName)
                     .OrderByDescending(g => g.Count());
                 
-                summary.Append($"对话归档（{memories.Count}条）：");
+                summary.Append($"Архів розмов ({memories.Count}):");
                 int shown = 0;
                 foreach (var group in byPerson.Take(10))
                 {
                     if (shown > 0) summary.Append("；");
-                    summary.Append($"与{group.Key}对话×{group.Count()}");
+                    summary.Append($"розмов з {group.Key} ×{group.Count()}");
                     shown++;
                 }
             }
             else if (type == MemoryType.Action)
             {
-                summary.Append($"行动归档（{memories.Count}条）：");
+                summary.Append($"Архів дій ({memories.Count}):");
                 
                 var grouped = memories
                     .Select(m => m.Content.Length > 20 ? m.Content.Substring(0, 20) : m.Content)
@@ -234,7 +234,7 @@ internal string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type
             }
             else
             {
-                summary.Append($"{type}归档（{memories.Count}条）：");
+                summary.Append($"Архів {type} ({memories.Count}):");
                 
                 var grouped = memories
                     .GroupBy(m => m.Content.Length > 30 ? m.Content.Substring(0, 30) : m.Content)

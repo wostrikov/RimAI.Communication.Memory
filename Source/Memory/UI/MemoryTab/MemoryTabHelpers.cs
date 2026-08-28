@@ -49,10 +49,10 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
                 aggregated.keywords.AddRange(items.SelectMany(m => m.keywords).Distinct());
                 aggregated.tags.AddRange(items.SelectMany(m => m.tags).Distinct());
-                aggregated.AddTag(targetLayer == MemoryLayer.Archive ? "手动归档" : "选中总结");
+                aggregated.AddTag(targetLayer == MemoryLayer.Archive ? "Ручне архівування" : "Підсумок вибраного");
                 if (targetLayer == MemoryLayer.Archive)
                 {
-                    aggregated.AddTag($"源自{items.Count}条ELS");
+                    aggregated.AddTag($"з {items.Count} записів ELS");
                 }
 
                 var settings = RimTalkMemoryPatchMod.Settings;
@@ -65,18 +65,18 @@ namespace Ustas.RimAI.Communication.Memory.UI
                         if (!string.IsNullOrEmpty(aiSummary))
                         {
                             aggregated.Content = aiSummary;
-                            aggregated.RemoveTag("简单总结");
-                            aggregated.RemoveTag("简单归档");
-                            aggregated.AddTag(targetLayer == MemoryLayer.Archive ? "AI归档" : "AI总结");
-                            aggregated.Notes = $"AI {(targetLayer == MemoryLayer.Archive ? "深度归档" : "总结")}已完成";
+                            aggregated.RemoveTag("Стислий підсумок");
+                            aggregated.RemoveTag("Просте архівування");
+                            aggregated.AddTag(targetLayer == MemoryLayer.Archive ? "Архів ШІ" : "Підсумок ШІ");
+                            aggregated.Notes = $"AI {(targetLayer == MemoryLayer.Archive ? "深度归档" : "підсумок")} завершено";
                         }
                     });
 
                     AI.IndependentAISummarizer.SummarizeMemories(Owner.selectedPawn, items, promptTemplate);
 
-                    aggregated.AddTag("简单" + (targetLayer == MemoryLayer.Archive ? "归档" : "总结"));
-                    aggregated.AddTag("待AI更新");
-                    aggregated.Notes = $"AI {(targetLayer == MemoryLayer.Archive ? "深度归档" : "总结")}正在后台处理中...";
+                    aggregated.AddTag("просте" + (targetLayer == MemoryLayer.Archive ? "архів" : "підсумок"));
+                    aggregated.AddTag("чекає на оновлення ШІ");
+                    aggregated.Notes = $"AI {(targetLayer == MemoryLayer.Archive ? "Глибоке архівування" : "Підсумок")} обробляється у фоні...";
                 }
 
                 InsertMemoryByTimestamp(targetList, aggregated);
@@ -128,12 +128,12 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 foreach (var group in byPerson.Take(5))
                 {
                     if (shown > 0) sb.Append("；");
-                    sb.Append($"与{group.Key}对话×{group.Count()}");
+                    sb.Append($"розмов з {group.Key} ×{group.Count()}");
                     shown++;
                 }
 
                 if (shown == 0)
-                    sb.Append($"对话{memories.Count}次");
+                    sb.Append($"розмов: {memories.Count}");
             }
             else if (type == MemoryType.Action)
             {
@@ -171,9 +171,9 @@ namespace Ustas.RimAI.Communication.Memory.UI
             }
 
             if (sb.Length > 0 && memories.Count > 3)
-                sb.Append($"（共{memories.Count}条）");
+                sb.Append($"(усього {memories.Count})");
 
-            return sb.Length > 0 ? sb.ToString() : $"{type}记忆{memories.Count}条";
+            return sb.Length > 0 ? sb.ToString() : $"{type}: спогадів {memories.Count}";
         }
 
         internal string CreateArchiveSummary(List<MemoryEntry> memories, MemoryType type)
@@ -182,7 +182,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 return "";
 
             var sb = new System.Text.StringBuilder();
-            sb.Append($"{(type == MemoryType.Conversation ? "对话" : type == MemoryType.Action ? "行动" : type.ToString())}归档（{memories.Count}条）：");
+            sb.Append($"{(type == MemoryType.Conversation ? "对话" : type == MemoryType.Action ? "行动" : type.ToString())} — архів ({memories.Count}):");
 
             if (type == MemoryType.Conversation)
             {
@@ -195,7 +195,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
                 foreach (var group in byPerson.Take(10))
                 {
                     if (shown > 0) sb.Append("；");
-                    sb.Append($"与{group.Key}对话×{group.Count()}");
+                    sb.Append($"розмов з {group.Key} ×{group.Count()}");
                     shown++;
                 }
             }

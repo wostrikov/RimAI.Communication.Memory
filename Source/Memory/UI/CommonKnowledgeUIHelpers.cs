@@ -69,27 +69,27 @@ namespace Ustas.RimAI.Communication.Memory.UI
             string tagLower = entry.tag.ToLower();
 
             
-            if (tagLower.Contains("规则") || tagLower.Contains("instructions") || 
+            if (tagLower.Contains("правила") || tagLower.Contains("instructions") || 
                 tagLower.Contains("instruction") || tagLower.Contains("rule"))
             {
                 return KnowledgeCategory.Instructions;
             }
 
-            if (tagLower.Contains("殖民者状态") || tagLower.Contains("pawnstatus") || 
-                tagLower.Contains("colonist") || tagLower.Contains("状态"))
+            if (tagLower.Contains("Стан колоніста") || tagLower.Contains("pawnstatus") || 
+                tagLower.Contains("colonist") || tagLower.Contains("стан"))
             {
                 return KnowledgeCategory.PawnStatus;
             }
 
-            if (tagLower.Contains("历史") || tagLower.Contains("history") || 
-                tagLower.Contains("past") || tagLower.Contains("记录"))
+            if (tagLower.Contains("історія") || tagLower.Contains("history") || 
+                tagLower.Contains("past") || tagLower.Contains("запис"))
             {
                 return KnowledgeCategory.History;
             }
 
-            if (tagLower.Contains("世界观") || tagLower.Contains("lore") || 
-                tagLower.Contains("background") || tagLower.Contains("背景") ||
-                tagLower.Contains("设定"))
+            if (tagLower.Contains("світобудова") || tagLower.Contains("lore") || 
+                tagLower.Contains("background") || tagLower.Contains("минуле") ||
+                tagLower.Contains("налаштування"))
             {
                 return KnowledgeCategory.Lore;
             }
@@ -127,13 +127,13 @@ namespace Ustas.RimAI.Communication.Memory.UI
         {
             switch (cat)
             {
-                case KnowledgeEntryCategory.None: return "自动推断";
-                case KnowledgeEntryCategory.Instructions: return "指令规则";
-                case KnowledgeEntryCategory.Lore: return "世界观设定";
-                case KnowledgeEntryCategory.PawnStatus: return "殖民者状态";
-                case KnowledgeEntryCategory.History: return "历史记录";
-                case KnowledgeEntryCategory.Other: return "其他";
-                default: return "未知";
+                case KnowledgeEntryCategory.None: return "Автовизначення";
+                case KnowledgeEntryCategory.Instructions: return "Правила директив";
+                case KnowledgeEntryCategory.Lore: return "Опис світу";
+                case KnowledgeEntryCategory.PawnStatus: return "Стан колоніста";
+                case KnowledgeEntryCategory.History: return "Історія записів";
+                case KnowledgeEntryCategory.Other: return "інше";
+                default: return "невідоме";
             }
         }
         

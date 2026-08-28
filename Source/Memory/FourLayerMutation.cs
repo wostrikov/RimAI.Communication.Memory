@@ -112,8 +112,8 @@ public void ManualArchive()
                         importance: memories.Average(m => m.Importance) + 0.3f
                     );
 
-                    archiveEntry.AddTag("手动归档");
-                    archiveEntry.AddTag($"源自{memories.Count}条ELS");
+                    archiveEntry.AddTag("Ручне архівування");
+                    archiveEntry.AddTag($"з {memories.Count} записів ELS");
                     archiveMemories.Insert(0, archiveEntry);
                     archivedCount++;
                 }

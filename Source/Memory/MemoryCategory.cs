@@ -26,36 +26,36 @@ namespace Ustas.RimAI.Communication.Memory
 
     public static class MemoryTags
     {
-        public const string 开心 = "开心";
-        public const string 悲伤 = "悲伤";
-        public const string 愤怒 = "愤怒";
-        public const string 焦虑 = "焦虑";
-        public const string 平静 = "平静";
+        public const string 开心 = "радісно";
+        public const string 悲伤 = "смуток";
+        public const string 愤怒 = "лють";
+        public const string 焦虑 = "неспокій";
+        public const string 平静 = "спокій";
 
-        public const string 战斗 = "战斗";
-        public const string 袭击 = "袭击";
-        public const string 受伤 = "受伤";
-        public const string 死亡 = "死亡";
-        public const string 完成任务 = "完成任务";
+        public const string 战斗 = "бій";
+        public const string 袭击 = "напад";
+        public const string 受伤 = "поранення";
+        public const string 死亡 = "смерть";
+        public const string 完成任务 = "Завершити завдання";
 
-        public const string 闲聊 = "闲聊";
-        public const string 深谈 = "深谈";
-        public const string 争吵 = "争吵";
-        public const string 表白 = "表白";
-        public const string 友好 = "友好";
-        public const string 敌对 = "敌对";
+        public const string 闲聊 = "балачка";
+        public const string 深谈 = "серйозна розмова";
+        public const string 争吵 = "суперечка";
+        public const string 表白 = "освідчитися";
+        public const string 友好 = "дружній";
+        public const string 敌对 = "ворожий";
 
-        public const string 烹饪 = "烹饪";
-        public const string 建造 = "建造";
-        public const string 种植 = "种植";
-        public const string 采矿 = "采矿";
-        public const string 研究 = "研究";
-        public const string 医疗 = "医疗";
+        public const string 烹饪 = "куховарство";
+        public const string 建造 = "будувати";
+        public const string 种植 = "садити";
+        public const string 采矿 = "видобуток";
+        public const string 研究 = "дослідження";
+        public const string 医疗 = "медицина";
 
-        public const string 重要 = "重要";
-        public const string 紧急 = "紧急";
-        public const string 深度归档 = "深度归档";
-        public const string 用户编辑 = "用户编辑";
+        public const string 重要 = "важливе";
+        public const string 紧急 = "термінове";
+        public const string 深度归档 = "Глибоке архівування";
+        public const string 用户编辑 = "Редаговано користувачем";
     }
 
 }

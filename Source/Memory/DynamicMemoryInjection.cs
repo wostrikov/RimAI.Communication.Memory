@@ -318,7 +318,7 @@ namespace Ustas.RimAI.Communication.Memory
             if (string.IsNullOrEmpty(context))
                 return false;
 
-            string[] archiveKeywords = { "过去", "以前", "曾经", "记得", "回忆", "历史", "当时", "那时候" };
+            string[] archiveKeywords = { "підійти", "раніше", "колись", "памʼятаю", "спогад", "історія", "у той час", "тоді" };
 
             foreach (var keyword in archiveKeywords)
             {

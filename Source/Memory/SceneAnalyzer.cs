@@ -23,65 +23,65 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 SceneType.Combat, new List<string>
                 {
-                    "袭击", "raid", "攻击", "attack", "战斗", "combat", "fight",
-                    "敌人", "enemy", "入侵", "invasion", "防御", "defense",
-                    "受伤", "injured", "伤势", "wound", "死亡", "death", "died", "killed",
-                    "流血", "bleeding", "倒下", "downed", "昏迷", "unconscious",
-                    "武器", "weapon", "枪", "gun", "射击", "shoot", "爆炸", "explosion",
-                    "掩体", "cover", "撤退", "retreat", "增援", "reinforcement"
+                    "напад", "raid", "атакувати", "attack", "бій", "combat", "fight",
+                    "ворог", "enemy", "вторгнення", "invasion", "оборона", "defense",
+                    "поранення", "injured", "поранення", "wound", "смерть", "death", "died", "killed",
+                    "кровотеча", "bleeding", "впав", "downed", "непритомність", "unconscious",
+                    "зброя", "weapon", "рушниця", "gun", "стріляти", "shoot", "вибух", "explosion",
+                    "укриття", "cover", "відступ", "retreat", "підкріплення", "reinforcement"
                 }
             },
             {
                 SceneType.Social, new List<string>
                 {
-                    "聊天", "chat", "talk", "对话", "conversation", "说", "said",
-                    "告诉", "told", "询问", "asked", "回答", "replied",
-                    "喜欢", "like", "爱", "love", "讨厌", "hate", "朋友", "friend",
-                    "恋人", "lover", "配偶", "spouse", "关系", "relationship",
-                    "友谊", "friendship", "争吵", "argument", "和解", "reconcile",
-                    "开心", "happy", "快乐", "joyful", "悲伤", "sad", "难过", "upset",
-                    "愤怒", "angry", "生气", "mad", "焦虑", "anxious", "心情", "mood",
-                    "感觉", "feel", "情绪", "emotion"
+                    "балачка", "chat", "talk", "розмова", "conversation", "мовив", "said",
+                    "розповісти", "told", "запитати", "asked", "відповісти", "replied",
+                    "подобається", "like", "любов", "love", "неприємно", "hate", "друг", "friend",
+                    "кохані", "lover", "подружжя", "spouse", "стосунки", "relationship",
+                    "дружба", "friendship", "суперечка", "argument", "примирення", "reconcile",
+                    "радісно", "happy", "щасливий", "joyful", "смуток", "sad", "сумно", "upset",
+                    "лють", "angry", "злість", "mad", "неспокій", "anxious", "настрій", "mood",
+                    "відчуття", "feel", "емоції", "emotion"
                 }
             },
             {
                 SceneType.Work, new List<string>
                 {
-                    "建造", "construct", "建筑", "building", "制作", "craft", "制造", "manufacture",
-                    "修理", "repair", "拆除", "deconstruct",
-                    "种植", "plant", "收获", "harvest", "农作物", "crop", "田地", "field",
-                    "采矿", "mining", "挖掘", "dig", "搬运", "haul", "运输", "transport",
-                    "仓库", "storage", "清洁", "clean",
-                    "烹饪", "cook", "cooking", "做饭", "meal", "食物", "food"
+                    "будувати", "construct", "будівля", "building", "виготовити", "craft", "виробництво", "manufacture",
+                    "ремонт", "repair", "розібрати", "deconstruct",
+                    "садити", "plant", "збирати врожай", "harvest", "посіви", "crop", "поле", "field",
+                    "видобуток", "mining", "копання", "dig", "переносити", "haul", "перевезення", "transport",
+                    "склад", "storage", "прибирання", "clean",
+                    "куховарство", "cook", "cooking", "готувати", "meal", "їжа", "food"
                 }
             },
             {
                 SceneType.Medical, new List<string>
                 {
-                    "治疗", "treat", "医疗", "medical", "手术", "surgery", "操作", "operation",
-                    "包扎", "bandage", "照顾", "tend", "护理", "care",
-                    "疾病", "disease", "illness", "感染", "infection", "发烧", "fever",
-                    "疼痛", "pain", "残疾", "disability", "健康", "health",
-                    "恢复", "recover", "痊愈", "heal", "康复", "rehabilitation"
+                    "лікувати", "treat", "медицина", "medical", "операція", "surgery", "керування", "operation",
+                    "перевʼязати", "bandage", "догляд", "tend", "опіка", "care",
+                    "хвороба", "disease", "illness", "інфекція", "infection", "гарячка", "fever",
+                    "біль", "pain", "каліцтво", "disability", "здоровий", "health",
+                    "відновлення", "recover", "одужання", "heal", "реабілітація", "rehabilitation"
                 }
             },
             {
                 SceneType.Research, new List<string>
                 {
-                    "研究", "research", "科技", "technology", "发明", "invention",
-                    "突破", "breakthrough", "发现", "discovery", "实验", "experiment",
-                    "学习", "learn", "训练", "train", "练习", "practice",
-                    "技能", "skill", "提升", "improve", "掌握", "master",
-                    "知识", "knowledge", "教导", "teach"
+                    "дослідження", "research", "технології", "technology", "винахід", "invention",
+                    "прорив", "breakthrough", "відкриття", "discovery", "експеримент", "experiment",
+                    "навчання", "learn", "тренувати", "train", "вправляння", "practice",
+                    "навички", "skill", "зростання", "improve", "опанувати", "master",
+                    "знання", "knowledge", "навчати", "teach"
                 }
             },
             {
                 SceneType.Event, new List<string>
                 {
-                    "婚礼", "wedding", "结婚", "marry", "订婚", "engaged",
-                    "生日", "birthday", "庆祝", "celebrate", "派对", "party",
-                    "葬礼", "funeral", "埋葬", "burial", "纪念", "memorial",
-                    "仪式", "ceremony", "节日", "festival", "活动", "event"
+                    "весілля", "wedding", "одруження", "marry", "заручини", "engaged",
+                    "день народження", "birthday", "святкування", "celebrate", "вечірка", "party",
+                    "похорон", "funeral", "поховати", "burial", "вшанування", "memorial",
+                    "ритуал", "ceremony", "свято", "festival", "захід", "event"
                 }
             }
         };

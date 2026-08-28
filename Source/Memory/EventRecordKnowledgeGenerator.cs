@@ -13,38 +13,38 @@ namespace Ustas.RimAI.Communication.Memory
         
         internal static readonly Dictionary<string, float> ImportantKeywords = new Dictionary<string, float>
         {
-            { "死亡", 1.0f }, { "倒下", 1.0f }, { "被杀", 1.0f }, { "击杀", 1.0f }, { "牺牲", 1.0f },
+            { "смерть", 1.0f }, { "впав", 1.0f }, { "убитий", 1.0f }, { "вбивство", 1.0f }, { "загинув", 1.0f },
             { "died", 1.0f }, { "killed", 1.0f }, { "death", 1.0f }, { "dead", 1.0f },
             
-            { "袭击", 0.9f }, { "进攻", 0.9f }, { "防御", 0.9f }, { "raid", 0.9f }, { "attack", 0.9f },
-            { "击退", 0.85f }, { "战胜", 0.85f }, { "defeated", 0.85f },
+            { "напад", 0.9f }, { "наступ", 0.9f }, { "оборона", 0.9f }, { "raid", 0.9f }, { "attack", 0.9f },
+            { "відбити", 0.85f }, { "перемогти", 0.85f }, { "defeated", 0.85f },
             
-            { "葬礼", 0.9f }, { "葬", 0.9f }, { "埋葬", 0.9f }, { "funeral", 0.9f }, { "burial", 0.9f },
-            { "举行葬礼", 0.9f }, { "安葬", 0.9f },
+            { "похорон", 0.9f }, { "похорон", 0.9f }, { "поховати", 0.9f }, { "funeral", 0.9f }, { "burial", 0.9f },
+            { "провести похорон", 0.9f }, { "поховання", 0.9f },
             
-            { "结婚", 0.85f }, { "订婚", 0.85f }, { "married", 0.85f }, { "engaged", 0.85f },
-            { "婚礼", 0.85f }, { "wedding", 0.85f }, { "举行婚礼", 0.85f },
-            { "分手", 0.75f }, { "离婚", 0.75f }, { "breakup", 0.75f },
+            { "одруження", 0.85f }, { "заручини", 0.85f }, { "married", 0.85f }, { "engaged", 0.85f },
+            { "весілля", 0.85f }, { "wedding", 0.85f }, { "справити весілля", 0.85f },
+            { "розрив", 0.75f }, { "розлучення", 0.75f }, { "breakup", 0.75f },
             
-            { "生日", 0.7f }, { "birthday", 0.7f }, { "庆祝", 0.6f }, { "celebration", 0.6f },
-            { "过生日", 0.7f }, { "庆祝生日", 0.7f },
+            { "день народження", 0.7f }, { "birthday", 0.7f }, { "святкування", 0.6f }, { "celebration", 0.6f },
+            { "святкувати день народження", 0.7f }, { "святкувати день народження", 0.7f },
             
-            { "突破", 0.8f }, { "breakthrough", 0.8f }, { "完成研究", 0.8f }, { "research complete", 0.8f },
-            { "研究完成", 0.8f }, { "发明", 0.8f }, { "invention", 0.8f },
+            { "прорив", 0.8f }, { "breakthrough", 0.8f }, { "завершити дослідження", 0.8f }, { "research complete", 0.8f },
+            { "дослідження завершено", 0.8f }, { "винахід", 0.8f }, { "invention", 0.8f },
             
-            { "周年", 0.7f }, { "anniversary", 0.7f }, { "周年纪念", 0.7f },
+            { "річниця", 0.7f }, { "anniversary", 0.7f }, { "річниця", 0.7f },
             
-            { "加入", 0.8f }, { "逃跑", 0.8f }, { "离开", 0.8f }, { "joined", 0.8f }, { "fled", 0.8f },
-            { "招募", 0.75f }, { "recruited", 0.75f }, { "新成员", 0.8f },
+            { "приєднання", 0.8f }, { "тікати", 0.8f }, { "відхід", 0.8f }, { "joined", 0.8f }, { "fled", 0.8f },
+            { "вербувати", 0.75f }, { "recruited", 0.75f }, { "новий член", 0.8f },
             
-            { "爆炸", 0.85f }, { "烟雾", 0.85f }, { "火灾", 0.85f }, { "explosion", 0.85f }, { "fire", 0.85f },
-            { "毒船", 0.85f }, { "龙卷风", 0.85f }, { "tornado", 0.85f },
-            { "疾病", 0.85f }, { "饥荒", 0.8f }, { "饿死", 0.8f }, { "starvation", 0.8f },
+            { "вибух", 0.85f }, { "дим", 0.85f }, { "пожежа", 0.85f }, { "explosion", 0.85f }, { "fire", 0.85f },
+            { "отруйний корабель", 0.85f }, { "торнадо", 0.85f }, { "tornado", 0.85f },
+            { "хвороба", 0.85f }, { "голод", 0.8f }, { "померти з голоду", 0.8f }, { "starvation", 0.8f },
             
-            { "日食", 0.75f }, { "eclipse", 0.75f },
-            { "虫族", 0.85f }, { "infestation", 0.85f },
-            { "贸易", 0.6f }, { "caravan", 0.6f }, { "visitor", 0.6f },
-            { "任务", 0.65f }, { "quest", 0.65f },
+            { "затемнення", 0.75f }, { "eclipse", 0.75f },
+            { "комахи", 0.85f }, { "infestation", 0.85f },
+            { "торг", 0.6f }, { "caravan", 0.6f }, { "visitor", 0.6f },
+            { "завдання", 0.65f }, { "quest", 0.65f },
         };
         
         public static void ScanRecentPlayLog()
@@ -118,7 +118,7 @@ namespace Ustas.RimAI.Communication.Memory
                 int updatedCount = 0;
                 
                 var eventEntries = library.Entries
-                    .Where(e => e.tag != null && (e.tag.Contains("事件") || e.tag.Contains("历史")))
+                    .Where(e => e.tag != null && (e.tag.Contains("подія") || e.tag.Contains("історія")))
                     .Where(e => e.creationTick >= 0)
                     .ToList();
                 
