@@ -14,6 +14,7 @@ using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.AI;
 using Ustas.RimAI.Core.Configuration;
 using Ustas.RimAI.Core.Player2;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -385,7 +386,7 @@ public static bool IsAvailable()
 
 public static void TryDetectPlayer2LocalApp()
         {
-            Task.Run(() =>
+            RimAiBackground.Run(() =>
             {
                 try
                 {
@@ -441,7 +442,7 @@ public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, st
 
             string prompt = BuildPrompt(pawn, memories, promptTemplate);
 
-            Task.Run(async () =>
+            RimAiBackground.Run(async () =>
             {
                 try
                 {
@@ -720,7 +721,7 @@ internal static async Task<string> CallAIAsync(string prompt)
 
             if (IndependentAISummarizer.provider == "OpenAI")
             {
-                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                var shared = await RimAiBackground.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
                 {
                     Messages = new[] { new TextAiMessage("user", prompt) },
                     Model = IndependentAISummarizer.model,
@@ -734,7 +735,7 @@ internal static async Task<string> CallAIAsync(string prompt)
 
             if (IndependentAISummarizer.provider != "Google")
             {
-                var shared = await Task.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
+                var shared = await RimAiBackground.Run(() => SharedTextAiOrchestrator.Complete(new TextAiRequest
                 {
                     Messages = new[] { new TextAiMessage("user", prompt) },
                     Model = IndependentAISummarizer.model,

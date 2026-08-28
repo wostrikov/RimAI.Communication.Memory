@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -553,7 +554,7 @@ internal void ValidateAIConfig()
             
             Messages.Message("RimTalk_Settings_Validating".Translate(), MessageTypeDefOf.NeutralEvent);
             
-            System.Threading.Tasks.Task.Run(() =>
+            RimAiBackground.Run(() =>
             {
                 try
                 {

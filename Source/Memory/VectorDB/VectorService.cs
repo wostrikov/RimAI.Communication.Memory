@@ -10,6 +10,7 @@ using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Core.Diagnostics;
 using Verse;
 using RimWorld;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Communication.Memory.VectorDB
 {
@@ -143,7 +144,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
         public void SyncKnowledgeLibrary(CommonKnowledgeLibrary library)
         {
             // Threading/concurrency constraint — do not race this state.
-            Task.Run(async () => 
+            RimAiBackground.Run(async () => 
             {
                 try
                 {
@@ -253,7 +254,7 @@ namespace Ustas.RimAI.Communication.Memory.VectorDB
         
         public void UpdateKnowledgeVector(string id, string content)
         {
-            Task.Run(async () =>
+            RimAiBackground.Run(async () =>
             {
                 try
                 {

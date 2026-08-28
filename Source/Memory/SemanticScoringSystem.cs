@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Verse;
+using RimAI.Core.Runtime;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -29,7 +30,7 @@ namespace Ustas.RimAI.Communication.Memory
                 return topCandidates;
             }
             
-            var semanticTask = Task.Run(async () => await ApplySemanticScoringAsync(topCandidates, context));
+            var semanticTask = RimAiBackground.Run(async () => await ApplySemanticScoringAsync(topCandidates, context));
             
             if (semanticTask.Wait(800))
             {
@@ -127,7 +128,7 @@ namespace Ustas.RimAI.Communication.Memory
                 return topCandidates;
             }
             
-            var semanticTask = Task.Run(async () => await ApplySemanticScoringToKnowledgeAsync(topCandidates, context));
+            var semanticTask = RimAiBackground.Run(async () => await ApplySemanticScoringToKnowledgeAsync(topCandidates, context));
             
             if (semanticTask.Wait(800))
             {
