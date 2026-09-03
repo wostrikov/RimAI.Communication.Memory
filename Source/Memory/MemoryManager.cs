@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -142,20 +142,35 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
+                // A save written before one of these existed comes back with it
+                // null, and creating it is the whole of the repair. That is an
+                // ordinary thing for a save to need, not a fault - so it is one
+                // message naming what was created rather than three warnings,
+                // each of which opened the debug window on its own.
+                //
+                // Still said out loud. If these start appearing on saves that
+                // are not old, something is failing to write them and the line
+                // is the only place that would show it.
+                List<string> created = null;
                 if (commonKnowledge == null)
                 {
                     commonKnowledge = new CommonKnowledgeLibrary();
-                    Log.Warning("[RimAI.Memory] commonKnowledge was null, initialized new instance");
+                    (created = created ?? new List<string>()).Add("commonKnowledge");
                 }
                 if (conversationCache == null)
                 {
                     conversationCache = new ConversationCache();
-                    Log.Warning("[RimAI.Memory] conversationCache was null, initialized new instance");
+                    (created = created ?? new List<string>()).Add("conversationCache");
                 }
                 if (promptCache == null)
                 {
                     promptCache = new PromptCache();
-                    Log.Warning("[RimAI.Memory] promptCache was null, initialized new instance");
+                    (created = created ?? new List<string>()).Add("promptCache");
+                }
+                if (created != null)
+                {
+                    ModuleLog.Message("[RimAI.Memory] This save had no " + string.Join(", ", created)
+                        + "; created fresh. Normal for a save made before that part existed.");
                 }
                 
                 if (summarizationQueue == null)
