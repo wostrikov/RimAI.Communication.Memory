@@ -92,6 +92,17 @@ namespace Ustas.RimAI.Communication.Memory
             Scribe_Values.Look(ref planetTile, "Tile", PlanetTile.Invalid);
             Scribe_Values.Look(ref IsHomeMap, "IsHomeMap", false);
 
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // A participant who has left the world entirely is not going to
+                // be written by anyone, so a reference to them resolves to
+                // nothing on the way back in. The game says so at save time and
+                // again at load time; both are catalogued (0067, 0074). The
+                // roster the player reads was built at construction and lives
+                // in Content, so dropping the pawn here costs nothing visible.
+                Pawns?.RemoveWhere(p => !WillBeSaved(p));
+            }
+
             Scribe_Collections.Look(ref Pawns, "Pawns", LookMode.Reference);
 
             if (Pawns is null)
@@ -103,6 +114,35 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 Pawns.RemoveWhere(p => p is null);
             }
+        }
+
+        /// <summary>
+        /// Whether the save is going to contain this pawn.
+        ///
+        /// A thing reaches the save through something that owns it: a map, a
+        /// holder, a corpse, or the world-pawn list. Every uncertain answer is
+        /// true - dropping a participant who would have survived loses a
+        /// memory's cast, while keeping one who will not costs a warning the
+        /// game prints anyway.
+        ///
+        /// Deliberately a copy rather than a shared helper. The same predicate
+        /// lives in the compatibility mod and in Vanilla Traits Expanded, in
+        /// each case owned by the assembly that needs it; none of the three may
+        /// depend on the others, and the alternative is a shared assembly for
+        /// nine lines.
+        /// </summary>
+        private static bool WillBeSaved(Pawn pawn)
+        {
+            if (pawn is null || pawn.Discarded) return false;
+            if (pawn.Spawned || pawn.holdingOwner != null || pawn.ParentHolder != null) return true;
+
+            var corpse = pawn.Corpse;
+            if (corpse != null && (corpse.Spawned || corpse.holdingOwner != null)) return true;
+
+            // No world to ask is not a moment to be guessing.
+            if (Find.World is null || Find.WorldPawns is null) return true;
+
+            return Find.WorldPawns.Contains(pawn);
         }
 
         public string GetUniqueLoadID()
