@@ -11,6 +11,7 @@ internal static class Program
         n += KnowledgeMatchPolicyTests.Run();
         n += MemoryHostWiringGuardTests.Run();
         n += MemoryRoundArchiveCapacityTests.Run();
+        n += MemorySimilarityPolicyTests.Run();
         Console.WriteLine("MEMORY_FOCUSED_TESTS_OK passed=" + n);
         Console.WriteLine("TESTS total=" + n + " failed=0");
         return 0;

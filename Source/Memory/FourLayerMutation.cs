@@ -129,9 +129,12 @@ public void ManualArchive()
 
 public void AddActiveMemory(string content, MemoryType type, float importance = 1f, string relatedPawn = null)
         {
-            bool flag = IsDuplicateMemory(content, relatedPawn, type);
-            if (flag)
+            MemoryEntry twin = FindNearDuplicate(content, relatedPawn, type);
+            if (twin != null)
             {
+                // The same memory again is merged into the one already held, which becomes
+                // current, rather than stored twice to crowd the prompt with repeats.
+                twin.GameTick = Find.TickManager?.TicksGame ?? twin.GameTick;
                 bool devMode = Prefs.DevMode;
                 if (devMode)
                 {
@@ -139,7 +142,7 @@ public void AddActiveMemory(string content, MemoryType type, float importance = 
                     string pawnLabel = ((pawn != null) ? pawn.LabelShort : null) ?? "Unknown";
                     ModuleLog.Message(string.Concat(
                     [
-                        "[Memory] Skipped duplicate memory for ",
+                        "[Memory] Merged a repeat into an existing memory for ",
                         pawnLabel,
                         ": ",
                         content.Substring(0, Math.Min(50, content.Length)),
@@ -174,25 +177,35 @@ public void AddActiveMemory(string content, MemoryType type, float importance = 
         }
 
 internal bool IsDuplicateMemory(string content, string relatedPawn, MemoryType type)
+            => FindNearDuplicate(content, relatedPawn, type) != null;
+
+        /// <summary>
+        /// The memory this one would repeat: same kind, same other pawn, and the same text or
+        /// near enough (MemorySimilarityPolicy) - among the active ones and the latest few
+        /// situational ones.
+        /// </summary>
+        internal MemoryEntry FindNearDuplicate(string content, string relatedPawn, MemoryType type)
         {
             if (string.IsNullOrEmpty(content))
-                return false;
+                return null;
 
             foreach (var memory in activeMemories)
             {
-                if (memory.Type == type && memory.Content == content && memory.relatedPawnName == relatedPawn)
-                    return true;
+                if (memory.Type == type && memory.relatedPawnName == relatedPawn &&
+                    Policy.MemorySimilarityPolicy.IsNearDuplicate(memory.Content, content))
+                    return memory;
             }
 
             int checkCount = Math.Min(5, situationalMemories.Count);
             for (int i = 0; i < checkCount; i++)
             {
                 var memory = situationalMemories[i];
-                if (memory.Type == type && memory.Content == content && memory.relatedPawnName == relatedPawn)
-                    return true;
+                if (memory.Type == type && memory.relatedPawnName == relatedPawn &&
+                    Policy.MemorySimilarityPolicy.IsNearDuplicate(memory.Content, content))
+                    return memory;
             }
 
-            return false;
+            return null;
         }
     }
 }

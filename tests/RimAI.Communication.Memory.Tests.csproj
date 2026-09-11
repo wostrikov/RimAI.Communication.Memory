@@ -14,6 +14,9 @@
     <Compile Include="..\Source\Memory\Policy\MemoryRoundConversationPolicy.cs" Link="Policy\MemoryRoundConversationPolicy.cs" />
     <Compile Include="..\Source\Memory\Policy\MemoryArchiveCyclePolicy.cs" Link="Policy\MemoryArchiveCyclePolicy.cs" />
     <Compile Include="..\Source\Memory\Policy\MemoryColonyCapacityPolicy.cs" Link="Policy\MemoryColonyCapacityPolicy.cs" />
+    <Compile Include="..\Source\Memory\Policy\MemorySimilarityPolicy.cs" Link="Policy\MemorySimilarityPolicy.cs" />
+    <None Include="..\Source\Memory\FourLayerMutation.cs" Link="FourLayerMutation.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\Injection\ABMCollector.cs" Link="ABMCollector.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\AI\EmbeddingService.cs" Link="EmbeddingService.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\SemanticScoringSystem.cs" Link="SemanticScoringSystem.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\FourLayerMemoryComp.cs" Link="FourLayerMemoryComp.cs.src" CopyToOutputDirectory="PreserveNewest" />

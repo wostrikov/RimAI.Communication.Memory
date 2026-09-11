@@ -81,7 +81,15 @@ namespace Ustas.RimAI.Communication.Memory.Injection
 
                     RoundMemoryCache?.Add(roundMemory);
                 }
-                
+
+                // The list runs newest first, so a copy of something already taken is an older
+                // repeat: it would spend the prompt saying the same thing twice.
+                if (result.Exists(taken => Policy.MemorySimilarityPolicy.IsNearDuplicate(taken.Content, entry.Content)))
+                {
+                    skippedDuplicate++;
+                    continue;
+                }
+
                 int contentLength = entry.Content?.Length ?? 0;
                 stackedLength += contentLength;
                 stackedCount++;
