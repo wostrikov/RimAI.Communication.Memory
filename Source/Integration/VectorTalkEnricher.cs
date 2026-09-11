@@ -45,8 +45,10 @@ public static class VectorTalkEnricher
             if (string.IsNullOrEmpty(vectorContent))
                 return;
 
-            if (!TryInjectContext(talkRequest, vectorContent, keywordKnowledge))
-                TryInjectPromptMessages(talkRequest, vectorContent, keywordKnowledge);
+            // Enrichment runs on the background thread after the prompt messages are built, so
+            // talkRequest.Context is no longer read by anything the model sees: write into the
+            // rendered messages, where the knowledge block (marker or keyword text) actually is.
+            TryInjectPromptMessages(talkRequest, vectorContent, keywordKnowledge);
 
             KnowledgeVariableProvider.ClearContext();
         }
@@ -127,27 +129,6 @@ public static class VectorTalkEnricher
             Log.Warning($"[RimAI.Memory] Vector search error: {ex.Message}");
             return null;
         }
-    }
-
-    static bool TryInjectContext(TalkRequest talkRequest, string vectorContent, string keywordKnowledge)
-    {
-        string context = talkRequest.Context;
-        if (string.IsNullOrEmpty(context))
-            return false;
-        if (context.Contains(NoMatchMarker))
-        {
-            talkRequest.Context = context.Replace(NoMatchMarker, NoMatchMarker + vectorContent);
-            return true;
-        }
-
-        if (!string.IsNullOrEmpty(keywordKnowledge) && context.Contains(keywordKnowledge))
-        {
-            int idx = context.IndexOf(keywordKnowledge, StringComparison.Ordinal) + keywordKnowledge.Length;
-            talkRequest.Context = context.Insert(idx, vectorContent);
-            return true;
-        }
-
-        return false;
     }
 
     static void TryInjectPromptMessages(TalkRequest talkRequest, string vectorContent, string keywordKnowledge)

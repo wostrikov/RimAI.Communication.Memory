@@ -119,13 +119,27 @@ namespace Ustas.RimAI.Communication.Memory
             return string.Empty;
         }
 
+        /// <summary>
+        /// enemyTarget is sticky: RimWorld does not reliably clear it when a fight ends and it
+        /// survives save/reload, so a bare null check puts anyone who ever fought in the combat
+        /// scene for good. It only counts while the target is still a live threat nearby.
+        /// </summary>
+        private static bool HasLiveEnemyTarget(Pawn pawn)
+        {
+            Thing target = pawn.mindState?.enemyTarget;
+            if (target == null || target.Destroyed || !target.Spawned) return false;
+            if (target.Map != pawn.Map) return false;
+            if (target is Pawn targetPawn && (targetPawn.Dead || targetPawn.Downed)) return false;
+            return pawn.Position.DistanceTo(target.Position) <= 30f;
+        }
+
         private static SceneType DetermineScene(Pawn pawn, string context)
         {
             if (pawn == null)
                 return SceneType.Neutral;
 
 
-            if (pawn.Drafted || (pawn.mindState?.enemyTarget != null))
+            if (pawn.Drafted || HasLiveEnemyTarget(pawn))
             {
                 return SceneType.Combat;
             }
