@@ -171,7 +171,26 @@ namespace Ustas.RimAI.Communication.Memory.Colony
             flattened.Replace("\r\n", " ").Replace('\n', ' ').Replace("  ", " ");
             string text = flattened.ToString().Trim();
             int limit = Math.Max(40, settings?.colonyTrendMaxLength ?? 400);
-            return text.Length <= limit ? text : text.Substring(0, limit).TrimEnd() + "…";
+            return text.Length <= limit ? text : Shorten(text, limit);
+        }
+
+        /// <summary>
+        /// Cut to the last sentence that fits, or failing that the last whole
+        /// word. The first version cut at the character and left "але ніх…" in
+        /// the middle of a word, which reads as a bug in the game rather than
+        /// a limit somebody set.
+        /// </summary>
+        private static string Shorten(string text, int limit)
+        {
+            string head = text.Substring(0, limit);
+            int sentence = head.LastIndexOfAny(new[] { '.', '!', '?', '…' });
+            if (sentence >= limit / 2)
+            {
+                return head.Substring(0, sentence + 1).TrimEnd();
+            }
+
+            int space = head.LastIndexOf(' ');
+            return (space > 0 ? head.Substring(0, space) : head).TrimEnd() + "…";
         }
 
         public override void ExposeData()
