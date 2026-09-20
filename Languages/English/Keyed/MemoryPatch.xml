@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <!-- ==================== Common UI ==================== -->
   <RimTalk_Memory_Title>{0}'s Memories</RimTalk_Memory_Title>
@@ -535,4 +535,12 @@ This tool previews memory and knowledge injection effects, helping you understan
 • Environment variables require map information
 • Other variables require at least one generated conversation to parse
 </RimTalk_Preview_HelpContent>
+
+  <!-- Colony summary -->
+  <RimTalk_Settings_ColonyTrendSection>Colony summary</RimTalk_Settings_ColonyTrendSection>
+  <RimTalk_Settings_EnableColonyTrend>Let characters know how the colony is doing</RimTalk_Settings_EnableColonyTrend>
+  <RimTalk_Settings_EnableColonyTrendDesc>One paragraph per map about the colony's situation, direction and risks, written by the model.</RimTalk_Settings_EnableColonyTrendDesc>
+  <RimTalk_Settings_ColonyTrendIntervalLabel>Refresh at most once every {0}h</RimTalk_Settings_ColonyTrendIntervalLabel>
+  <RimTalk_Settings_ColonyTrendIntervalDesc>Each refresh is an AI request, so it costs. Besides the timer, one is only asked for when something in the colony actually moved.</RimTalk_Settings_ColonyTrendIntervalDesc>
+  <RimTalk_Settings_ColonyTrendLengthLabel>Summary length: {0} characters</RimTalk_Settings_ColonyTrendLengthLabel>
 </LanguageData>

@@ -100,6 +100,9 @@ namespace Ustas.RimAI.Communication.Memory.API
                 "Знання: історичні події", 105);
             RegisterContext("knowledge_other", KnowledgeVariableProvider.GetKnowledgeOther,
                 "Знання: без категорії", 106);
+
+            RegisterContext("colony", ColonyVariableProvider.GetColonyTrend,
+                "Як справи в колонії: становище, напрямок, ризики", 110);
         }
 
         private static void RegisterContext(string name, Func<object, string> provider, string description, int priority)

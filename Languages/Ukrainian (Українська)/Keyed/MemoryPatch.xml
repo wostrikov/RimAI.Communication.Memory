@@ -493,4 +493,12 @@
 • Для змінних середовища потрібна інформація про карту
 • Для аналізу інших змінних потрібен щонайменше один згенерований діалог
 </RimTalk_Preview_HelpContent>
+
+  <!-- Colony summary -->
+  <RimTalk_Settings_ColonyTrendSection>Зведення про колонію</RimTalk_Settings_ColonyTrendSection>
+  <RimTalk_Settings_EnableColonyTrend>Розповідати про стан колонії</RimTalk_Settings_EnableColonyTrend>
+  <RimTalk_Settings_EnableColonyTrendDesc>Персонажі знатимуть, як справи в колонії загалом: становище, куди все рухається, що загрожує. Один абзац на карту, який складає модель.</RimTalk_Settings_EnableColonyTrendDesc>
+  <RimTalk_Settings_ColonyTrendIntervalLabel>Оновлювати не частіше ніж раз на {0} год</RimTalk_Settings_ColonyTrendIntervalLabel>
+  <RimTalk_Settings_ColonyTrendIntervalDesc>Кожне оновлення — це запит до моделі, тож вони коштують. Крім таймера, запит іде лише тоді, коли в колонії справді щось змінилося.</RimTalk_Settings_ColonyTrendIntervalDesc>
+  <RimTalk_Settings_ColonyTrendLengthLabel>Довжина зведення: {0} символів</RimTalk_Settings_ColonyTrendLengthLabel>
 </LanguageData>

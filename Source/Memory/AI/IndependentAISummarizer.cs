@@ -86,6 +86,26 @@ namespace Ustas.RimAI.Communication.Memory.AI
         public static string ComputeCacheKey(Pawn pawn, List<MemoryEntry> memories) => AISummarizerLifecycle.ComputeCacheKey(pawn, memories);
         public static void RegisterCallback(string cacheKey, Action<string> callback) => AISummarizerLifecycle.RegisterCallback(cacheKey, callback);
         public static void ProcessPendingCallbacks(int maxPerTick = 5) => AISummarizerLifecycle.ProcessPendingCallbacks(maxPerTick);
+
+        /// <summary>
+        /// Run this on the main thread, at the next world tick.
+        ///
+        /// The queue was already here and already drained by AIRequestManager;
+        /// what was missing was a name for putting something on it, so a second
+        /// background answer did not have to reach into the field.
+        /// </summary>
+        internal static void EnqueueMainThreadAction(Action action)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+            lock (mainThreadActions)
+            {
+                mainThreadActions.Enqueue(action);
+            }
+        }
         public static void ForceReinitialize() => AISummarizerLifecycle.ForceReinitialize();
         public static void ClearAllConfiguration() => AISummarizerLifecycle.ClearAllConfiguration();
         public static void Initialize() => AISummarizerLifecycle.Initialize();

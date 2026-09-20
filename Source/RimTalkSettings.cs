@@ -56,6 +56,14 @@ namespace Ustas.RimAI.Communication.Memory
         public float elsDecayRate = 0.005f;
         public float clpaDecayRate = 0.001f;
         
+        // The colony's own state, as one paragraph offered to prompts as
+        // {{colony}}. Off by default because it costs an AI request: see
+        // Docs/Colony_Trend.md for what it asks and how often.
+        public bool enableColonyTrend = false;
+        public int colonyTrendIntervalHours = 6;
+        public int colonyTrendMaxLength = 400;
+        public string colonyTrendInstruction = "";
+
         public bool enableDailySummarization = true;
         public int summarizationHour = 0;
         public bool useAISummarization = true;
@@ -127,6 +135,7 @@ namespace Ustas.RimAI.Communication.Memory
         public List<string> knowledgeMatchingSources = new List<string> { "prompt", "fullname", "role", "age", "gender", "backstory", "traits", "skills", "relations" };
 
         internal static bool expandDynamicInjection = true;
+        internal static bool expandColonyTrend = false;
         internal static bool expandMemoryCapacity = false;
         internal static bool expandDecayRates = false;
         internal static bool expandSummarization = false;
@@ -164,6 +173,11 @@ namespace Ustas.RimAI.Communication.Memory
             Scribe_Values.Look(ref elsDecayRate, "fourLayer_elsDecayRate", 0.005f);
             Scribe_Values.Look(ref clpaDecayRate, "fourLayer_clpaDecayRate", 0.001f);
             
+            Scribe_Values.Look(ref enableColonyTrend, "colony_enableTrend", false);
+            Scribe_Values.Look(ref colonyTrendIntervalHours, "colony_trendIntervalHours", 6);
+            Scribe_Values.Look(ref colonyTrendMaxLength, "colony_trendMaxLength", 400);
+            Scribe_Values.Look(ref colonyTrendInstruction, "colony_trendInstruction", "");
+
             Scribe_Values.Look(ref enableDailySummarization, "fourLayer_enableDailySummarization", true);
             Scribe_Values.Look(ref summarizationHour, "fourLayer_summarizationHour", 0);
             Scribe_Values.Look(ref useAISummarization, "fourLayer_useAISummarization", true);
@@ -297,6 +311,7 @@ namespace Ustas.RimAI.Communication.Memory
         internal void OpenCommonKnowledgeDialog() => Parts.MainUi.OpenCommonKnowledgeDialog();
         internal void DrawCollapsibleSection(Listing_Standard listing, string title, ref bool expanded, System.Action drawContent) => Parts.AdvancedUi.DrawCollapsibleSection(listing, title, ref expanded, drawContent);
         internal void DrawDynamicInjectionSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawDynamicInjectionSettings(listing);
+        internal void DrawColonyTrendSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawColonyTrendSettings(listing);
         internal void DrawMemoryCapacitySettings(Listing_Standard listing) => Parts.AdvancedUi.DrawMemoryCapacitySettings(listing);
         internal void DrawDecaySettings(Listing_Standard listing) => Parts.AdvancedUi.DrawDecaySettings(listing);
         internal void DrawSummarizationSettings(Listing_Standard listing) => Parts.AdvancedUi.DrawSummarizationSettings(listing);

@@ -42,6 +42,30 @@ internal void DrawCollapsibleSection(Listing_Standard listing, string title, ref
             listing.GapLine();
         }
 
+internal void DrawColonyTrendSettings(Listing_Standard listing)
+        {
+            listing.CheckboxLabeled("RimTalk_Settings_EnableColonyTrend".Translate(), ref Owner.enableColonyTrend);
+            GUI.color = Color.gray;
+            listing.Label("  " + "RimTalk_Settings_EnableColonyTrendDesc".Translate());
+            GUI.color = Color.white;
+
+            if (!Owner.enableColonyTrend)
+            {
+                return;
+            }
+
+            listing.Gap();
+            listing.Label("RimTalk_Settings_ColonyTrendIntervalLabel".Translate(Owner.colonyTrendIntervalHours));
+            Owner.colonyTrendIntervalHours = (int)listing.Slider(Owner.colonyTrendIntervalHours, 1, 24);
+            GUI.color = Color.gray;
+            listing.Label("  " + "RimTalk_Settings_ColonyTrendIntervalDesc".Translate());
+            GUI.color = Color.white;
+
+            listing.Gap();
+            listing.Label("RimTalk_Settings_ColonyTrendLengthLabel".Translate(Owner.colonyTrendMaxLength));
+            Owner.colonyTrendMaxLength = (int)listing.Slider(Owner.colonyTrendMaxLength, 100, 1200);
+        }
+
 internal void DrawDynamicInjectionSettings(Listing_Standard listing)
         {
             listing.CheckboxLabeled("RimTalk_Settings_EnableDynamicInjection".Translate(), ref Owner.useDynamicInjection);

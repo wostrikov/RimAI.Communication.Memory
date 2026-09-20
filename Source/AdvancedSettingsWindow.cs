@@ -51,6 +51,7 @@ namespace Ustas.RimAI.Communication.Memory
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryCapacitySection".Translate(), ref RimTalkMemoryPatchSettings.expandMemoryCapacity, delegate { settings.DrawMemoryCapacitySettings(listing); });
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_MemoryDecaySection".Translate(), ref RimTalkMemoryPatchSettings.expandDecayRates, delegate { settings.DrawDecaySettings(listing); });
             settings.DrawCollapsibleSection(listing, "RimTalk_Settings_SummarizationSection".Translate(), ref RimTalkMemoryPatchSettings.expandSummarization, delegate { settings.DrawSummarizationSettings(listing); });
+            settings.DrawCollapsibleSection(listing, "RimTalk_Settings_ColonyTrendSection".Translate(), ref RimTalkMemoryPatchSettings.expandColonyTrend, delegate { settings.DrawColonyTrendSettings(listing); });
 
             if (settings.useAISummarization)
             {

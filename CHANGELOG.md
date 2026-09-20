@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Colony summary: one model-written paragraph per map about the colony's
+  situation, direction and risks, offered to prompts as `{{colony}}`. Off by
+  default; refreshed on a timer and only when the colony's own figures have
+  moved. See `Docs/Colony_Trend.md`.
 - 新增对 RimChat 的对话捕获支持（作为软依赖）。
 - 新增泛型的超高性能环形缓冲区类，用于底层数据管理。
 - 添加俄语和英语等语言的 UI 国际化翻译支持。
