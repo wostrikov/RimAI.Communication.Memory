@@ -187,7 +187,7 @@ public class MyEventHandler
 }
 ```
 
-### Варіант 3: загальні знання для пішака
+### Варіант 3: загальні знання для персонажа
 
 ```csharp
 public void AddPawnSpecificKnowledge(Pawn pawn)
