@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -28,7 +29,7 @@ public void DailySummarization()
 
             if (allMemoriesToSummarize.Count == 0)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} daily summarization: no non-pinned memories to summarize");
                 }
@@ -88,7 +89,7 @@ public void DailySummarization()
                 memory => { if (memory != null) memory.IsSummarized = true; },
                 memory => memory.IsPinned);
 
-            if (Prefs.DevMode && removedCount > 0)
+            if (RimAiLog.Detailed && removedCount > 0)
             {
                 ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} daily summarization: " +
                            $"cleared ABM, removed {removedCount} SCM, kept {situationalMemories.Count} pinned");
@@ -110,7 +111,7 @@ public void ManualSummarization()
 
             if (allMemoriesToSummarize.Count == 0)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} manual summarization: no non-pinned memories to summarize");
                 }
@@ -170,7 +171,7 @@ public void ManualSummarization()
                 memory => { if (memory != null) memory.IsSummarized = true; },
                 memory => memory.IsPinned);
 
-            if (Prefs.DevMode && removedCount > 0)
+            if (RimAiLog.Detailed && removedCount > 0)
             {
                 ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} manual summarization: " +
                            $"cleared ABM, removed {removedCount} SCM, kept {situationalMemories.Count} pinned");

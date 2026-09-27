@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Verse;
 using RimAI.Core.Runtime;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -39,7 +40,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 if (semanticScored != null && semanticScored.Count > 0)
                 {
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                     {
                         ModuleLog.Message($"[Semantic Scoring] Success: {semanticScored.Count} memories");
                     }
@@ -49,7 +50,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
             else
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     Log.Warning("[Semantic Scoring] Timeout, using keyword fallback");
                 }
@@ -137,7 +138,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 if (semanticScored != null && semanticScored.Count > 0)
                 {
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                     {
                         ModuleLog.Message($"[Semantic Scoring] Success: {semanticScored.Count} knowledge");
                     }
@@ -147,7 +148,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
             else
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     Log.Warning("[Semantic Scoring] Timeout, using keyword fallback");
                 }
@@ -216,12 +217,12 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 var toBatch = importantMemories.Take(20).Select(m => m.Content).ToList();
                 
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     ModuleLog.Message($"[Semantic Scoring] Prewarming {toBatch.Count} memory embeddings...");
                 
                 await AI.EmbeddingService.GetEmbeddingsBatchAsync(toBatch);
                 
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     ModuleLog.Message($"[Semantic Scoring] Prewarm complete");
             }
             catch (Exception ex)

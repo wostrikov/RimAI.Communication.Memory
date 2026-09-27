@@ -9,6 +9,7 @@ using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
 using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -137,7 +138,7 @@ internal void CheckArchiveInterval(int currentDay)
                         totalArchivedEntries += archivedCount;
                         totalRemovedELS += removedCount;
                         
-                        if (Prefs.DevMode)
+                        if (RimAiLog.Detailed)
                         {
                             int remainingELS = fourLayerComp.EventLogMemories.Count;
                             ModuleLog.Message($"[RimAI.Memory] Archived {archivedCount} CLPA entries for {pawn.LabelShort}, " +
@@ -160,7 +161,7 @@ internal void CheckArchiveInterval(int currentDay)
                             fourLayerComp.ArchiveMemories.Remove(memory);
                         }
                         
-                        if (Prefs.DevMode && toRemove.Count > 0)
+                        if (RimAiLog.Detailed && toRemove.Count > 0)
                         {
                             ModuleLog.Message($"[RimAI.Memory] Cleaned {toRemove.Count} old CLPA memories for {pawn.LabelShort}");
                         }

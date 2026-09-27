@@ -6,6 +6,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -41,7 +42,7 @@ namespace Ustas.RimAI.Communication.Memory
             var analysis = SceneAnalyzer.AnalyzeScene(context);
             DynamicWeights sceneWeights = SceneAnalyzer.GetDynamicWeights(sceneType, analysis.Confidence);
 
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Memory Injection] Scene: {SceneAnalyzer.GetSceneDisplayName(sceneType)}");
                 ModuleLog.Message($"[Memory Injection] Confidence: {analysis.Confidence:P0}");
@@ -82,7 +83,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             if (scoredMemories.Count == 0)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     ModuleLog.Message($"[Memory Injection] No memories met threshold ({threshold:F2}), returning null");
                 }

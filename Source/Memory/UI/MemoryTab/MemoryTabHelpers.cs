@@ -3,6 +3,7 @@ using System.Linq;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.UI
 {
@@ -21,7 +22,7 @@ namespace Ustas.RimAI.Communication.Memory.UI
 
             if (memoriesToSummarize.Count == 0)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     Log.Warning("[Memory] AggregateMemories: All selected memories are pinned, skipping summarization");
                 }

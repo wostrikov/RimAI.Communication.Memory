@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -6,6 +6,7 @@ using RimWorld;
 using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -23,7 +24,7 @@ namespace Ustas.RimAI.Communication.Memory
             userDeletedPawns.Add(pawnId);
             lastUpdateTicks.Remove(pawnId);
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
                 ModuleLog.Message($"[PawnStatus] Marked pawn {pawnId} as user-deleted, will not regenerate");
         }
         
@@ -36,7 +37,7 @@ namespace Ustas.RimAI.Communication.Memory
         {
             userDeletedPawns.Remove(pawnId);
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
                 ModuleLog.Message($"[PawnStatus] Cleared user-deleted mark for pawn {pawnId}");
         }
         
@@ -102,14 +103,14 @@ namespace Ustas.RimAI.Communication.Memory
                 }
                 catch (Exception ex)
                 {
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.2f)
                     {
                         Log.Error($"[PawnStatus] Error updating status for {pawn.LabelShort}: {ex.Message}");
                     }
                 }
             }
             
-            if (updatedCount > 0 && Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+            if (updatedCount > 0 && RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
             {
                 ModuleLog.Message($"[PawnStatus] Updated {updatedCount} colonist status knowledge entries");
             }
@@ -135,7 +136,7 @@ namespace Ustas.RimAI.Communication.Memory
                 int joinTick = CalculateJoinTick(pawn, currentTick);
                 int daysInColony = CalculateDaysInColony(joinTick, currentTick);
                 
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.05f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.05f)
                 {
                     ModuleLog.Message($"[PawnStatus] {pawn.LabelShort}: joinTick={joinTick}, currentTick={currentTick}, daysInColony={daysInColony}");
                 }
@@ -171,7 +172,7 @@ namespace Ustas.RimAI.Communication.Memory
                              existingEntry.tag = statusTag;
                         }
                         
-                        if (Prefs.DevMode && UnityEngine.Random.value < 0.05f)
+                        if (RimAiLog.Detailed && UnityEngine.Random.value < 0.05f)
                         {
                             ModuleLog.Message($"[PawnStatus] Updated: {pawn.LabelShort} (days: {daysInColony}) -> {newContent}");
                         }
@@ -191,7 +192,7 @@ namespace Ustas.RimAI.Communication.Memory
                     
                     library.AddEntry(newEntry);
                     
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                     {
                         ModuleLog.Message($"[PawnStatus] Created: {pawn.LabelShort} (days: {daysInColony}, importance: {defaultImportance:F2})");
                     }
@@ -215,7 +216,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 if (recordDef == null)
                 {
-                    if (Prefs.DevMode)
+                    if (RimAiLog.Detailed)
                         Log.Warning($"[PawnStatus] RecordDef 'TimeAsColonistOrColonyAnimal' not found (this should never happen with strong reference)");
                     return currentTick;
                 }
@@ -300,7 +301,7 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 lastUpdateTicks.Remove(pawn.thingIDNumber);
                 
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[PawnStatus] Removed status for {pawn.LabelShort}");
                 }
@@ -366,13 +367,13 @@ namespace Ustas.RimAI.Communication.Memory
                     if (pawn.Dead)
                     {
                         shouldRemove = true;
-                        if (Prefs.DevMode)
+                        if (RimAiLog.Detailed)
                             ModuleLog.Message($"[PawnStatus] Removing dead pawn: {pawn.LabelShort}");
                     }
                     else if (pawn.Faction != Faction.OfPlayer)
                     {
                         shouldRemove = true;
-                        if (Prefs.DevMode)
+                        if (RimAiLog.Detailed)
                             ModuleLog.Message($"[PawnStatus] Removing non-player pawn: {pawn.LabelShort}");
                     }
                 }
@@ -388,7 +389,7 @@ namespace Ustas.RimAI.Communication.Memory
                 lastUpdateTicks.Remove(id);
             }
             
-            if (toRemove.Count > 0 && Prefs.DevMode)
+            if (toRemove.Count > 0 && RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[PawnStatus] Cleaned up {toRemove.Count} update records");
             }

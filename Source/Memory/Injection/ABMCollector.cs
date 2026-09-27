@@ -1,9 +1,10 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Data;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Injection
 {
@@ -37,7 +38,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             var comp = pawn.TryGetComp<FourLayerMemoryComp>();
             if (comp == null || comp.ActiveMemories == null || comp.ActiveMemories.Count == 0)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     ModuleLog.Message($"[ABMCollector] {pawn?.LabelShort}: No ActiveMemories found (comp={comp != null}, count={comp?.ActiveMemories?.Count ?? 0})");
                 }
@@ -54,7 +55,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             int stackedCount = 0;
             int skippedDuplicate = 0;
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[ABMCollector] {pawn.LabelShort}: Processing {sortedList.Count} memories, cache size={RoundMemoryCache?.Count ?? 0}");
             }
@@ -72,7 +73,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
                     if (!IsRoundMemoryEnabled) continue;
                     if (RoundMemoryCache != null && RoundMemoryCache.Contains(roundMemory))
                     {
-                        if (Prefs.DevMode)
+                        if (RimAiLog.Detailed)
                         {
                             ModuleLog.Message("[ABMCollector] Skipped duplicate RoundMemory");
                         }
@@ -103,7 +104,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
         public static void ResetDuplicateCache()
         {
             RoundMemoryCache.Clear();
-            if (Prefs.DevMode) ModuleLog.Message("[RoundMemory] Кеш перевірки дублікатів скинуто");
+            if (RimAiLog.Detailed) ModuleLog.Message("[RoundMemory] Кеш перевірки дублікатів скинуто");
         }
 
         public static int GetCollectedCount(List<MemoryEntry> collected)

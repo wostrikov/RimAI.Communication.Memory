@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +32,7 @@ namespace Ustas.RimAI.Communication.Memory.Monitoring
             RegisterModule("AIDatabase", "База даних ШІ");
             RegisterModule("Injection", "Динамічне додавання");
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message("[Performance Monitor] Initialized");
             }

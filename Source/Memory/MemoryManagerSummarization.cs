@@ -8,6 +8,7 @@ using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -97,7 +98,7 @@ internal void ProcessSummarizationQueue()
 
             if (summarized)
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[RimAI.Memory] Summarized memories for {pawn.LabelShort} ({summarizationQueue.Count} remaining)");
                 }
@@ -110,7 +111,7 @@ internal void ProcessSummarizationQueue()
             }
             else
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[RimAI.Memory] All colonists summarized!");
                 }
@@ -153,7 +154,7 @@ internal void ProcessManualSummarizationQueue()
 
             if (summarized)
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[RimAI.Memory] Manual summarized for {pawn.LabelShort} ({scmCount} SCM -> ELS, {manualSummarizationQueue.Count} remaining)");
                 }
@@ -171,7 +172,7 @@ internal void ProcessManualSummarizationQueue()
             }
             else
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[RimAI.Memory] All manual summarizations complete!");
                 }

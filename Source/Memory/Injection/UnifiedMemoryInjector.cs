@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
@@ -30,7 +30,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
 
             var abmList = ABMCollector.Collect(pawn, maxABMRounds);
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] ABM collected: {abmList.Count}/{maxABMRounds} for {pawn.LabelShort}");
             }
@@ -42,7 +42,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             {
                 elsList = ELSCollector.Collect(pawn, dialogueContext, remainingQuota);
                 
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] ELS/CLPA collected: {elsList.Count}/{remainingQuota} for {pawn.LabelShort}");
                 }
@@ -57,7 +57,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
                 return string.Empty;
             }
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 RimAiLog.Debug(RimAiLogCategory.Memory, $"[UnifiedMemoryInjector] Total memories: {allMemories.Count}/{maxTotalMemories} for {pawn.LabelShort}");
             }

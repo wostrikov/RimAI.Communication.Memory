@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -46,7 +47,7 @@ internal void CleanupLowActivityMemories()
             int removedCLPA = MemoryLayerMaintenance.RemoveLowActivity(
                 archiveMemories, m => m.Activity, m => m.IsPinned, ACTIVITY_THRESHOLD);
 
-            if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0 || removedCLPA > 0))
+            if (RimAiLog.Detailed && (removedSCM > 0 || removedELS > 0 || removedCLPA > 0))
             {
                 var pawn = parent as Pawn;
                 ModuleLog.Message($"[Memory] {pawn?.LabelShort ?? "Unknown"} cleaned up " +
@@ -67,7 +68,7 @@ internal void EnforceMemoryLimits()
             removedELS = MemoryLayerMaintenance.EnforceLimit(
                 eventLogMemories, MaxELS, m => m.Activity, m => m.GameTick, m => m.IsPinned);
 
-            if (Prefs.DevMode && (removedSCM > 0 || removedELS > 0))
+            if (RimAiLog.Detailed && (removedSCM > 0 || removedELS > 0))
             {
                 var pawn = parent as Pawn;
                 int scmPinnedCount = situationalMemories.Count(m => m.IsPinned);

@@ -1,8 +1,9 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.Injection
 {
@@ -31,7 +32,7 @@ namespace Ustas.RimAI.Communication.Memory.Injection
             
             result = scores.Select(s => s.Memory).ToList();
             
-            if (Prefs.DevMode && result.Count > 0)
+            if (RimAiLog.Detailed && result.Count > 0)
             {
                 ModuleLog.Message($"[ELSCollector] Collected {result.Count} memories for {pawn.LabelShort}");
             }

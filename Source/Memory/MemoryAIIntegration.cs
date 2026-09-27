@@ -4,6 +4,7 @@ using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -86,7 +87,7 @@ namespace Ustas.RimAI.Communication.Memory
             // Check if conversation memory is enabled
             if (!RimTalkMemoryPatchMod.Settings.enableConversationMemory)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     ModuleLog.Message("[RimAI.Memory] ⚠️ Conversation memory is DISABLED in settings!");
                 return;
             }
@@ -95,7 +96,7 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 recordedConversations.Clear();
                 lastCleanupTick = Find.TickManager.TicksGame;
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     ModuleLog.Message("[RimAI.Memory] Cleaned conversation cache");
             }
             
@@ -108,7 +109,7 @@ namespace Ustas.RimAI.Communication.Memory
             
             if (recordedConversations.Contains(conversationId))
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     ModuleLog.Message($"[RimAI.Memory] ⏭️ Skipped duplicate in RecordConversation: {conversationId}");
                 return;
             }

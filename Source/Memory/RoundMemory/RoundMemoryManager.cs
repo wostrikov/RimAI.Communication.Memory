@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -225,7 +226,7 @@ namespace Ustas.RimAI.Communication.Memory
 
                     ABMs[i] = managerRef;
 
-                    if (Prefs.DevMode) ModuleLog.Message("[RoundMemory] Вказівник ABM виправлено");
+                    if (RimAiLog.Detailed) ModuleLog.Message("[RoundMemory] Вказівник ABM виправлено");
                 }
             }
         }

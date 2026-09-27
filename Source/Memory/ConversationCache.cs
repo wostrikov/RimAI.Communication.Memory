@@ -5,6 +5,7 @@ using Verse;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -97,7 +98,7 @@ namespace Ustas.RimAI.Communication.Memory
                     lruList.Remove(node);
                     lruList.AddFirst(node);
                     
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                     {
                         ModuleLog.Message($"[Cache] 🎯 HIT: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (uses: {entry.useCount})");
                     }
@@ -109,7 +110,7 @@ namespace Ustas.RimAI.Communication.Memory
                     lruList.Remove(node);
                     cacheMap.Remove(cacheKey);
                     
-                    if (Prefs.DevMode)
+                    if (RimAiLog.Detailed)
                     {
                         ModuleLog.Message($"[Cache] ⏰ EXPIRED: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}...");
                     }
@@ -155,7 +156,7 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
             
-            if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+            if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
             {
                 ModuleLog.Message($"[Cache] 💾 ADD: {cacheKey.Substring(0, Math.Min(30, cacheKey.Length))}... (total: {cacheMap.Count})");
             }
@@ -171,7 +172,7 @@ namespace Ustas.RimAI.Communication.Memory
             lruList.RemoveLast();
             cacheMap.Remove(lruEntry.cacheKey);
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Cache] 🗑️ EVICT: {lruEntry.cacheKey.Substring(0, Math.Min(30, lruEntry.cacheKey.Length))}... (uses: {lruEntry.useCount})");
             }
@@ -200,7 +201,7 @@ namespace Ustas.RimAI.Communication.Memory
                 }
             }
             
-            if (cleanedCount > 0 && Prefs.DevMode)
+            if (cleanedCount > 0 && RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Cache] 🧹 Cleaned {cleanedCount} expired entries");
             }

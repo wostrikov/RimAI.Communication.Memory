@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory;
 
@@ -62,7 +63,7 @@ internal static class EventRecordPlayLogExtractor
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     Log.Warning($"[EventRecord] Key info extraction failed: {ex.Message}");
                 
                 return fullText.Length > 40 ? fullText.Substring(0, 40) : fullText;
@@ -116,7 +117,7 @@ internal static class EventRecordPlayLogExtractor
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     Log.Warning($"[EventRecord] Bill text cleaning failed: {ex.Message}");
                 
                 return text;

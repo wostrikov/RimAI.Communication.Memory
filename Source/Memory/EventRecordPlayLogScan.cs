@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory;
 
@@ -94,7 +95,7 @@ internal static class EventRecordPlayLogScan
                                 library.AddEntry(entry);
                                 processedCount++;
                                 
-                                if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                                 {
                                     ModuleLog.Message($"[EventRecord] Created event knowledge: {eventText.Substring(0, Math.Min(50, eventText.Length))}...");
                                 }
@@ -103,21 +104,21 @@ internal static class EventRecordPlayLogScan
                     }
                     catch (Exception ex)
                     {
-                        if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
+                        if (RimAiLog.Detailed && UnityEngine.Random.value < 0.2f)
                         {
                             Log.Warning($"[EventRecord] Error processing log entry: {ex.Message}");
                         }
                     }
                 }
                 
-                if (processedCount > 0 && Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                if (processedCount > 0 && RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                 {
                     ModuleLog.Message($"[EventRecord] Scanned {scannedCount} entries, processed {processedCount} new events (total: {totalCount})");
                 }
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
+                if (RimAiLog.Detailed && UnityEngine.Random.value < 0.2f)
                 {
                     Log.Error($"[EventRecord] Error scanning PlayLog: {ex.Message}");
                 }

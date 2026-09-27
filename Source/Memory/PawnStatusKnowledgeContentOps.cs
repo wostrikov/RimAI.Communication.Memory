@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -103,7 +104,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     Log.Warning($"[PawnStatus] Failed to extract join date from content: {ex.Message}");
             }
             
@@ -172,7 +173,7 @@ namespace Ustas.RimAI.Communication.Memory
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     Log.Warning($"[PawnStatus] Failed to extract race info for {pawn.LabelShort}: {ex.Message}");
                 }

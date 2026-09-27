@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
@@ -6,6 +6,7 @@ using RimWorld;
 using Ustas.RimAI.Communication.API;
 using Ustas.RimAI.Communication.Prompt;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
@@ -121,7 +122,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     Log.Warning($"[MemoryPatch] TryGetPawnPropertyValue failed: {ex.Message}");
                 }

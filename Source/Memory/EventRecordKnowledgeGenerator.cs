@@ -1,10 +1,11 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -129,7 +130,7 @@ namespace Ustas.RimAI.Communication.Memory
                     updatedCount++;
                 }
                 
-                if (updatedCount > 0 && Prefs.DevMode && UnityEngine.Random.value < 0.05f)
+                if (updatedCount > 0 && RimAiLog.Detailed && UnityEngine.Random.value < 0.05f)
                 {
                     ModuleLog.Message($"[EventRecord] Updated time prefix for {updatedCount} event knowledge entries");
                 }

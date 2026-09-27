@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -135,7 +136,7 @@ public void AddActiveMemory(string content, MemoryType type, float importance = 
                 // The same memory again is merged into the one already held, which becomes
                 // current, rather than stored twice to crowd the prompt with repeats.
                 twin.GameTick = Find.TickManager?.TicksGame ?? twin.GameTick;
-                bool devMode = Prefs.DevMode;
+                bool devMode = RimAiLog.Detailed;
                 if (devMode)
                 {
                     Pawn pawn = parent as Pawn;

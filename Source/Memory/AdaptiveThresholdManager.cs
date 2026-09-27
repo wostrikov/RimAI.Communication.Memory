@@ -1,9 +1,10 @@
-using Ustas.RimAI.Communication.Memory;
+﻿using Ustas.RimAI.Communication.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -109,7 +110,7 @@ namespace Ustas.RimAI.Communication.Memory
             float smoothedThreshold = SmoothAdjustment(currentThreshold, recommendedThreshold);
 
             logCounter++;
-            if (Prefs.DevMode && logCounter % LOG_INTERVAL == 0)
+            if (RimAiLog.Detailed && logCounter % LOG_INTERVAL == 0)
             {
                 ModuleLog.Message($"[Adaptive Threshold] {type} - Current: {currentThreshold:F3}, " +
                            $"Recommended: {recommendedThreshold:F3}, Smoothed: {smoothedThreshold:F3} " +
@@ -165,7 +166,7 @@ namespace Ustas.RimAI.Communication.Memory
             settings.memoryScoreThreshold = memoryThreshold;
             settings.knowledgeScoreThreshold = knowledgeThreshold;
 
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Adaptive Threshold] Applied - Memory: {memoryThreshold:F3}, Knowledge: {knowledgeThreshold:F3}");
             }
@@ -204,7 +205,7 @@ namespace Ustas.RimAI.Communication.Memory
             memoryScoreHistory.Clear();
             knowledgeScoreHistory.Clear();
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message("[Adaptive Threshold] History reset");
             }

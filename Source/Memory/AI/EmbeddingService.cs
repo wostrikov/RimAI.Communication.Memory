@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Ustas.RimAI.Communication.Memory.Policy;
 using Verse;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -61,7 +62,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             {
                 if (embeddingCache.TryGetValue(cacheKey, out float[] cachedVector))
                 {
-                    if (Prefs.DevMode && UnityEngine.Random.value < 0.01f)
+                    if (RimAiLog.Detailed && UnityEngine.Random.value < 0.01f)
                     {
                         ModuleLog.Message($"[Embedding] Cache hit ({embeddingCache.Count}/{MAX_CACHE_SIZE})");
                     }
@@ -69,7 +70,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 }
             }
             
-            if (Prefs.DevMode && UnityEngine.Random.value < 0.2f)
+            if (RimAiLog.Detailed && UnityEngine.Random.value < 0.2f)
             {
                 ModuleLog.Message($"[Embedding] local embed: {text.Substring(0, Math.Min(30, text.Length))}...");
             }
@@ -88,7 +89,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                             embeddingCache.Remove(key);
                         }
                         
-                        if (Prefs.DevMode && UnityEngine.Random.value < 0.1f)
+                        if (RimAiLog.Detailed && UnityEngine.Random.value < 0.1f)
                             ModuleLog.Message($"[Embedding] Cache cleanup: {toRemove.Count} removed, {embeddingCache.Count} remain");
                     }
                     
@@ -193,7 +194,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 return null;
             }
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Embedding] Calling {provider} API...");
                 ModuleLog.Message($"[Embedding] API URL: {apiUrl}");
@@ -209,7 +210,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
             string model = provider == "DeepSeek" ? "deepseek-embedding" : "text-embedding-ada-002";
             string jsonRequest = BuildOpenAIEmbeddingRequest(text, model);
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Embedding] Request body: {jsonRequest.Substring(0, Math.Min(200, jsonRequest.Length))}...");
             }
@@ -229,7 +230,7 @@ namespace Ustas.RimAI.Communication.Memory.AI
                 {
                     string responseText = await streamReader.ReadToEndAsync();
                     
-                    if (Prefs.DevMode)
+                    if (RimAiLog.Detailed)
                     {
                         ModuleLog.Message($"[Embedding] Response status: {response.StatusCode}");
                         ModuleLog.Message($"[Embedding] Response: {responseText.Substring(0, Math.Min(200, responseText.Length))}...");

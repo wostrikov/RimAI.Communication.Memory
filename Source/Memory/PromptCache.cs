@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -111,7 +112,7 @@ namespace Ustas.RimAI.Communication.Memory
                     totalHits++;
                     needsRegeneration = false;
                     
-                    if (Prefs.DevMode)
+                    if (RimAiLog.Detailed)
                     {
                         ModuleLog.Message($"[Prompt Cache] ?? HIT: {pawn.LabelShort} (saved ~{EstimateComputeCost()}ms)");
                     }
@@ -123,7 +124,7 @@ namespace Ustas.RimAI.Communication.Memory
                     cache.Remove(cacheKey);
                     totalInvalidations++;
                     
-                    if (Prefs.DevMode)
+                    if (RimAiLog.Detailed)
                     {
                         ModuleLog.Message($"[Prompt Cache] ?? INVALIDATED: {pawn.LabelShort} (memory/knowledge changed)");
                     }
@@ -153,7 +154,7 @@ namespace Ustas.RimAI.Communication.Memory
                 EvictLRU();
             }
             
-            if (Prefs.DevMode)
+            if (RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Prompt Cache] ?? CACHED: {pawn.LabelShort} (total: {cache.Count}/{MaxCacheSize})");
             }
@@ -170,7 +171,7 @@ namespace Ustas.RimAI.Communication.Memory
                 cache.Remove(key);
             }
             
-            if (keysToRemove.Count > 0 && Prefs.DevMode)
+            if (keysToRemove.Count > 0 && RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Prompt Cache] ??? Invalidated {keysToRemove.Count} entries for {pawn.LabelShort}");
             }
@@ -202,7 +203,7 @@ namespace Ustas.RimAI.Communication.Memory
                 cache.Remove(key);
             }
             
-            if (expiredKeys.Count > 0 && Prefs.DevMode)
+            if (expiredKeys.Count > 0 && RimAiLog.Detailed)
             {
                 ModuleLog.Message($"[Prompt Cache] ?? Cleaned {expiredKeys.Count} expired entries");
             }
@@ -266,7 +267,7 @@ namespace Ustas.RimAI.Communication.Memory
             {
                 cache.Remove(lruKey);
                 
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     ModuleLog.Message($"[Prompt Cache] ??? EVICTED LRU entry");
                 }

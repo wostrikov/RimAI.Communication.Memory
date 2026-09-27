@@ -8,6 +8,7 @@ using RimWorld.Planet;
 using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.Patches;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -271,7 +272,7 @@ internal void UpdateEventKnowledgeTimePrefixes()
                 }
             }
             
-            if (Prefs.DevMode && updatedCount > 0 && UnityEngine.Random.value < 0.1f)
+            if (RimAiLog.Detailed && updatedCount > 0 && UnityEngine.Random.value < 0.1f)
             {
                 ModuleLog.Message($"[RimAI.Memory] Updated {updatedCount} event knowledge time prefixes");
             }

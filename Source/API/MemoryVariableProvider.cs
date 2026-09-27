@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -94,7 +94,7 @@ namespace Ustas.RimAI.Communication.Memory.API
 
             if (_pawnMemoryCache.TryGetValue(pawnId, out string cachedResult))
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     RimAiLog.Debug(RimAiLogCategory.Memory, $"[Memory] Using cached result for {pawn.LabelShort}");
                 }

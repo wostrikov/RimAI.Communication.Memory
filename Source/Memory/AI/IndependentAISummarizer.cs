@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,6 +16,7 @@ using Ustas.RimAI.Core.Configuration;
 using Ustas.RimAI.Core.Player2;
 using RimAI.Core.Runtime;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -375,7 +376,7 @@ internal static bool TryLoadFromRimTalk()
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                     Log.Warning($"[AI Summarizer] TryLoadFromRimTalk failed: {ex.Message}");
                 return false;
             }
@@ -485,7 +486,7 @@ public static string SummarizeMemories(Pawn pawn, List<MemoryEntry> memories, st
                                 }
                                 
 
-                                if (Prefs.DevMode)
+                                if (RimAiLog.Detailed)
                                 {
                                     ModuleLog.Message($"[AI Summarizer] ?? Cleaned cache: {toRemove.Count} entries removed (deterministic by key order), {IndependentAISummarizer.completedSummaries.Count} remaining");
                                 }

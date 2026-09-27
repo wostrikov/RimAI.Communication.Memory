@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,6 +9,7 @@ using Ustas.RimAI.Communication.Memory;
 using Ustas.RimAI.Communication.Memory.UI;
 using Ustas.RimAI.Communication.Prompt;
 using Ustas.RimAI.Core.Memory;
+using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.API
 {
@@ -472,7 +473,7 @@ namespace Ustas.RimAI.Communication.Memory.API
             }
             catch (Exception ex)
             {
-                if (Prefs.DevMode)
+                if (RimAiLog.Detailed)
                 {
                     Log.Warning($"[MemoryPatch] TryParseScribanVariable failed: {ex.Message}");
                 }
