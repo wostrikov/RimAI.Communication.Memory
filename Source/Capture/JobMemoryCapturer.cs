@@ -1,4 +1,4 @@
-using Ustas.RimAI.Communication.Memory;
+﻿using Ustas.RimAI.Communication.Memory;
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
@@ -266,9 +266,40 @@ namespace Ustas.RimAI.Communication.Memory.Capture
             return GetJobReport(job);
         }
 
+        private static bool NamesUsedUpCorpse(Job job)
+        {
+            return IsUsedUpCorpse(job.targetA) || IsUsedUpCorpse(job.targetB) || IsUsedUpCorpse(job.targetC)
+                || (job.targetQueueA != null && job.targetQueueA.Any(IsUsedUpCorpse))
+                || (job.targetQueueB != null && job.targetQueueB.Any(IsUsedUpCorpse));
+        }
+
+        private static bool IsUsedUpCorpse(LocalTargetInfo target)
+        {
+            return target.Thing is Corpse corpse && corpse.Bugged;
+        }
+
         private string GetJobReport(Job job)
         {
             if (Parent is not Pawn parentPawn) return string.Empty;
+
+            // Only while the game is actually being played. A job report is the
+            // driver's own sentence about what it is doing, and a driver is free to
+            // read anything it likes to build it - JobDriver_HaulToCell reads the
+            // destination cell's slot group, for one. During a load none of that is
+            // built yet, and asking took a whole save down: passing a faction leader
+            // to the world inside DoAllPostLoadInits cleared its mind, which stopped
+            // its job, which brought this prefix here, which dereferenced null in
+            // StoreUtility.GetSlotGroup and ended the map load.
+            //
+            // Nothing is lost by declining: a job being torn down by the loader is
+            // not a thing the pawn did, and a memory of it would be a memory of
+            // bookkeeping.
+            if (Current.ProgramState != ProgramState.Playing) return string.Empty;
+
+            // A job about a corpse that has already been used up - butchered, say, as
+            // the job ends - cannot be described: the report asks the corpse for its
+            // label and the game logs "LabelNoCount on Corpse while Bugged." for it.
+            if (NamesUsedUpCorpse(job)) return string.Empty;
 
             var jobReport = job.GetReport(parentPawn);
 
