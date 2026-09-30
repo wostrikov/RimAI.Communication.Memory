@@ -181,16 +181,19 @@ namespace Ustas.RimAI.Communication.Memory
                 
                 int currentDay = GenDate.DaysPassed;
                 
+                // -1 means "has not run yet", which is every save made before its first daily run -
+                // a colony saved on day 0 as much as one from before these fields existed. Starting
+                // the clock today is right in both cases and is nothing to warn about.
                 if (lastArchiveDay == -1)
                 {
                     lastArchiveDay = currentDay;
-                    Log.Warning($"[RimAI.Memory] ⚠️ Old save detected! Initialized lastArchiveDay to {currentDay} to prevent immediate archive.");
+                    ModuleLog.Message($"[RimAI.Memory] No archive has run in this save yet; the first is due after day {currentDay}.");
                 }
-                
+
                 if (lastSummarizationDay == -1)
                 {
                     lastSummarizationDay = currentDay;
-                    Log.Warning($"[RimAI.Memory] ⚠️ Old save detected! Initialized lastSummarizationDay to {currentDay} to prevent immediate summarization.");
+                    ModuleLog.Message($"[RimAI.Memory] No summarization has run in this save yet; the first is due after day {currentDay}.");
                 }
                 
                 ModuleLog.Message($"[RimAI.Memory] MemoryManager loaded successfully.");
