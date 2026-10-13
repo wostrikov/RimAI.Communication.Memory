@@ -41,6 +41,10 @@ internal static class MemoryRoundArchiveCapacityTests
         T(w0 == 0 && h0 == 0 && c0 == 1, "ring-first");
         MemoryColonyCapacityPolicy.AfterAdd(0, 4, 4, out int wFull, out int hFull, out int cFull);
         T(wFull == 0 && hFull == 1 && cFull == 4, "ring-overwrite-oldest");
+        T(MemoryColonyCapacityPolicy.RingCapacity(1) == 1 && MemoryColonyCapacityPolicy.RingCapacity(2) == 2, "ring-capacity-exact");
+        T(MemoryColonyCapacityPolicy.RingCapacity(3) == 4 && MemoryColonyCapacityPolicy.RingCapacity(1000) == 1024, "ring-capacity-rounds-up");
+        T(MemoryColonyCapacityPolicy.RingCapacity(0) == 1 && MemoryColonyCapacityPolicy.RingCapacity(-5) == 1, "ring-capacity-never-empty");
+        T(MemoryColonyCapacityPolicy.RingCapacity(int.MaxValue) == 1 << 30, "ring-capacity-does-not-overflow");
         T(MemoryColonyCapacityPolicy.DecideLookup(false, true, false) == MemoryCacheLookupAction.Disabled, "cache-off");
         T(MemoryColonyCapacityPolicy.DecideLookup(true, false, false) == MemoryCacheLookupAction.Miss, "cache-miss");
         T(MemoryColonyCapacityPolicy.DecideLookup(true, true, true) == MemoryCacheLookupAction.Expired, "cache-expired");

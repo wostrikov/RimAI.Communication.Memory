@@ -1,6 +1,5 @@
 ﻿using System;
 using Ustas.RimAI.Communication.Memory.Policy;
-using Unity.Mathematics;
 
 namespace Ustas.RimAI.Communication.Memory.Utils
 {
@@ -19,7 +18,7 @@ namespace Ustas.RimAI.Communication.Memory.Utils
 
         public RimRingBuffer(int newCapacity)
         {
-            _capacity = math.ceilpow2(newCapacity);
+            _capacity = MemoryColonyCapacityPolicy.RingCapacity(newCapacity);
 
             _buffer = new T[_capacity];
             _capacityMask = _capacity - 1;

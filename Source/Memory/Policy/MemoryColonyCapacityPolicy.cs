@@ -45,6 +45,23 @@ namespace Ustas.RimAI.Communication.Memory.Policy
             }
         }
 
+        /// <summary>
+        /// The size a ring buffer is built with: the smallest power of two that holds
+        /// what was asked for, and never less than one slot, because the buffer wraps
+        /// its index with a mask.
+        ///
+        /// This was Unity.Mathematics' math.ceilpow2. RimWorld 1.7 does not run on
+        /// Unity and its stand-in has no such method, so the round memory - a game
+        /// component - could not be constructed at all, and a save loaded without it.
+        /// </summary>
+        public static int RingCapacity(int requested)
+        {
+            int capacity = 1;
+            while (capacity < requested && capacity < (1 << 30))
+                capacity <<= 1;
+            return capacity;
+        }
+
         public static MemoryCacheLookupAction DecideLookup(bool enabled, bool found, bool expired)
         {
             if (!enabled)
