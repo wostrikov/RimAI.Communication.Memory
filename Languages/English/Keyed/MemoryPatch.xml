@@ -328,6 +328,13 @@
   <RimTalk_Settings_MemoryTypesSection>Memory Type Toggles</RimTalk_Settings_MemoryTypesSection>
   <RimTalk_Settings_ActionMemory>Action Memory</RimTalk_Settings_ActionMemory>
   <RimTalk_Settings_ConversationMemory>Conversation Memory</RimTalk_Settings_ConversationMemory>
+  <RimTalk_Settings_CombatMemory>Combat Memory While Holding Position</RimTalk_Settings_CombatMemory>
+  <RimTalk_Settings_CombatMemoryDesc>Remember the fights a drafted pawn has while standing its ground and firing on its own. Each fight becomes one memory naming who the pawn fought; half an hour without a shot, or two hours of fighting, starts the next one. Ordered attacks are remembered as actions either way.</RimTalk_Settings_CombatMemoryDesc>
+  <RimTalk_Memory_CombatRanged>Fired from position</RimTalk_Memory_CombatRanged>
+  <RimTalk_Memory_CombatMelee>Fought hand to hand on position</RimTalk_Memory_CombatMelee>
+  <RimTalk_Memory_CombatTargets>targets: {0}</RimTalk_Memory_CombatTargets>
+  <RimTalk_Memory_CombatArea>an area</RimTalk_Memory_CombatArea>
+  <RimTalk_Memory_CombatMore>and others</RimTalk_Memory_CombatMore>
   
   <!-- Experimental Features -->
   <RimTalk_Settings_ExperimentalSection>🚀 Experimental Features</RimTalk_Settings_ExperimentalSection>

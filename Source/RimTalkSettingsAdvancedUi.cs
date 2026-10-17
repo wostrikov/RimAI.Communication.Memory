@@ -177,6 +177,8 @@ internal void DrawSummarizationSettings(Listing_Standard listing)
 internal void DrawMemoryTypesSettings(Listing_Standard listing)
         {
             listing.CheckboxLabeled("RimTalk_Settings_ActionMemory".Translate(), ref Owner.enableActionMemory);
+            listing.CheckboxLabeled("RimTalk_Settings_CombatMemory".Translate(), ref Owner.enableCombatMemory,
+                "RimTalk_Settings_CombatMemoryDesc".Translate());
             listing.CheckboxLabeled("RimTalk_Settings_ConversationMemory".Translate(), ref Owner.enableConversationMemory);
         }
 

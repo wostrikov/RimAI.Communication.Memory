@@ -123,6 +123,19 @@ namespace Ustas.RimAI.Communication.Memory
 
         public virtual void ExposeData()
         {
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // Model replies, user edits and pawn names all end up here; one
+                // character XML cannot hold would abort the whole save.
+                Content = XmlSafeText.Clean(Content);
+                Notes = XmlSafeText.Clean(Notes);
+                relatedPawnId = XmlSafeText.Clean(relatedPawnId);
+                relatedPawnName = XmlSafeText.Clean(relatedPawnName);
+                location = XmlSafeText.Clean(location);
+                XmlSafeText.CleanInPlace(tags);
+                XmlSafeText.CleanInPlace(keywords);
+            }
+
             Scribe_Values.Look(ref Id, "id");
             Scribe_Values.Look(ref GameTick, "timestamp", -1);
             Scribe_Values.Look(ref Content, "content");

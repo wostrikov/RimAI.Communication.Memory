@@ -16,6 +16,7 @@ using Ustas.RimAI.Core.Configuration;
 using Ustas.RimAI.Core.Player2;
 using RimAI.Core.Runtime;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Core.Diagnostics;
 
 namespace Ustas.RimAI.Communication.Memory.AI
@@ -280,7 +281,7 @@ public static void Initialize()
                 }
                 
                 ModuleLog.Message($"[AI] ? Initialized with independent config ({IndependentAISummarizer.provider}/{IndependentAISummarizer.model})");
-                ModuleLog.Message($"[AI]    Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
+                ModuleLog.Message($"[AI]    Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
                 ModuleLog.Message($"[AI]    API URL: {IndependentAISummarizer.apiUrl}");
                 IndependentAISummarizer.isInitialized = true;
             }
@@ -314,7 +315,7 @@ internal static bool ValidateConfiguration()
                 {
                     Log.Warning($"[AI] ?? API Key doesn't start with 'sk-' for {IndependentAISummarizer.provider}");
                     Log.Warning("[AI]    Credential format is unusual");
-                    Log.Warning("[AI]    If using third-party proxy, select 'Custom' or 'Player2' IndependentAISummarizer.provider");
+                    Log.Warning("[AI]    If using third-party proxy, select 'Custom' or 'Player2' provider");
                 }
             }
             
@@ -583,7 +584,12 @@ internal static string BuildPrompt(Pawn pawn, List<MemoryEntry> memories, string
             
             escapedTemplate = escapedTemplate.Replace("{{0}}", "{0}").Replace("{{1}}", "{1}");
             
-            string result = string.Format(escapedTemplate, pawn.LabelShort, memoryList);
+            // Built here, on the main thread, before the request goes to the background.
+            string subject = SummarySubject.Compose(
+                pawn.LabelShort,
+                pawn.gender == Gender.None ? null : pawn.gender.GetLabel(pawn.RaceProps?.Animal ?? false),
+                pawn.ageTracker?.AgeBiologicalYears);
+            string result = string.Format(escapedTemplate, subject, memoryList);
             
             return result;
         }
@@ -632,7 +638,7 @@ internal static string BuildJsonRequest(string prompt)
                 
                 var sb = new StringBuilder();
                 sb.Append("{");
-                sb.Append($"\"IndependentAISummarizer.model\":\"{IndependentAISummarizer.model}\",");
+                sb.Append($"\"model\":\"{EscapeJsonString(IndependentAISummarizer.model)}\",");
                 sb.Append("\"messages\":[");
                 
                 sb.Append("{\"role\":\"system\",");
@@ -796,7 +802,7 @@ internal static async Task<string> CallAIAsync(string prompt)
                         ModuleLog.Message($"[AI Summarizer] Calling API: {actualUrl.Substring(0, Math.Min(60, actualUrl.Length))}...");
                         ModuleLog.Message($"[AI Summarizer]   Provider: {IndependentAISummarizer.provider}");
                         ModuleLog.Message($"[AI Summarizer]   Model: {IndependentAISummarizer.model}");
-                        ModuleLog.Message($"[AI Summarizer]   Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "IndependentAISummarizer.provider-specific setting")}");
+                        ModuleLog.Message($"[AI Summarizer]   Credential source: {(IndependentAISummarizer.provider == "OpenAI" ? AiCredentialResolver.Resolve().Display : "provider-specific setting")}");
                     }
 
                     var request = (HttpWebRequest)WebRequest.Create(actualUrl);
@@ -884,7 +890,7 @@ internal static async Task<string> CallAIAsync(string prompt)
 	                        {
 	                            errorDetail = errorText;
 	                            Log.Error($"[AI Summarizer] ? Authentication Error ({errorResponse.StatusCode}):");
-	                            Log.Error("[AI Summarizer]    Credential rejected by IndependentAISummarizer.provider");
+	                            Log.Error("[AI Summarizer]    Credential rejected by provider");
 	                            Log.Error($"[AI Summarizer]    Provider: {IndependentAISummarizer.provider}");
 	                            Log.Error($"[AI Summarizer]    Response: {errorText}");
 	                            Log.Error("[AI Summarizer] ");
@@ -947,7 +953,7 @@ internal static async Task<string> CallAIAsync(string prompt)
 
 internal static string ParseResponse(string responseText)
         {
-            ModuleLog.Message($"[AI Summarizer] 🔍 ParseResponse called, IndependentAISummarizer.provider={IndependentAISummarizer.provider}");
+            ModuleLog.Message($"[AI Summarizer] 🔍 ParseResponse called, provider={IndependentAISummarizer.provider}");
             
             try
             {

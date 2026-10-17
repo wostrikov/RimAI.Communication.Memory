@@ -305,6 +305,13 @@
   <RimTalk_Settings_MemoryTypesSection>Перемикачі типів пам’яті</RimTalk_Settings_MemoryTypesSection>
   <RimTalk_Settings_ActionMemory>Пам’ять дій</RimTalk_Settings_ActionMemory>
   <RimTalk_Settings_ConversationMemory>Пам’ять розмови</RimTalk_Settings_ConversationMemory>
+  <RimTalk_Settings_CombatMemory>Пам’ять бою на позиції</RimTalk_Settings_CombatMemory>
+  <RimTalk_Settings_CombatMemoryDesc>Запам’ятовувати бої, які призваний персонаж веде сам, тримаючи позицію. Кожен бій стає одним спогадом із переліком тих, з ким персонаж бився; пів години без жодного пострілу або дві години бою починають новий спогад. Наказані атаки запам’ятовуються як дії в будь-якому разі.</RimTalk_Settings_CombatMemoryDesc>
+  <RimTalk_Memory_CombatRanged>Стрілянина з позиції</RimTalk_Memory_CombatRanged>
+  <RimTalk_Memory_CombatMelee>Рукопашний бій на позиції</RimTalk_Memory_CombatMelee>
+  <RimTalk_Memory_CombatTargets>цілей: {0}</RimTalk_Memory_CombatTargets>
+  <RimTalk_Memory_CombatArea>ділянка</RimTalk_Memory_CombatArea>
+  <RimTalk_Memory_CombatMore>та інші</RimTalk_Memory_CombatMore>
   <!-- Experimental Features -->
   <RimTalk_Settings_ExperimentalSection>🚀 Експериментальні функції</RimTalk_Settings_ExperimentalSection>
   <RimTalk_Settings_EnableProactiveRecall>Увімкнути проактивне пригадування</RimTalk_Settings_EnableProactiveRecall>

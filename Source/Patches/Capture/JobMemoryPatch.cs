@@ -16,13 +16,16 @@ namespace Ustas.RimAI.Communication.Memory.Patches.Capture
         }
     }
 
+    // CleanupCurrentJob(JobCondition condition, bool releaseReservations,
+    // bool cancelBusyStancesSoft, bool canReturnToPool, bool? carryThingAfterJobOverride)
+    // has no overload; the condition says whether the job was done or abandoned.
     [HarmonyPatch(typeof(Pawn_JobTracker), "CleanupCurrentJob")]
     public static class Pawn_JobTracker_CleanupCurrentJob_Patch
     {
         [HarmonyPrefix]
-        public static void Prefix(Job ___curJob, Pawn ___pawn)
+        public static void Prefix(JobCondition condition, Job ___curJob, Pawn ___pawn)
         {
-            JobMemoryCapturer.BuildJobMemoryEnter(___curJob, ___pawn);
+            JobMemoryCapturer.BuildJobMemoryEnter(condition, ___curJob, ___pawn);
         }
     }
 

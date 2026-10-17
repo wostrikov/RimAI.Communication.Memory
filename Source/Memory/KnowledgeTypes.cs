@@ -4,6 +4,7 @@ using System.Linq;
 using Verse;
 using RimWorld;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Policy;
 
 namespace Ustas.RimAI.Communication.Memory
 {
@@ -77,6 +78,20 @@ namespace Ustas.RimAI.Communication.Memory
 
         public void ExposeData()
         {
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                // Generated knowledge carries event and model text; see XmlSafeText.
+                string cleanTag = XmlSafeText.Clean(tag);
+                if (!ReferenceEquals(cleanTag, tag))
+                {
+                    tag = cleanTag;
+                    cachedTags = null;
+                }
+                content = XmlSafeText.Clean(content);
+                originalEventText = XmlSafeText.Clean(originalEventText);
+                XmlSafeText.CleanInPlace(keywords);
+            }
+
             Scribe_Values.Look(ref id, "id");
             Scribe_Values.Look(ref tag, "tag");
             Scribe_Values.Look(ref content, "content");

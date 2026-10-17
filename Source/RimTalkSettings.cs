@@ -87,6 +87,7 @@ namespace Ustas.RimAI.Communication.Memory
         public bool enableMemoryUI = true;
         
         public bool enableActionMemory = true;
+        public bool enableCombatMemory = true;
         public bool enableConversationMemory = true;
         
         public bool enablePawnStatusKnowledge = false;
@@ -211,6 +212,7 @@ namespace Ustas.RimAI.Communication.Memory
 
             Scribe_Values.Look(ref enableMemoryUI, "memoryPatch_enableMemoryUI", true);
             Scribe_Values.Look(ref enableActionMemory, "memoryPatch_enableActionMemory", true);
+            Scribe_Values.Look(ref enableCombatMemory, "memoryPatch_enableCombatMemory", true);
             Scribe_Values.Look(ref enableConversationMemory, "memoryPatch_enableConversationMemory", true);
             Scribe_Values.Look(ref enablePawnStatusKnowledge, "pawnStatus_enablePawnStatusKnowledge", false);
             Scribe_Values.Look(ref enableEventRecordKnowledge, "eventRecord_enableEventRecordKnowledge", false);

@@ -1,7 +1,9 @@
 ﻿using Ustas.RimAI.Communication.Memory;
 using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Ustas.RimAI.Core.Diagnostics;
 using Verse;
 using Verse.AI;
 
@@ -11,6 +13,13 @@ namespace Ustas.RimAI.Communication.Memory.Capture
     public class JobMemoryCapturer
     {
         private static readonly HashSet<JobDef> _jobsToIgnore = new();
+
+        // A job is a memory only if it happened. Most jobs that end any other way
+        // were never done - the pather gave up, the target was reserved, the
+        // driver errored - but these end interrupted as a matter of course: an
+        // attack stops when its target dies or moves, a teleporting ability ends
+        // its own cast, and a lovin' job fails the moment the partner's ends.
+        private static readonly HashSet<JobDef> _jobsKeptWhenInterrupted = new();
         private static readonly Dictionary<JobDef, string> _dictAggregatedJobToDesc = new();
         private static readonly Dictionary<JobDef, float> _dictJobToImportance = new();
 
@@ -26,6 +35,13 @@ namespace Ustas.RimAI.Communication.Memory.Capture
                 JobDefOf.LayDown, JobDefOf.LayDownAwake, JobDefOf.LayDownResting
                 ]);
             _jobsToIgnore.Remove(null);
+
+            _jobsKeptWhenInterrupted.UnionWith([
+                JobDefOf.AttackMelee, JobDefOf.AttackStatic,
+                JobDefOf.CastAbilityOnThing, JobDefOf.CastAbilityOnWorldTile,
+                JobDefOf.Lovin
+                ]);
+            _jobsKeptWhenInterrupted.Remove(null);
 
             static void AddToDict(JobDef jobDef, float importance)
             {
@@ -103,11 +119,12 @@ namespace Ustas.RimAI.Communication.Memory.Capture
             pawn.GetComp<FourLayerMemoryComp>()?.JobCapturer?.ExtractJobInfo(job);
         }
 
-        public static void BuildJobMemoryEnter(Job job, Pawn pawn)
+        public static void BuildJobMemoryEnter(JobCondition condition, Job job, Pawn pawn)
         {
             if (
                 job?.def is not { } jobDef
                 || _jobsToIgnore.Contains(jobDef)
+                || (condition != JobCondition.Succeeded && !_jobsKeptWhenInterrupted.Contains(jobDef))
 
                 || Find.TickManager?.TicksGame is not { } currentTick 
                 || currentTick == job.startTick
@@ -181,8 +198,16 @@ namespace Ustas.RimAI.Communication.Memory.Capture
                 && Find.TickManager.TicksGame - _startGameTick <= SessionMaxDurationTicks
                 && _lastJobMemory is not null;
 
-            string report = null;
-            string getReport() => report ??= GetJobReportCached(job);
+            // A job that cannot be described is not remembered: an empty memory
+            // tells the model nothing, and a half-built one would merge with the
+            // next real one.
+            string report = GetJobReportCached(job);
+            if (string.IsNullOrEmpty(report)) return;
+
+            var jobDef = job.def;
+            var ableToAggregate = _dictAggregatedJobToDesc.TryGetValue(jobDef, out string jobAggregateDesc);
+            string targetName = ableToAggregate ? GetTargetANameCached(job) : null;
+            if (ableToAggregate && targetName is null) return;
 
             // DRY
             void updateMemoryBase()
@@ -191,7 +216,7 @@ namespace Ustas.RimAI.Communication.Memory.Capture
                 _lastJobMemory.Importance += ImportanceIncrement();
             }
 
-            if (TargetNames.Count <= 1 && getReport() == _lastJobReport && sharedCondition())
+            if (TargetNames.Count <= 1 && report == _lastJobReport && sharedCondition())
             {
                 updateMemoryBase();
                 UpdateSession();
@@ -200,22 +225,19 @@ namespace Ustas.RimAI.Communication.Memory.Capture
                 return;
             }
 
-            var jobDef = job.def;
-            var ableToAggregate = _dictAggregatedJobToDesc.TryGetValue(jobDef, out string jobAggregateDesc);
-
             if (ableToAggregate
                 && jobAggregateDesc == _lastJobAggregateDesc
                 && sharedCondition())
             {
                 updateMemoryBase();
-                UpdateSession(GetTargetANameCached(job));
+                UpdateSession(targetName);
                 _lastJobMemory.Content = BuildFuzzyContent();
 
                 return;
             }
 
 
-            string newReport = getReport();
+            string newReport = report;
 
             var newMemory = new MemoryEntry(
                 newReport,
@@ -230,7 +252,7 @@ namespace Ustas.RimAI.Communication.Memory.Capture
                 newMemory,
                 newReport,
                 jobAggregateDesc,
-                ableToAggregate ? GetTargetANameCached(job) : null
+                targetName
                 );
         }
 
@@ -301,13 +323,14 @@ namespace Ustas.RimAI.Communication.Memory.Capture
             // label and the game logs "LabelNoCount on Corpse while Bugged." for it.
             if (NamesUsedUpCorpse(job)) return string.Empty;
 
-            var jobReport = job.GetReport(parentPawn);
+            string jobReport = ReadFromGame(job, "its job report", () => job.GetReport(parentPawn));
 
             if (string.IsNullOrEmpty(jobReport)) return string.Empty;
 
-            if (jobReport.StartsWith("зараз"))
+            const string nowPrefix = "зараз ";
+            if (jobReport.StartsWith(nowPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                jobReport = jobReport.Substring(2);
+                jobReport = jobReport.Substring(nowPrefix.Length);
             }
 
             return jobReport;
@@ -322,6 +345,8 @@ namespace Ustas.RimAI.Communication.Memory.Capture
             return GetTargetAName(job);
         }
 
+        // Null when the target could not be named, which skips the memory;
+        // an empty name is a job with no thing to name.
         private string GetTargetAName(Job job)
         {
             if (!job.targetA.HasThing) return string.Empty;
@@ -330,17 +355,46 @@ namespace Ustas.RimAI.Communication.Memory.Capture
 
             if (targetThing == Parent) return "сам";
 
-            if (targetThing is Blueprint or Frame)
-            {
-                return targetThing.def?.entityDefToBuild?.label ?? string.Empty;
-            }
-
-            return targetThing.LabelShort ?? targetThing.def?.label ?? string.Empty;
+            return ReadFromGame(job, "its target's label", () =>
+                targetThing is Blueprint or Frame
+                    ? targetThing.def?.entityDefToBuild?.label ?? string.Empty
+                    : targetThing.LabelShort ?? targetThing.def?.label ?? string.Empty);
         }
 
-        private string BuildExactContent() => $"{GetDurationDesc()}разів: {_repeatCount}, {_lastJobReport}";
+        /// <summary>
+        /// A job report or a label is the game's own code, and both have been seen
+        /// to throw NullReferenceException on a thing in an odd state. Everything
+        /// here runs inside the job tracker's StartJob and CleanupCurrentJob, so an
+        /// exception would escape into the tracker and leave the pawn's job half
+        /// torn down. Null tells the caller to skip remembering this job.
+        /// </summary>
+        private static string ReadFromGame(Job job, string what, Func<string> read)
+        {
+            try
+            {
+                return read();
+            }
+            // RimAI.catch-boundary: ALLOWED_TOP_LEVEL_BOUNDARY — body of the Pawn_JobTracker StartJob and CleanupCurrentJob patches; a vanilla report or label that throws must not stop the pawn's job from ending.
+            catch (Exception ex)
+            {
+                if (RimAiLog.Detailed)
+                    RimAiLog.Warning(RimAiLogCategory.Memory,
+                        "[RimAI.Memory] Skipped the memory of " + job.def?.defName + ": " + what + " threw.", exception: ex);
+                return null;
+            }
+        }
+
+        private string BuildExactContent() =>
+            $"{_lastJobReport.TrimEnd('.', ' ')} ({GetDurationDesc()}, разів: {_repeatCount})";
         private string BuildFuzzyContent() =>
-            $"{GetDurationDesc()}{_lastJobAggregateDesc} разів: {_repeatCount}{string.Join("、", TargetNames.Take(3))}{(TargetNames.Count > 3 ? "等" : "")}。";
+            $"{_lastJobAggregateDesc} ({GetDurationDesc()}, разів: {_repeatCount}){JoinTargets(TargetNames)}.";
+
+        // The first three names, and a word for the rest.
+        private static string JoinTargets(ICollection<string> names)
+        {
+            if (names.Count == 0) return string.Empty;
+            return ": " + string.Join(", ", names.Take(3)) + (names.Count > 3 ? " тощо" : string.Empty);
+        }
 
         private string GetDurationDesc()
         {

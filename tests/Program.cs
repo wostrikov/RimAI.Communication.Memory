@@ -12,6 +12,9 @@ internal static class Program
         n += MemoryHostWiringGuardTests.Run();
         n += MemoryRoundArchiveCapacityTests.Run();
         n += MemorySimilarityPolicyTests.Run();
+        n += XmlSafeTextTests.Run();
+        n += CombatSessionTests.Run();
+        n += JobCaptureGuardTests.Run();
         Console.WriteLine("MEMORY_FOCUSED_TESTS_OK passed=" + n);
         Console.WriteLine("TESTS total=" + n + " failed=0");
         return 0;

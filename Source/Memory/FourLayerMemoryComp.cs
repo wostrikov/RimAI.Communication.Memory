@@ -19,6 +19,7 @@ namespace Ustas.RimAI.Communication.Memory
         internal List<MemoryEntry> archiveMemories = new();    
 
         internal readonly JobMemoryCapturer _jobCapturer;
+        internal readonly CombatMemoryCapturer _combatCapturer;
 
         public List<MemoryEntry> ActiveMemories => activeMemories;
 
@@ -30,6 +31,8 @@ namespace Ustas.RimAI.Communication.Memory
 
         public JobMemoryCapturer JobCapturer => _jobCapturer;
 
+        public CombatMemoryCapturer CombatCapturer => _combatCapturer;
+
         public static bool IsRoundMemoryEnabled => RimTalkMemoryPatchMod.Settings?.IsRoundMemoryActive ?? false;
         internal int MaxABM => RimTalkMemoryPatchMod.Settings.maxActiveMemories;
         internal int MaxSCM => RimTalkMemoryPatchMod.Settings.maxSituationalMemories;
@@ -39,6 +42,7 @@ namespace Ustas.RimAI.Communication.Memory
         {
             Parts = new FourLayerMemoryCompParts(this);
             _jobCapturer = new JobMemoryCapturer(this);
+            _combatCapturer = new CombatMemoryCapturer(this);
         }
 
 
