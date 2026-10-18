@@ -18,6 +18,7 @@ using RimAI.Core.Runtime;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
 using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Core.Diagnostics;
+using Ustas.RimAI.Core.Threading;
 
 namespace Ustas.RimAI.Communication.Memory.AI
 {
@@ -420,7 +421,7 @@ public static void TryDetectPlayer2LocalApp()
                     });
                     if (session.Succeeded && session.IsLocal)
                     {
-                        LongEventHandler.ExecuteWhenFinished(() =>
+                        MainThreadSchedulerAccess.RunInlineOrEnqueue(() =>
                         {
                             Messages.Message("RimTalk_Settings_Player2Detected".Translate(), MessageTypeDefOf.PositiveEvent, false);
                         });
@@ -428,7 +429,7 @@ public static void TryDetectPlayer2LocalApp()
                     }
 
                     ModuleLog.Message("[AI] Player2 local app not found, will use remote API");
-                    LongEventHandler.ExecuteWhenFinished(() =>
+                    MainThreadSchedulerAccess.RunInlineOrEnqueue(() =>
                     {
                         Messages.Message("RimTalk_Settings_Player2NotFound".Translate(), MessageTypeDefOf.NeutralEvent, false);
                     });

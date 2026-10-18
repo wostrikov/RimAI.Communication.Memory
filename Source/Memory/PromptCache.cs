@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 using Ustas.RimAI.Communication.Memory;
+using Ustas.RimAI.Communication.Memory.Policy;
 using Ustas.RimAI.Communication.Memory.Diagnostics;
 using Ustas.RimAI.Core.Diagnostics;
 
@@ -57,6 +58,15 @@ namespace Ustas.RimAI.Communication.Memory
             
             public void ExposeData()
             {
+                if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    // Built from memories and model text; one character XML cannot
+                    // hold would abort the whole save. See XmlSafeText.
+                    memoryPrompt = XmlSafeText.Clean(memoryPrompt);
+                    knowledgePrompt = XmlSafeText.Clean(knowledgePrompt);
+                    fullPrompt = XmlSafeText.Clean(fullPrompt);
+                }
+
                 Scribe_Values.Look(ref memoryPrompt, "memoryPrompt");
                 Scribe_Values.Look(ref knowledgePrompt, "knowledgePrompt");
                 Scribe_Values.Look(ref fullPrompt, "fullPrompt");

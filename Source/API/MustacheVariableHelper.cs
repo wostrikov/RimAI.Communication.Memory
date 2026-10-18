@@ -111,7 +111,14 @@ namespace Ustas.RimAI.Communication.Memory.API
 
                 var ctx = new PromptContext(pawn);
                 string template = "{{pawn." + propertyName + "}}";
-                string parsed = ScribanParser.Render(template, ctx, false);
+                if (!ScribanParser.TryRender(template, ctx, out string parsed, out string error))
+                {
+                    // Skipped rather than matched against the literal template text.
+                    RimAiLog.WarningOnce(RimAiLogCategory.Memory,
+                        $"[MemoryPatch] Pawn property '{propertyName}' failed to render and is skipped. {error}",
+                        ("pawn-property:" + propertyName).GetHashCode());
+                    return false;
+                }
                 if (!string.IsNullOrEmpty(parsed) && parsed != template)
                 {
                     value = parsed;

@@ -40,6 +40,14 @@ namespace Ustas.RimAI.Communication.Memory
             
             public void ExposeData()
             {
+                if (Scribe.mode == LoadSaveMode.Saving)
+                {
+                    // Model replies and pawn names; one character XML cannot hold
+                    // would abort the whole save. See XmlSafeText.
+                    cacheKey = XmlSafeText.Clean(cacheKey);
+                    dialogue = XmlSafeText.Clean(dialogue);
+                }
+
                 Scribe_Values.Look(ref cacheKey, "cacheKey");
                 Scribe_Values.Look(ref dialogue, "dialogue");
                 Scribe_Values.Look(ref timestamp, "timestamp");

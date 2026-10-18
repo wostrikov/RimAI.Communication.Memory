@@ -208,6 +208,17 @@
   <RimTalk_With>з</RimTalk_With>
   <RimTalk_MemoryType_Conversation>Розмова</RimTalk_MemoryType_Conversation>
   <RimTalk_MemoryType_Action>Дія</RimTalk_MemoryType_Action>
+    <RimTalk_MemoryType_Observation>Спостереження</RimTalk_MemoryType_Observation>
+    <RimTalk_MemoryType_Event>Подія</RimTalk_MemoryType_Event>
+    <RimTalk_MemoryType_Emotion>Почуття</RimTalk_MemoryType_Emotion>
+    <RimTalk_MemoryType_Relationship>Стосунки</RimTalk_MemoryType_Relationship>
+    <RimTalk_MemoryType_Internal>Внутрішня думка</RimTalk_MemoryType_Internal>
+    <RimTalk_ShortTermMemories>Короткочасні спогади</RimTalk_ShortTermMemories>
+    <RimTalk_LongTermMemories>Довготривалі спогади</RimTalk_LongTermMemories>
+    <RimTalk_Settings_Player2Detected>Знайдено локальний застосунок Player2: підсумки спогадів використовуватимуть його.</RimTalk_Settings_Player2Detected>
+    <RimTalk_Settings_Player2NotFound>Локальний застосунок Player2 не знайдено: підсумки спогадів використовуватимуть віддалений API.</RimTalk_Settings_Player2NotFound>
+    <RimTalk_Knowledge_Category>Категорія</RimTalk_Knowledge_Category>
+    <RimTalk_Knowledge_CategoryAutoSuffix> (авто)</RimTalk_Knowledge_CategoryAutoSuffix>
   <RimTalk_Settings_MustEnterGame>Спочатку потрібно увійти в гру</RimTalk_Settings_MustEnterGame>
   <RimTalk_Settings_CannotFindManager>Не вдалося знайти менеджер пам’яті</RimTalk_Settings_CannotFindManager>
   <RimTalk_Menu_MemoryCompUnavailable>Компонент пам’яті недоступний</RimTalk_Menu_MemoryCompUnavailable>
@@ -304,7 +315,7 @@
   <RimTalk_Settings_MaxABMInjectionRoundsDesc>Визначає, скільки останніх раундів розмови додається до контексту ШІ</RimTalk_Settings_MaxABMInjectionRoundsDesc>
   <RimTalk_Settings_MemoryTypesSection>Перемикачі типів пам’яті</RimTalk_Settings_MemoryTypesSection>
   <RimTalk_Settings_ActionMemory>Пам’ять дій</RimTalk_Settings_ActionMemory>
-  <RimTalk_Settings_ConversationMemory>Пам’ять розмови</RimTalk_Settings_ConversationMemory>
+  <RimTalk_Settings_ConversationMemory>Пам’ять розмов</RimTalk_Settings_ConversationMemory>
   <RimTalk_Settings_CombatMemory>Пам’ять бою на позиції</RimTalk_Settings_CombatMemory>
   <RimTalk_Settings_CombatMemoryDesc>Запам’ятовувати бої, які призваний персонаж веде сам, тримаючи позицію. Кожен бій стає одним спогадом із переліком тих, з ким персонаж бився; пів години без жодного пострілу або дві години бою починають новий спогад. Наказані атаки запам’ятовуються як дії в будь-якому разі.</RimTalk_Settings_CombatMemoryDesc>
   <RimTalk_Memory_CombatRanged>Стрілянина з позиції</RimTalk_Memory_CombatRanged>

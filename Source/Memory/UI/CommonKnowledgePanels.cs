@@ -182,10 +182,10 @@ internal void DrawDetailPanel(Rect rect, CommonKnowledgeEntry entry)
             var entryCat = CommonKnowledgeUIHelpers.GetEntryCategory(entry);
             string catDisplay = CommonKnowledgeUIHelpers.GetCategoryLabel(entryCat);
             if (entry.category == KnowledgeEntryCategory.None)
-                catDisplay += " (авто)";
+                catDisplay += "RimTalk_Knowledge_CategoryAutoSuffix".Translate();
             CommonKnowledgeUIHelpers.DrawDetailField(
                 new Rect(0f, scrollY, scrollViewRect.width, 25f),
-                "Категорія",
+                "RimTalk_Knowledge_Category".Translate(),
                 catDisplay
             );
             scrollY += 30f;
@@ -295,7 +295,7 @@ internal void DrawEditPanel(Rect rect)
             y += 30f;
             
             // ⭐ Category dropdown (after tag)
-            Widgets.Label(new Rect(rect.x, y, 100f, 25f), "Категорія:");
+            Widgets.Label(new Rect(rect.x, y, 100f, 25f), "RimTalk_Knowledge_Category".Translate() + ":");
             string catLabel = CommonKnowledgeUIHelpers.GetExplicitCategoryLabel(editCategory);
             if (editCategory == KnowledgeEntryCategory.None && !string.IsNullOrEmpty(editTag))
             {

@@ -38,5 +38,12 @@
     <None Include="..\Source\Patches\Capture\JobMemoryPatch.cs" Link="JobMemoryPatch.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Patches\Capture\CombatMemoryPatch.cs" Link="CombatMemoryPatch.cs.src" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\Source\Memory\AI\IndependentAISummarizer.cs" Link="IndependentAISummarizer.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\PromptCache.cs" Link="PromptCache.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\API\KnowledgeVariableProvider.cs" Link="KnowledgeVariableProvider.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\API\MustacheVariableHelper.cs" Link="MustacheVariableHelper.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Source\Memory\UI\Dialog_InjectionPreview.cs" Link="Dialog_InjectionPreview.cs.src" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Languages\English\Keyed\*.xml" Link="lang\English\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Languages\Ukrainian (Українська)\Keyed\*.xml" Link="lang\Ukrainian\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\Languages\ChineseSimplified\Keyed\*.xml" Link="lang\ChineseSimplified\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

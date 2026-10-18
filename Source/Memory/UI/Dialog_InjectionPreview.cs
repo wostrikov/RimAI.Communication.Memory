@@ -245,7 +245,11 @@ internal string RenderWithScriban(string template, Pawn pawn, Pawn recipient, bo
                     ctx.IsPreview = true;
                 }
 
-                return ScribanParser.Render(template, ctx, false) ?? template;
+                if (ScribanParser.TryRender(template, ctx, out string rendered, out string error))
+                    return rendered ?? string.Empty;
+                // The preview leaves the section out, as the prompt itself does.
+                ModuleLog.Message("[RimAI.Memory] a preview template failed to render: " + error);
+                return string.Empty;
             }
             catch
             {

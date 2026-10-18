@@ -218,6 +218,17 @@
   <RimTalk_With>with</RimTalk_With>
   <RimTalk_MemoryType_Conversation>Conversation</RimTalk_MemoryType_Conversation>
   <RimTalk_MemoryType_Action>Action</RimTalk_MemoryType_Action>
+    <RimTalk_MemoryType_Observation>Observation</RimTalk_MemoryType_Observation>
+    <RimTalk_MemoryType_Event>Event</RimTalk_MemoryType_Event>
+    <RimTalk_MemoryType_Emotion>Emotion</RimTalk_MemoryType_Emotion>
+    <RimTalk_MemoryType_Relationship>Relationship</RimTalk_MemoryType_Relationship>
+    <RimTalk_MemoryType_Internal>Inner thought</RimTalk_MemoryType_Internal>
+    <RimTalk_ShortTermMemories>Short-term memories</RimTalk_ShortTermMemories>
+    <RimTalk_LongTermMemories>Long-term memories</RimTalk_LongTermMemories>
+    <RimTalk_Settings_Player2Detected>The local Player2 app was found; memory summaries will use it.</RimTalk_Settings_Player2Detected>
+    <RimTalk_Settings_Player2NotFound>The local Player2 app was not found; memory summaries will use the remote API.</RimTalk_Settings_Player2NotFound>
+    <RimTalk_Knowledge_Category>Category</RimTalk_Knowledge_Category>
+    <RimTalk_Knowledge_CategoryAutoSuffix> (auto)</RimTalk_Knowledge_CategoryAutoSuffix>
   
   <RimTalk_Settings_MustEnterGame>Must enter game first</RimTalk_Settings_MustEnterGame>
   <RimTalk_Settings_CannotFindManager>Cannot find memory manager</RimTalk_Settings_CannotFindManager>

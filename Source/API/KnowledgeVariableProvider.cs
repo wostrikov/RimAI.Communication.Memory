@@ -466,9 +466,9 @@ namespace Ustas.RimAI.Communication.Memory.API
                     return null;
 
                 string template = "{{" + variableName + "}}";
-                string parsed = ScribanParser.Render(template, promptContext, false);
-                if (!string.IsNullOrEmpty(parsed) && parsed != template)
-                    return parsed;
+                if (ScribanParser.TryRender(template, promptContext, out string parsed, out string error))
+                    return string.IsNullOrEmpty(parsed) || parsed == template ? null : parsed;
+                RimAiLog.WarningOnce(RimAiLogCategory.Memory, $"[MemoryPatch] Match source '{variableName}' failed to render and is skipped. {error}", ("knowledge-source:" + variableName).GetHashCode());
                 return null;
             }
             catch (Exception ex)
